@@ -1,6 +1,6 @@
 {
   "name": "HaniTech Property Manager",
-  "short_name": "Property Manager",
+  "short_name": "Yene Mall",
   "description": "Manage your property, units, tenants and payments easily.",
   "start_url": "./index.html",
   "display": "standalone",
