@@ -6,42 +6,31 @@
 <title>Property Manager — HaniTech</title>
 <meta name="theme-color" content="#1a365d">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
 <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
+/* ═══════════════════════════════════════════
+   CSS ሙሉ በሙሉ (ከቀድሞው ጋር አንድ ነው)
+   ═══════════════════════════════════════════ */
 :root {
-  --primary: #1a365d;
-  --primary-light: #2c5282;
-  --accent: #d4af37;
-  --bg: #f8fafc;
-  --card-bg: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
-  --radius: 10px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06);
-  --input-bg: #f8fafc;
-  --panel-bg: #f8fafc;
+  --primary: #1a365d; --primary-light: #2c5282; --accent: #d4af37;
+  --bg: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --text-muted: #64748b;
+  --border: #e2e8f0; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+  --info: #3b82f6; --radius: 10px; --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --input-bg: #f8fafc; --panel-bg: #f8fafc;
 }
 body.dark-mode {
-  --bg: #0f172a;
-  --card-bg: #1e293b;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: #334155;
-  --panel-bg: #0b1120;
-  --input-bg: #0f172a;
+  --bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8;
+  --border: #334155; --panel-bg: #0b1120; --input-bg: #0f172a;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
 body { background: var(--bg); color: var(--text-main); font-size: 14px; min-height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
 
-/* SPLASH */
+/* SPLASH & LOGIN */
 #splashScreen { position: fixed; inset: 0; background: var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: #fff; transition: opacity 0.5s; }
 #splashScreen.fade-out { opacity: 0; pointer-events: none; }
 .splash-logo { font-size: 42px; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 12px; }
@@ -49,21 +38,14 @@ body { background: var(--bg); color: var(--text-main); font-size: 14px; min-heig
 .splash-sub { font-size: 13px; margin-top: 10px; color: rgba(255,255,255,0.7); font-weight: 500; letter-spacing: 3px; text-transform: uppercase; }
 .splash-loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 30px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* LOGIN */
 #loginScreen { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; overflow-y: auto; }
 #loginScreen.hidden { display: none; }
 .login-box { background: var(--card-bg); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 40px 32px; width: 100%; max-width: 400px; margin: auto; }
 .login-logo { text-align: center; margin-bottom: 8px; }
-.login-logo-icon { width: 72px; height: 72px; background: var(--primary); border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 36px; border: 2px solid var(--accent); }
+.login-logo-icon { width: 80px; height: 80px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 36px; border: 2px solid var(--accent); object-fit: cover; }
 .login-title { text-align: center; font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
 body.dark-mode .login-title { color: var(--accent); }
-.login-subtitle { text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500; letter-spacing: 1px; }
-.test-login-box { background: rgba(212,175,55,0.1); border: 1px dashed var(--accent); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
-.test-login-title { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-.test-login-line { font-size: 12.5px; color: var(--text-main); font-weight: 600; font-family: monospace; margin: 2px 0; }
-.test-btn { width: 100%; padding: 10px; font-size: 12.5px; font-weight: 700; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); border-radius: 8px; cursor: pointer; margin-top: 10px; font-family: inherit; }
-.test-btn:hover { background: var(--accent); color: var(--primary); }
+.login-subtitle { text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; letter-spacing: 1px; }
 .form-group { margin-bottom: 16px; }
 .form-group label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
 input, select, textarea { width: 100%; padding: 13px 16px; font-size: 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--text-main); outline: none; transition: all 0.2s; font-family: inherit; }
@@ -71,10 +53,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); backgr
 .btn-login { width: 100%; padding: 14px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; background: var(--primary); color: #fff; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
 .btn-login:hover { background: var(--primary-light); }
 .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+.forgot-link { text-align: center; margin-top: 16px; }
+.forgot-link a { color: var(--primary-light); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; }
 #loginError { background: #fee2e2; color: var(--danger); padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 14px; display: none; border-left: 4px solid var(--danger); }
 #loginError.show { display: block; }
 
-/* MAIN APP HEADER */
+/* MAIN APP */
 #mainApp { display: none; height: 100vh; width: 100%; flex-direction: column; }
 #mainApp.show { display: flex; }
 header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; z-index: 102; position: relative; border-bottom: 2px solid var(--accent); }
@@ -91,13 +75,15 @@ header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; 
 /* LAYOUT */
 .main-content-wrapper { display: flex; flex-direction: row; flex: 1; overflow: hidden; background: var(--panel-bg); }
 .tabs-wrapper { display: flex; flex-direction: row; flex: 1; overflow: hidden; width: 100%; }
-.tabs { display: flex; flex-direction: column; width: 220px; background: var(--card-bg); border-right: 1px solid var(--border); padding: 16px 10px; gap: 4px; overflow-y: auto; flex-shrink: 0; height: 100%; }
+.tabs { display: flex; flex-direction: column; width: 230px; background: var(--card-bg); border-right: 1px solid var(--border); padding: 16px 10px; gap: 4px; overflow-y: auto; flex-shrink: 0; height: 100%; }
 .menu-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; transition: all 0.2s; user-select: none; }
 .menu-header:hover { background: var(--bg); color: var(--text-main); }
 .menu-header.active { background: var(--primary); color: #fff; }
 .menu-header .m-left { display: flex; align-items: center; gap: 10px; }
 .menu-header .m-left i { font-size: 18px; font-style: normal; }
-.panels { flex: 1; padding: 20px; background: var(--panel-bg); overflow-y: auto; width: calc(100% - 220px); }
+.sidebar-footer { margin-top: auto; padding: 12px; text-align: center; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); }
+.sidebar-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
+.panels { flex: 1; padding: 20px; background: var(--panel-bg); overflow-y: auto; width: calc(100% - 230px); }
 .panel { display: none; }
 .panel.active { display: block !important; }
 
@@ -113,22 +99,6 @@ header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; 
 .stat-card .s-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 .stat-card .s-value { font-size: 24px; font-weight: 800; color: var(--text-main); }
 .stat-card .s-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-/* MOBILE HOME CARD (Like the image) */
-.mobile-summary-card { background: var(--primary); border-radius: 12px; padding: 20px; color: #fff; margin-bottom: 20px; }
-.mobile-summary-row { display: flex; justify-content: space-between; align-items: center; text-align: center; margin-top: 15px;}
-.mobile-summary-item { flex: 1; padding: 0 8px; border-right: 1px solid rgba(255,255,255,0.2); }
-.mobile-summary-item:last-child { border-right: none; }
-.mobile-summary-item .lbl { font-size: 11px; opacity: 0.8; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
-.mobile-summary-item .val { font-size: 16px; font-weight: 800; }
-.mobile-summary-item .val.green { color: #6ee7b7; }
-.mobile-summary-item .val.red { color: #fca5a5; }
-.mobile-summary-item .val.blue { color: #93c5fd; }
-.qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-.qa-card { background: var(--card-bg); border-radius: 10px; padding: 18px 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.qa-card:active { transform: scale(0.98); }
-.qa-card .qa-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 10px; }
-.qa-card .qa-title { font-size: 12.5px; font-weight: 700; color: var(--text-main); line-height: 1.3; }
 
 /* FORMS & BUTTONS */
 label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; margin-top: 12px; }
@@ -170,10 +140,26 @@ label.field-label:first-of-type { margin-top: 0; }
 .empty-state .e-title { font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 6px; }
 .empty-state .e-sub { font-size: 12.5px; }
 
+/* MOBILE HOME */
+.mobile-summary-card { background: var(--primary); border-radius: 12px; padding: 20px; color: #fff; margin-bottom: 20px; }
+.mobile-summary-row { display: flex; justify-content: space-between; align-items: center; text-align: center; }
+.mobile-summary-item { flex: 1; padding: 0 8px; border-right: 1px solid rgba(255,255,255,0.2); }
+.mobile-summary-item:last-child { border-right: none; }
+.mobile-summary-item .lbl { font-size: 11px; opacity: 0.8; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+.mobile-summary-item .val { font-size: 16px; font-weight: 800; }
+.mobile-summary-item .val.green { color: #6ee7b7; }
+.mobile-summary-item .val.red { color: #fca5a5; }
+.mobile-summary-item .val.blue { color: #93c5fd; }
+.qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.qa-card { background: var(--card-bg); border-radius: 10px; padding: 18px 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.qa-card:active { transform: scale(0.98); }
+.qa-card .qa-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 10px; }
+.qa-card .qa-title { font-size: 12.5px; font-weight: 700; color: var(--text-main); line-height: 1.3; }
+
 /* MODAL & TOAST */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
 .modal-overlay.open { display: flex; }
-.modal-content { background: var(--card-bg); border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.modal-content { background: var(--card-bg); border-radius: 12px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
 .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg); border-radius: 12px 12px 0 0; position: sticky; top: 0; z-index: 1; }
 .modal-header h3 { font-size: 16px; font-weight: 700; margin: 0; color: var(--text-main); }
 .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-muted); padding: 0 4px; }
@@ -224,17 +210,11 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 <!-- LOGIN -->
 <div id="loginScreen" class="hidden">
   <div class="login-box">
-    <div class="login-logo"><div class="login-logo-icon">🏢</div></div>
-    <h1 class="login-title">HaniTech Property</h1>
-    <p class="login-subtitle">TENANT MANAGEMENT SYSTEM</p>
-    
-    <div class="test-login-box">
-      <div class="test-login-title">🧪 Test Login</div>
-      <div class="test-login-line">📧 test@property.com</div>
-      <div class="test-login-line">🔒 test123456</div>
-      <button class="test-btn" onclick="fillTestLogin()">⚡ Auto-fill Test Credentials</button>
+    <div class="login-logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="HaniTech Logo" class="login-logo-icon">
     </div>
-    
+    <h1 class="login-title">HaniTech Property</h1>
+    <p class="login-subtitle">MANAGEMENT SYSTEM</p>
     <div id="loginError"></div>
     <div class="form-group">
       <label>📧 Email Address</label>
@@ -245,6 +225,9 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
       <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
     </div>
     <button class="btn-login" id="loginBtn" onclick="login()">🔓 Sign In</button>
+    <div class="forgot-link">
+      <a onclick="forgotPassword()">🔑 Forgot Password?</a>
+    </div>
   </div>
 </div>
 
@@ -268,82 +251,41 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 
   <div class="main-content-wrapper">
     <div class="tabs-wrapper">
-      
-      <div class="tabs" id="dynamicSidebar"></div>
+      <div class="tabs" id="dynamicSidebar">
+        <div class="sidebar-footer">Powered by <a href="#">HaniTech</a></div>
+      </div>
 
       <div class="panels">
-
-        <!-- MOBILE HOME (Dashboard for Mobile) -->
+        <!-- MOBILE HOME -->
         <div class="panel" id="panelMobileHome">
           <div class="mobile-summary-card">
-            <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-              <span>📅</span> Today's Summary
-            </div>
+            <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;"><span>📅</span> Today's Summary</div>
             <div class="mobile-summary-row">
-              <div class="mobile-summary-item">
-                <div class="lbl">Sales</div>
-                <div class="val green" id="mobTodaySales">0.00</div>
-              </div>
-              <div class="mobile-summary-item">
-                <div class="lbl">Expenses</div>
-                <div class="val red" id="mobTodayExpenses">0.00</div>
-              </div>
-              <div class="mobile-summary-item">
-                <div class="lbl">Profit</div>
-                <div class="val blue" id="mobTodayProfit">0.00</div>
-              </div>
+              <div class="mobile-summary-item"><div class="lbl">Sales</div><div class="val green" id="mobTodaySales">0.00</div></div>
+              <div class="mobile-summary-item"><div class="lbl">Expenses</div><div class="val red" id="mobTodayExpenses">0.00</div></div>
+              <div class="mobile-summary-item"><div class="lbl">Profit</div><div class="val blue" id="mobTodayProfit">0.00</div></div>
             </div>
           </div>
-          
           <h3 style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 16px;">⚡ Quick Actions</h3>
-          <div class="qa-grid" id="dynamicQuickActions">
-            <!-- Quick actions will be rendered here -->
-          </div>
+          <div class="qa-grid" id="dynamicQuickActions"></div>
         </div>
 
-        <!-- DESKTOP DASHBOARD -->
+        <!-- DASHBOARD -->
         <div class="panel" id="panelDashboard">
           <div class="stats-grid">
-            <div class="stat-card blue">
-              <div class="s-label">🏢 Total Units</div>
-              <div class="s-value" id="statTotalUnits">0</div>
-              <div class="s-sub" id="statOccupied">0 occupied</div>
-            </div>
-            <div class="stat-card green">
-              <div class="s-label">💰 Collected (Month)</div>
-              <div class="s-value" id="statCollected">0</div>
-              <div class="s-sub">ETB paid this month</div>
-            </div>
-            <div class="stat-card red">
-              <div class="s-label">⚠️ Unpaid (Month)</div>
-              <div class="s-value" id="statUnpaid">0</div>
-              <div class="s-sub">ETB outstanding</div>
-            </div>
-            <div class="stat-card orange">
-              <div class="s-label">📊 Occupancy</div>
-              <div class="s-value" id="statOccupancy">0%</div>
-              <div class="s-sub" id="statVacant">0 vacant</div>
-            </div>
+            <div class="stat-card blue"><div class="s-label">🏢 Total Units</div><div class="s-value" id="statTotalUnits">0</div><div class="s-sub" id="statOccupied">0 occupied</div></div>
+            <div class="stat-card green"><div class="s-label">💰 Collected (Month)</div><div class="s-value" id="statCollected">0</div><div class="s-sub">ETB paid this month</div></div>
+            <div class="stat-card red"><div class="s-label">⚠️ Unpaid (Month)</div><div class="s-value" id="statUnpaid">0</div><div class="s-sub">ETB outstanding</div></div>
+            <div class="stat-card orange"><div class="s-label">📊 Occupancy</div><div class="s-value" id="statOccupancy">0%</div><div class="s-sub" id="statVacant">0 vacant</div></div>
           </div>
-
-          <div class="card">
-            <div class="card-title"><span>⚠️ Alerts</span></div>
-            <div id="alertsContainer"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-title"><span>📅 Recent Payments</span></div>
-            <div id="recentPayments"></div>
-          </div>
+          <div class="card"><div class="card-title"><span>⚠️ Alerts</span></div><div id="alertsContainer"></div></div>
+          <div class="card"><div class="card-title"><span>📅 Recent Payments</span></div><div id="recentPayments"></div></div>
         </div>
 
         <!-- UNITS -->
         <div class="panel" id="panelUnits">
           <div class="card">
-            <div class="card-title">
-              <span>🏢 Units</span>
-              <button class="btn btn-primary btn-sm" onclick="openUnitModal()">➕ Add Unit</button>
-            </div>
+            <div class="card-title"><span>🏢 Units</span><button class="btn btn-primary btn-sm" onclick="openUnitModal()">➕ Add Unit</button></div>
             <div class="filter-bar" id="unitFilterBar">
               <button class="filter-chip active" onclick="setUnitFilter('all', this)">All</button>
               <button class="filter-chip" onclick="setUnitFilter('vacant', this)">🟢 Vacant</button>
@@ -357,10 +299,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
         <!-- TENANTS -->
         <div class="panel" id="panelTenants">
           <div class="card">
-            <div class="card-title">
-              <span>👥 Tenants</span>
-              <button class="btn btn-primary btn-sm" onclick="openTenantModal()">➕ Add Tenant</button>
-            </div>
+            <div class="card-title"><span>👥 Tenants</span><button class="btn btn-primary btn-sm" onclick="openTenantModal()">➕ Add Tenant</button></div>
             <input type="text" id="searchTenants" placeholder="🔍 Search tenant..." oninput="renderTenants()" style="margin-bottom:16px;">
             <div id="tenantsList"></div>
           </div>
@@ -369,10 +308,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
         <!-- PAYMENTS -->
         <div class="panel" id="panelPayments">
           <div class="card">
-            <div class="card-title">
-              <span>💰 Rent Payments</span>
-              <button class="btn btn-primary btn-sm" onclick="openPaymentModal()">➕ Record Payment</button>
-            </div>
+            <div class="card-title"><span>💰 Rent Payments</span><button class="btn btn-primary btn-sm" onclick="openPaymentModal()">➕ Record Payment</button></div>
             <label class="field-label" style="margin-top:0;">📅 Select Month</label>
             <input type="month" id="paymentMonth" onchange="renderPayments()" style="margin-bottom:16px;">
             <div class="filter-bar">
@@ -388,10 +324,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
         <!-- UTILITIES -->
         <div class="panel" id="panelUtilities">
           <div class="card">
-            <div class="card-title">
-              <span>💡 Utilities (Water / Electricity)</span>
-              <button class="btn btn-primary btn-sm" onclick="openUtilityModal()">➕ Add Utility</button>
-            </div>
+            <div class="card-title"><span>💡 Utilities</span><button class="btn btn-primary btn-sm" onclick="openUtilityModal()">➕ Add Utility</button></div>
             <label class="field-label" style="margin-top:0;">📅 Select Month</label>
             <input type="month" id="utilityMonth" onchange="renderUtilities()" style="margin-bottom:16px;">
             <div id="utilitiesList"></div>
@@ -405,29 +338,13 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             <label class="field-label" style="margin-top:0;">📅 Month</label>
             <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
             <div class="stats-grid">
-              <div class="stat-card green">
-                <div class="s-label">Revenue</div>
-                <div class="s-value" id="repRevenue">0</div>
-              </div>
-              <div class="stat-card red">
-                <div class="s-label">Expenses</div>
-                <div class="s-value" id="repExpenses">0</div>
-              </div>
-              <div class="stat-card blue">
-                <div class="s-label">Net</div>
-                <div class="s-value" id="repNet">0</div>
-              </div>
-              <div class="stat-card orange">
-                <div class="s-label">Unpaid</div>
-                <div class="s-value" id="repUnpaid">0</div>
-              </div>
+              <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
+              <div class="stat-card red"><div class="s-label">Expenses</div><div class="s-value" id="repExpenses">0</div></div>
+              <div class="stat-card blue"><div class="s-label">Net</div><div class="s-value" id="repNet">0</div></div>
+              <div class="stat-card orange"><div class="s-label">Unpaid</div><div class="s-value" id="repUnpaid">0</div></div>
             </div>
           </div>
-
-          <div class="card">
-            <div class="card-title"><span>🏢 Unit Status Summary</span></div>
-            <div id="unitStatusSummary"></div>
-          </div>
+          <div class="card"><div class="card-title"><span>🏢 Unit Status Summary</span></div><div id="unitStatusSummary"></div></div>
         </div>
 
         <!-- SETTINGS -->
@@ -442,35 +359,22 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             <input type="text" id="settingPropertyAddress" placeholder="Addis Ababa...">
             <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
           </div>
-
           <div class="card">
-            <div class="card-title"><span>📱 Notification Settings</span></div>
-            <label class="field-label" style="margin-top:0;">📱 SMS Provider</label>
-            <select id="settingSMSProvider">
-              <option value="none">-- Disabled --</option>
-              <option value="afromessage">AfroMessage (Ethiopia)</option>
-              <option value="twilio">Twilio (International)</option>
-            </select>
-            
-            <label class="field-label">🔑 SMS API Key</label>
-            <input type="text" id="settingSMSKey" placeholder="Your API key">
-            
-            <label class="field-label">📞 SMS Sender ID</label>
-            <input type="text" id="settingSMSSender" placeholder="e.g. HaniTech">
-            
-            <label class="field-label">✈️ Telegram Bot Token</label>
-            <input type="text" id="settingTelegramToken" placeholder="123456:ABC-DEF...">
-            
-            <label class="field-label">💬 Telegram Chat ID</label>
-            <input type="text" id="settingTelegramChatId" placeholder="-1001234567890">
-            
-            <label class="field-label">📝 Message Template</label>
-            <textarea id="settingMsgTemplate" rows="4" placeholder="Dear {name}, your rent of {amount} ETB for {month} is due on {dueDate}."></textarea>
-            
-            <button class="btn btn-primary" onclick="saveNotificationSettings()">💾 Save Notification Settings</button>
-            <button class="btn btn-outline" onclick="testNotification()">🧪 Send Test Notification</button>
+            <div class="card-title"><span>🔐 Security & Language</span></div>
+            <label class="field-label" style="margin-top:0;">🔒 Change Password</label>
+            <input type="password" id="newPassword" placeholder="New Password (min 6 chars)">
+            <button class="btn btn-primary" onclick="changePassword()">🔒 Update Password</button>
+            <label class="field-label">🌐 App Language</label>
+            <select id="appLanguage" onchange="changeLanguage()"><option value="en">English</option><option value="am">አማርኛ (Amharic)</option></select>
           </div>
-
+          <div class="card" id="employeeManagementCard" style="display:none;">
+            <div class="card-title"><span>👥 Employee Management</span><button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">➕ Add Employee</button></div>
+            <div id="employeesList"></div>
+          </div>
+          <div class="card" id="auditTrailCard" style="display:none;">
+            <div class="card-title"><span>📝 Audit Trail</span></div>
+            <div id="auditTrailList" style="max-height: 300px; overflow-y: auto;"></div>
+          </div>
           <div class="card">
             <div class="card-title"><span>🎨 Theme</span></div>
             <div style="display:flex; gap:10px;">
@@ -478,13 +382,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
               <button class="btn btn-outline" onclick="toggleDarkMode(true)" style="margin-top:0;">🌙 Dark</button>
             </div>
           </div>
-
-          <div class="card">
-            <div class="card-title"><span>🚪 Account</span></div>
-            <button class="btn btn-danger" onclick="logout()">Sign Out</button>
-          </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -495,23 +393,10 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   <div class="modal-content">
     <div class="modal-header"><h3 id="unitModalTitle">➕ Add Unit</h3><button class="modal-close" onclick="closeModal('unitModal')">×</button></div>
     <div class="modal-body">
-      <label class="field-label" style="margin-top:0;">🏷️ Unit Number *</label>
-      <input type="text" id="unitNumber" placeholder="e.g. 101, A-2">
-      <label class="field-label">📁 Type *</label>
-      <select id="unitType">
-        <option value="Shop">🏪 Shop</option>
-        <option value="Apartment">🏠 Apartment</option>
-        <option value="Office">💼 Office</option>
-        <option value="Warehouse">📦 Warehouse</option>
-      </select>
-      <div class="form-row">
-        <div><label class="field-label">📐 Size (m²)</label><input type="number" id="unitSize" placeholder="0" step="any"></div>
-        <div><label class="field-label">🏢 Floor</label><input type="text" id="unitFloor" placeholder="e.g. 1, G"></div>
-      </div>
-      <label class="field-label">💰 Monthly Rent (ETB) *</label>
-      <input type="number" id="unitRent" placeholder="0.00" step="any">
-      <label class="field-label">📝 Notes</label>
-      <textarea id="unitNotes" rows="2" placeholder="Additional details..."></textarea>
+      <label class="field-label" style="margin-top:0;">🏷️ Unit Number *</label><input type="text" id="unitNumber" placeholder="e.g. 101">
+      <label class="field-label">📁 Type *</label><select id="unitType"><option value="Shop">🏪 Shop</option><option value="Apartment">🏠 Apartment</option><option value="Office">💼 Office</option><option value="Warehouse">📦 Warehouse</option></select>
+      <div class="form-row"><div><label class="field-label">📐 Size (m²)</label><input type="number" id="unitSize" placeholder="0" step="any"></div><div><label class="field-label">🏢 Floor</label><input type="text" id="unitFloor" placeholder="e.g. 1, G"></div></div>
+      <label class="field-label">💰 Monthly Rent (ETB) *</label><input type="number" id="unitRent" placeholder="0.00" step="any">
       <button class="btn btn-success" onclick="saveUnit()" style="margin-top:16px;">💾 Save Unit</button>
     </div>
   </div>
@@ -521,31 +406,13 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   <div class="modal-content">
     <div class="modal-header"><h3 id="tenantModalTitle">➕ Add Tenant</h3><button class="modal-close" onclick="closeModal('tenantModal')">×</button></div>
     <div class="modal-body">
-      <label class="field-label" style="margin-top:0;">👤 Full Name *</label>
-      <input type="text" id="tenantName" placeholder="e.g. Abebe Kebede">
-      <div class="form-row">
-        <div><label class="field-label">📞 Phone *</label><input type="text" id="tenantPhone" placeholder="+251911234567"></div>
-        <div><label class="field-label">📧 Email</label><input type="email" id="tenantEmail" placeholder="email@example.com"></div>
-      </div>
-      <label class="field-label">✈️ Telegram Username</label>
-      <input type="text" id="tenantTelegram" placeholder="@username">
-      <label class="field-label">🏢 Assign Unit *</label>
-      <select id="tenantUnit"></select>
-      <label class="field-label">💰 Rent Amount (ETB) *</label>
-      <input type="number" id="tenantRent" placeholder="0.00" step="any">
-      <label class="field-label">💳 Payment Cycle *</label>
-      <select id="tenantPaymentCycle">
-        <option value="monthly">📅 Monthly</option>
-        <option value="quarterly">📅 Quarterly (3 months)</option>
-        <option value="semiannual">📅 Semi-Annual (6 months)</option>
-        <option value="annual">📅 Annual (12 months)</option>
-      </select>
-      <div class="form-row">
-        <div><label class="field-label">📅 Contract Start *</label><input type="date" id="tenantContractStart"></div>
-        <div><label class="field-label">📅 Contract End *</label><input type="date" id="tenantContractEnd"></div>
-      </div>
-      <label class="field-label">📅 Next Due Date *</label>
-      <input type="date" id="tenantNextDue">
+      <label class="field-label" style="margin-top:0;">👤 Full Name *</label><input type="text" id="tenantName" placeholder="Abebe Kebede">
+      <div class="form-row"><div><label class="field-label">📞 Phone *</label><input type="text" id="tenantPhone" placeholder="+251911..."></div><div><label class="field-label">📧 Email</label><input type="email" id="tenantEmail"></div></div>
+      <label class="field-label">🏢 Assign Unit *</label><select id="tenantUnit"></select>
+      <label class="field-label">💰 Rent Amount (ETB) *</label><input type="number" id="tenantRent" placeholder="0.00" step="any">
+      <label class="field-label">💳 Payment Cycle *</label><select id="tenantPaymentCycle"><option value="monthly">📅 Monthly</option><option value="quarterly">📅 Quarterly (3 months)</option><option value="semiannual">📅 Semi-Annual (6 months)</option><option value="annual">📅 Annual (12 months)</option></select>
+      <div class="form-row"><div><label class="field-label">📅 Contract Start *</label><input type="date" id="tenantContractStart"></div><div><label class="field-label">📅 Contract End *</label><input type="date" id="tenantContractEnd"></div></div>
+      <label class="field-label">📅 Next Due Date *</label><input type="date" id="tenantNextDue">
       <button class="btn btn-success" onclick="saveTenant()" style="margin-top:16px;">💾 Save Tenant</button>
     </div>
   </div>
@@ -555,26 +422,12 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   <div class="modal-content">
     <div class="modal-header"><h3>💰 Record Payment</h3><button class="modal-close" onclick="closeModal('paymentModal')">×</button></div>
     <div class="modal-body">
-      <label class="field-label" style="margin-top:0;">👤 Tenant *</label>
-      <select id="payTenant" onchange="updatePaymentAmount()"></select>
-      <label class="field-label">📅 Month/Period *</label>
-      <input type="month" id="payMonth">
-      <label class="field-label">💰 Amount Due (ETB)</label>
-      <input type="number" id="payAmountDue" placeholder="0.00" step="any" readonly style="background:var(--bg);">
-      <label class="field-label">💵 Amount Paid (ETB) *</label>
-      <input type="number" id="payAmountPaid" placeholder="0.00" step="any">
-      <label class="field-label">📅 Payment Date</label>
-      <input type="date" id="payDate">
-      <label class="field-label">💳 Payment Method</label>
-      <select id="payMethod">
-        <option value="cash">💵 Cash</option>
-        <option value="bank">🏦 Bank Transfer</option>
-        <option value="telebirr">📱 Telebirr</option>
-        <option value="cbe">🏦 CBE Birr</option>
-        <option value="cheque">📝 Cheque</option>
-      </select>
-      <label class="field-label">📝 Note</label>
-      <input type="text" id="payNote" placeholder="Optional note...">
+      <label class="field-label" style="margin-top:0;">👤 Tenant *</label><select id="payTenant" onchange="updatePaymentAmount()"></select>
+      <label class="field-label">📅 Month *</label><input type="month" id="payMonth">
+      <label class="field-label">💰 Amount Due</label><input type="number" id="payAmountDue" readonly style="background:var(--bg);">
+      <label class="field-label">💵 Amount Paid *</label><input type="number" id="payAmountPaid" placeholder="0.00" step="any">
+      <label class="field-label">📅 Payment Date</label><input type="date" id="payDate">
+      <label class="field-label">💳 Method</label><select id="payMethod"><option value="cash">💵 Cash</option><option value="bank">🏦 Bank</option><option value="telebirr">📱 Telebirr</option></select>
       <button class="btn btn-success" onclick="savePayment()" style="margin-top:16px;">💾 Save Payment</button>
     </div>
   </div>
@@ -582,50 +435,59 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 
 <div class="modal-overlay" id="utilityModal">
   <div class="modal-content">
-    <div class="modal-header"><h3>💡 Add Utility Bill</h3><button class="modal-close" onclick="closeModal('utilityModal')">×</button></div>
+    <div class="modal-header"><h3>💡 Add Utility</h3><button class="modal-close" onclick="closeModal('utilityModal')">×</button></div>
     <div class="modal-body">
-      <label class="field-label" style="margin-top:0;">🏢 Unit *</label>
-      <select id="utilUnit"></select>
-      <label class="field-label">📁 Type *</label>
-      <select id="utilType">
-        <option value="water">💧 Water</option>
-        <option value="electricity">⚡ Electricity</option>
-        <option value="gas">🔥 Gas</option>
-        <option value="internet">🌐 Internet</option>
-        <option value="other">📦 Other</option>
-      </select>
-      <label class="field-label">📅 Month *</label>
-      <input type="month" id="utilMonth">
-      <div class="form-row">
-        <div><label class="field-label">🔢 Meter Reading (Prev)</label><input type="number" id="utilMeterPrev" placeholder="0" step="any"></div>
-        <div><label class="field-label">🔢 Meter Reading (Curr)</label><input type="number" id="utilMeterCurr" placeholder="0" step="any"></div>
-      </div>
-      <label class="field-label">💰 Total Amount (ETB) *</label>
-      <input type="number" id="utilAmount" placeholder="0.00" step="any">
-      <label class="field-label">✅ Status</label>
-      <select id="utilStatus">
-        <option value="unpaid">❌ Unpaid</option>
-        <option value="paid">✅ Paid</option>
-      </select>
+      <label class="field-label" style="margin-top:0;">🏢 Unit *</label><select id="utilUnit"></select>
+      <label class="field-label">📁 Type *</label><select id="utilType"><option value="water">💧 Water</option><option value="electricity">⚡ Electricity</option><option value="gas">🔥 Gas</option></select>
+      <label class="field-label">📅 Month *</label><input type="month" id="utilMonth">
+      <label class="field-label">💰 Total Amount (ETB) *</label><input type="number" id="utilAmount" placeholder="0.00" step="any">
+      <label class="field-label">✅ Status</label><select id="utilStatus"><option value="unpaid">❌ Unpaid</option><option value="paid">✅ Paid</option></select>
       <button class="btn btn-success" onclick="saveUtility()" style="margin-top:16px;">💾 Save Utility</button>
     </div>
   </div>
 </div>
 
+<div class="modal-overlay" id="firstLoginModal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>🔒 Change Password</h3></div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">For security reasons, please change your temporary password before continuing.</p>
+      <label class="field-label">New Password *</label><input type="password" id="firstNewPassword" placeholder="Min 6 characters">
+      <label class="field-label">Confirm Password *</label><input type="password" id="firstConfirmPassword" placeholder="Confirm new password">
+      <button class="btn btn-success" onclick="forceFirstLoginPasswordChange()" style="margin-top:16px;">🔒 Update Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="employeeModal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>➕ Add Employee</h3><button class="modal-close" onclick="closeModal('employeeModal')">×</button></div>
+    <div class="modal-body">
+      <label class="field-label" style="margin-top:0;">📧 Employee Email *</label><input type="email" id="empEmail" placeholder="employee@email.com">
+      <label class="field-label">🔒 Temporary Password *</label><input type="text" id="empPassword" value="123456">
+      <label class="field-label">🎯 Permissions</label>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" id="permPayments" checked style="width:auto;"> Can Record Payments</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" id="permUtilities" checked style="width:auto;"> Can Add Utilities</label>
+      </div>
+      <button class="btn btn-primary" onclick="saveEmployee()" style="margin-top:16px;">💾 Create Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE LOGIC (INLINE SCRIPT) -->
 <script type="module">
-// ═══════════════════════════════════════════
-// 🔥 አዲሱ FIREBASE CONFIG
-// ═══════════════════════════════════════════
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
-  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+  createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import {
-  getFirestore, collection, addDoc, query, where,
-  serverTimestamp, doc, updateDoc, getDoc, setDoc,
-  deleteDoc, onSnapshot
+  getFirestore, collection, addDoc, query, where, getDocs, getDoc, setDoc,
+  serverTimestamp, doc, updateDoc, deleteDoc, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+// ⚠️ የእርስዎ Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBIrLhJyv2OY6QfTHPg_MRWMRX38qOFUPA",
   authDomain: "hanitech--property-management.firebaseapp.com",
@@ -639,194 +501,195 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ═══════════════════════════════════════════
-// 🌐 GLOBAL STATE
-// ═══════════════════════════════════════════
-let currentUser = null;
-let currentTenantId = null;
-let currentRole = 'employee';
+// GLOBAL STATE
+let currentUser = null, currentUserData = null, currentPropertyData = null;
+let currentLanguage = 'en';
+let allUnits = [], allTenants = [], allPayments = [], allUtilities = [], allEmployees = [], allAuditLogs = [];
+let editingUnitId = null, editingTenantId = null;
+let unitFilter = 'all', paymentFilter = 'all';
+let unsubUnits, unsubTenants, unsubPayments, unsubUtilities, unsubEmployees, unsubAudit;
 
-let allUnits = [];
-let allTenants = [];
-let allPayments = [];
-let allUtilities = [];
-let allExpenses = [];
-
-let editingUnitId = null;
-let editingTenantId = null;
-let unitFilter = 'all';
-let paymentFilter = 'all';
-
-let unsubUnits = null, unsubTenants = null, unsubPayments = null,
-    unsubUtilities = null, unsubExpenses = null;
-
-// ═══════════════════════════════════════════
-// 🛠️ UTILITIES
-// ═══════════════════════════════════════════
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-function money(n) { return (Math.round((parseFloat(n) || 0) * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
-function thisMonthStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
-function daysUntil(dateStr) { if (!dateStr) return null; const target = new Date(dateStr); const today = new Date(); today.setHours(0,0,0,0); return Math.ceil((target - today) / (1000 * 60 * 60 * 24)); }
-
+// HELPERS
+const t = (en, am) => currentLanguage === 'am' ? am : en;
 window.showToast = function(msg, type = 'success') {
   const existing = document.querySelector('.toast-notification');
   if (existing) existing.remove();
   const toast = document.createElement('div');
   toast.className = 'toast-notification ' + (type !== 'success' ? type : '');
   const icon = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : type === 'info' ? 'ℹ️' : '✅';
-  toast.innerHTML = `<span>${icon}</span> <span>${esc(msg)}</span>`;
+  toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
   document.body.appendChild(toast);
   setTimeout(() => toast.classList.add('show'), 10);
   setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
 };
+window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+function money(n) { return (Math.round((parseFloat(n) || 0) * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function thisMonthStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
+function daysUntil(dateStr) { if (!dateStr) return null; const target = new Date(dateStr); const today = new Date(); today.setHours(0,0,0,0); return Math.ceil((target - today) / (1000 * 60 * 60 * 24)); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
+async function logAction(action, details) {
+  if (!currentUser || !currentPropertyData) return;
+  try {
+    await addDoc(collection(db, 'audit_logs'), {
+      propertyId: currentPropertyData.id, userId: currentUser.uid,
+      userName: currentUser.email, action, details, timestamp: serverTimestamp()
+    });
+  } catch (e) { console.error('Audit log error', e); }
+}
 window.toggleDarkMode = function(isDark) {
   if (isDark) document.body.classList.add('dark-mode');
   else document.body.classList.remove('dark-mode');
-  if (currentTenantId) updateDoc(doc(db, 'tenants', currentTenantId), { darkMode: isDark }).catch(() => {});
+  if (currentUser) updateDoc(doc(db, 'users', currentUser.uid), { darkMode: isDark }).catch(() => {});
 };
 
-window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
-
-// ═══════════════════════════════════════════
-// 🔐 AUTH
-// ═══════════════════════════════════════════
-window.fillTestLogin = function() {
-  document.getElementById('email').value = 'test@property.com';
-  document.getElementById('password').value = 'test123456';
-};
-
+// AUTH
 window.login = async function() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const errEl = document.getElementById('loginError');
   const btn = document.getElementById('loginBtn');
   errEl.classList.remove('show');
-  
-  if (!email || !password) { errEl.textContent = '⚠️ Email እና Password ያስፈልጋሉ'; errEl.classList.add('show'); return; }
-  
-  btn.disabled = true; btn.textContent = '⏳ በመግባት ላይ...';
-  
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (err) {
-    let msg = '❌ Email ወይም Password ትክክል አይደለም';
-    if (err.code === 'auth/too-many-requests') msg = '❌ ብዙ ሙከራ ተደርጓል። ቆይተህ ሞክር።';
-    if (err.code === 'auth/network-request-failed') msg = '❌ ኢንተርኔት የለም';
-    if (err.code === 'auth/user-not-found') msg = '❌ Firebase Auth ላይ ይህ User አልተፈጠረም።';
+  if (!email || !password) { errEl.textContent = '⚠️ Email and Password required'; errEl.classList.add('show'); return; }
+  btn.disabled = true; btn.textContent = '⏳ Signing in...';
+  try { await signInWithEmailAndPassword(auth, email, password); }
+  catch (err) {
+    let msg = '❌ Invalid Email or Password';
+    if (err.code === 'auth/too-many-requests') msg = '❌ Too many attempts. Try again later.';
+    if (err.code === 'auth/network-request-failed') msg = '❌ No internet connection';
     errEl.textContent = msg; errEl.classList.add('show');
     btn.disabled = false; btn.textContent = '🔓 Sign In';
   }
 };
-
+window.forgotPassword = async function() {
+  const email = document.getElementById('email').value.trim();
+  if (!email) return showToast('Please enter your email first', 'warning');
+  try { await sendPasswordResetEmail(auth, email); showToast('📧 Password reset link sent to your email!', 'success'); }
+  catch (e) { showToast('❌ Error: ' + e.message, 'error'); }
+};
 window.logout = function() {
-  if (unsubUnits) unsubUnits(); if (unsubTenants) unsubTenants();
-  if (unsubPayments) unsubPayments(); if (unsubUtilities) unsubUtilities(); if (unsubExpenses) unsubExpenses();
+  if (unsubUnits) unsubUnits(); if (unsubTenants) unsubTenants(); if (unsubPayments) unsubPayments();
+  if (unsubUtilities) unsubUtilities(); if (unsubEmployees) unsubEmployees(); if (unsubAudit) unsubAudit();
   signOut(auth);
 };
-
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.add('show');
-    await loadUserAndTenant(user);
+    await loadUserData(user);
   } else {
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('mainApp').classList.remove('show');
     const btn = document.getElementById('loginBtn');
     if (btn) { btn.disabled = false; btn.textContent = '🔓 Sign In'; }
-    currentTenantId = null; currentUser = null;
+    currentUser = null; currentUserData = null; currentPropertyData = null;
   }
 });
 
-async function loadUserAndTenant(user) {
+async function loadUserData(user) {
   currentUser = user;
   try {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (!userDoc.exists()) { alert('⚠️ ተጠቃሚ መረጃ አልተገኘም (users/' + user.uid + ')'); await signOut(auth); return; }
-    const userData = userDoc.data();
-    currentTenantId = userData.tenantId;
-    currentRole = (userData.role || 'employee').toLowerCase();
+    if (!userDoc.exists()) { alert('⚠️ User record not found. Contact admin.'); return logout(); }
+    currentUserData = userDoc.data();
+    if (currentUserData.isTempPassword === true) { document.getElementById('firstLoginModal').classList.add('open'); return; }
     
-    const tenantDoc = await getDoc(doc(db, 'tenants', currentTenantId));
-    if (!tenantDoc.exists()) { alert('⚠️ ንግድ አልተገኘም'); await signOut(auth); return; }
-    const tenantData = tenantDoc.data();
-    
-    document.getElementById('hdrBusinessName').textContent = tenantData.name || 'Property';
+    const propDoc = await getDoc(doc(db, 'properties', currentUserData.propertyId));
+    if (!propDoc.exists()) { alert('⚠️ Property not found. Contact admin.'); return logout(); }
+    currentPropertyData = { id: propDoc.id, ...propDoc.data() };
+
+    const today = todayStr();
+    if (currentPropertyData.isSuspended) { alert('🚫 Your account is suspended. Please contact support.'); return logout(); }
+    if (currentPropertyData.expiryDate && currentPropertyData.expiryDate < today) { alert('⏳ Subscription expired. Please contact support to renew.'); return logout(); }
+
+    document.getElementById('hdrBusinessName').textContent = currentPropertyData.name || 'Property';
     document.getElementById('hdrUserEmail').textContent = user.email;
     document.getElementById('hdrUserInitial').textContent = (user.email || 'U').charAt(0).toUpperCase();
-    const roleMap = { owner: '👑 Owner', manager: '🎯 Manager', employee: '👤 Employee' };
-    document.getElementById('hdrRoleBadge').textContent = roleMap[currentRole] || 'User';
-    
-    if (tenantData.darkMode) document.body.classList.add('dark-mode');
-    
-    // Populate Settings inputs
-    document.getElementById('settingPropertyName').value = tenantData.name || '';
-    document.getElementById('settingPropertyPhone').value = tenantData.phone || '';
-    document.getElementById('settingPropertyAddress').value = tenantData.address || '';
+    const roleMap = { owner: '👑 Owner', manager: '🎯 Manager', accountant: '🧰 Accountant', employee: '👷 Employee' };
+    document.getElementById('hdrRoleBadge').textContent = roleMap[currentUserData.role] || 'User';
+    if (currentUserData.darkMode) document.body.classList.add('dark-mode');
+    currentLanguage = currentUserData.language || 'en';
     
     document.getElementById('paymentMonth').value = thisMonthStr();
     document.getElementById('utilityMonth').value = thisMonthStr();
     document.getElementById('reportMonth').value = thisMonthStr();
-    
-    renderSidebar();
-    renderMobileNav();
-    renderDynamicQuickActions();
-    
-    await loadAllData();
-    
+    document.getElementById('settingPropertyName').value = currentPropertyData.name || '';
+    document.getElementById('settingPropertyPhone').value = currentPropertyData.phone || '';
+    document.getElementById('settingPropertyAddress').value = currentPropertyData.address || '';
+    if (currentUserData.role === 'owner' || currentUserData.role === 'manager') {
+      document.getElementById('employeeManagementCard').style.display = 'block';
+      document.getElementById('auditTrailCard').style.display = 'block';
+    }
+    renderSidebar(); renderMobileNav(); renderQuickActions(); loadRealtimeData();
     if (window.innerWidth <= 768) switchPage('panelMobileHome', null);
     else switchPage('panelDashboard', null);
-    
-  } catch (err) { console.error(err); alert('❌ ስህተት: ' + err.message); }
+  } catch (err) { console.error(err); alert('❌ Error loading data: ' + err.message); }
 }
 
-// ═══════════════════════════════════════════
-// 📥 DATA LOADING
-// ═══════════════════════════════════════════
-async function loadAllData() {
-  if (!currentTenantId) return;
-  
-  unsubUnits = onSnapshot(query(collection(db, 'units'), where('tenantId', '==', currentTenantId)), snap => {
+window.forceFirstLoginPasswordChange = async function() {
+  const newPass = document.getElementById('firstNewPassword').value;
+  const confirmPass = document.getElementById('firstConfirmPassword').value;
+  if (newPass.length < 6) return showToast('Password must be at least 6 characters', 'error');
+  if (newPass !== confirmPass) return showToast('Passwords do not match', 'error');
+  try {
+    await updatePassword(currentUser, newPass);
+    await updateDoc(doc(db, 'users', currentUser.uid), { isTempPassword: false });
+    closeModal('firstLoginModal'); showToast('✅ Password updated successfully!');
+    setTimeout(() => window.location.reload(), 1000);
+  } catch (e) {
+    if (e.code === 'auth/requires-recent-login') showToast('Please logout and login again to change password', 'error');
+    else showToast('❌ Error: ' + e.message, 'error');
+  }
+};
+
+function loadRealtimeData() {
+  const pid = currentPropertyData.id;
+  unsubUnits = onSnapshot(query(collection(db, 'units'), where('propertyId', '==', pid)), snap => {
     allUnits = []; snap.forEach(d => allUnits.push({ id: d.id, ...d.data() }));
     allUnits.sort((a, b) => (a.number || '').localeCompare(b.number || ''));
     renderUnits(); renderDashboard(); updateMobileHome(); populateUnitSelects();
   });
-  
-  unsubTenants = onSnapshot(query(collection(db, 'tenants_list'), where('tenantId', '==', currentTenantId)), snap => {
+  unsubTenants = onSnapshot(query(collection(db, 'tenants_list'), where('propertyId', '==', pid)), snap => {
     allTenants = []; snap.forEach(d => allTenants.push({ id: d.id, ...d.data() }));
     allTenants.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     renderTenants(); renderDashboard(); renderReports(); populateTenantSelects(); updateMobileHome();
   });
-  
-  unsubPayments = onSnapshot(query(collection(db, 'payments'), where('tenantId', '==', currentTenantId)), snap => {
+  unsubPayments = onSnapshot(query(collection(db, 'payments'), where('propertyId', '==', pid)), snap => {
     allPayments = []; snap.forEach(d => allPayments.push({ id: d.id, ...d.data() }));
     allPayments.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
     renderPayments(); renderDashboard(); renderReports(); updateMobileHome();
   });
-  
-  unsubUtilities = onSnapshot(query(collection(db, 'utilities'), where('tenantId', '==', currentTenantId)), snap => {
+  unsubUtilities = onSnapshot(query(collection(db, 'utilities'), where('propertyId', '==', pid)), snap => {
     allUtilities = []; snap.forEach(d => allUtilities.push({ id: d.id, ...d.data() }));
     renderUtilities(); renderReports(); updateMobileHome();
   });
+  if (currentUserData.role === 'owner' || currentUserData.role === 'manager') {
+    unsubEmployees = onSnapshot(query(collection(db, 'users'), where('propertyId', '==', pid)), snap => {
+      allEmployees = []; snap.forEach(d => allEmployees.push({ id: d.id, ...d.data() }));
+      renderEmployees();
+    });
+    unsubAudit = onSnapshot(query(collection(db, 'audit_logs'), where('propertyId', '==', pid)), snap => {
+      allAuditLogs = []; snap.forEach(d => allAuditLogs.push({ id: d.id, ...d.data() }));
+      allAuditLogs.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+      renderAuditLogs();
+    });
+  }
 }
 
-// ═══════════════════════════════════════════
-// 🎯 NAVIGATION & RENDER
-// ═══════════════════════════════════════════
 function renderSidebar() {
-  document.getElementById('dynamicSidebar').innerHTML = `
+  const sidebar = document.getElementById('dynamicSidebar');
+  sidebar.innerHTML = `
     <div class="menu-header active" onclick="switchPage('panelDashboard', this)" data-tab="panelDashboard"><div class="m-left"><i>📊</i> <span>Dashboard</span></div></div>
     <div class="menu-header" onclick="switchPage('panelUnits', this)" data-tab="panelUnits"><div class="m-left"><i>🏢</i> <span>Units</span></div></div>
     <div class="menu-header" onclick="switchPage('panelTenants', this)" data-tab="panelTenants"><div class="m-left"><i>👥</i> <span>Tenants</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelPayments', this)" data-tab="panelPayments"><div class="m-left"><i>💰</i> <span>Rent Payments</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelPayments', this)" data-tab="panelPayments"><div class="m-left"><i>💰</i> <span>Payments</span></div></div>
     <div class="menu-header" onclick="switchPage('panelUtilities', this)" data-tab="panelUtilities"><div class="m-left"><i>💡</i> <span>Utilities</span></div></div>
     <div class="menu-header" onclick="switchPage('panelReports', this)" data-tab="panelReports"><div class="m-left"><i>📈</i> <span>Reports</span></div></div>
     <div class="menu-header" onclick="switchPage('panelSettings', this)" data-tab="panelSettings"><div class="m-left"><i>⚙️</i> <span>Settings</span></div></div>
+    <div class="sidebar-footer">Powered by <a href="#">HaniTech</a></div>
   `;
 }
-
 function renderMobileNav() {
   const items = [
     { panel: 'panelMobileHome', icon: '🏠', label: 'Home' },
@@ -835,50 +698,40 @@ function renderMobileNav() {
     { panel: 'panelPayments', icon: '💰', label: 'Payments' },
     { panel: 'panelSettings', icon: '⚙️', label: 'Settings' }
   ];
-  
   document.getElementById('mobileBottomNav').innerHTML = items.map((item, i) => `
     <button class="mobile-nav-item ${i === 0 ? 'active' : ''}" data-tab="${item.panel}" onclick="mobileNavClick('${item.panel}', this)">
-      <span class="nav-icon">${item.icon}</span><span>${esc(item.label)}</span>
+      <span class="nav-icon">${item.icon}</span><span>${item.label}</span>
     </button>
   `).join('');
 }
-
-function renderDynamicQuickActions() {
+function renderQuickActions() {
   const actions = [
     { panel: 'panelUnits', icon: '🏢', label: 'Units', color: 'info' },
     { panel: 'panelPayments', icon: '💰', label: 'Payments', color: 'warning' },
     { panel: 'panelUtilities', icon: '💡', label: 'Utilities', color: 'success' },
     { panel: 'panelReports', icon: '📊', label: 'Reports', color: 'purple' }
   ];
-  
   const colorMap = {
     warning: 'background:rgba(245,158,11,0.1); color:var(--warning);',
     success: 'background:rgba(16,185,129,0.1); color:var(--success);',
     info: 'background:rgba(59,130,246,0.1); color:var(--info);',
     purple: 'background:rgba(139,92,246,0.1); color:#8b5cf6;'
   };
-  
   document.getElementById('dynamicQuickActions').innerHTML = actions.map(qa => `
     <div class="qa-card" onclick="mobileNavClick('${qa.panel}', null)">
-      <div class="qa-icon" style="${colorMap[qa.color] || colorMap.info}">${qa.icon}</div>
-      <div class="qa-title">${esc(qa.label)}</div>
+      <div class="qa-icon" style="${colorMap[qa.color]}">${qa.icon}</div>
+      <div class="qa-title">${qa.label}</div>
     </div>
   `).join('');
 }
-
 window.switchPage = function(panelId, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById(panelId);
-  if (target) target.classList.add('active');
-  
+  document.getElementById(panelId)?.classList.add('active');
   document.querySelectorAll('.menu-header').forEach(e => e.classList.remove('active'));
   if (el) el.classList.add('active');
   else document.querySelector(`.menu-header[data-tab="${panelId}"]`)?.classList.add('active');
-  
-  // Sync mobile nav icons
   document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
   document.querySelector(`.mobile-nav-item[data-tab="${panelId}"]`)?.classList.add('active');
-  
   if (panelId === 'panelDashboard') renderDashboard();
   if (panelId === 'panelMobileHome') updateMobileHome();
   if (panelId === 'panelUnits') renderUnits();
@@ -887,36 +740,12 @@ window.switchPage = function(panelId, el) {
   if (panelId === 'panelUtilities') renderUtilities();
   if (panelId === 'panelReports') renderReports();
 };
-
 window.mobileNavClick = function(panelId, el) {
-  if (el) {
-    document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
-  } else {
-    document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector(`.mobile-nav-item[data-tab="${panelId}"]`)?.classList.add('active');
-  }
+  if (el) { document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
   switchPage(panelId, null);
 };
 
-function updateMobileHome() {
-  const today = todayStr();
-  const month = thisMonthStr();
-  const todayPayments = allPayments.filter(p => p.date === today).reduce((s, p) => s + (p.amountPaid || 0), 0);
-  const todayUtilities = allUtilities.filter(u => u.date === today).reduce((s, u) => s + (u.amount || 0), 0);
-  
-  // Optional: Could show this month's sales instead of today's
-  const monthPayments = allPayments.filter(p => p.month === month).reduce((s, p) => s + (p.amountPaid || 0), 0);
-  const monthUtilities = allUtilities.filter(u => u.month === month).reduce((s, u) => s + (u.amount || 0), 0);
-  
-  document.getElementById('mobTodaySales').textContent = money(monthPayments);
-  document.getElementById('mobTodayExpenses').textContent = money(monthUtilities);
-  document.getElementById('mobTodayProfit').textContent = money(monthPayments - monthUtilities);
-}
-
-// ═══════════════════════════════════════════
-// 🏢 UNITS (Add, Save, Render - same as before)
-// ═══════════════════════════════════════════
+// UNITS
 window.openUnitModal = function(id = null) {
   editingUnitId = id;
   document.getElementById('unitModalTitle').textContent = id ? '✏️ Edit Unit' : '➕ Add Unit';
@@ -928,7 +757,6 @@ window.openUnitModal = function(id = null) {
       document.getElementById('unitSize').value = u.size || '';
       document.getElementById('unitFloor').value = u.floor || '';
       document.getElementById('unitRent').value = u.rent || '';
-      document.getElementById('unitNotes').value = u.notes || '';
     }
   } else {
     document.getElementById('unitNumber').value = '';
@@ -936,40 +764,34 @@ window.openUnitModal = function(id = null) {
     document.getElementById('unitSize').value = '';
     document.getElementById('unitFloor').value = '';
     document.getElementById('unitRent').value = '';
-    document.getElementById('unitNotes').value = '';
   }
   document.getElementById('unitModal').classList.add('open');
 };
-
 window.saveUnit = async function() {
   const number = document.getElementById('unitNumber').value.trim();
   const type = document.getElementById('unitType').value;
   const size = parseFloat(document.getElementById('unitSize').value) || 0;
   const floor = document.getElementById('unitFloor').value.trim();
   const rent = parseFloat(document.getElementById('unitRent').value);
-  const notes = document.getElementById('unitNotes').value.trim();
   if (!number || isNaN(rent) || rent <= 0) return showToast('Fill required fields', 'error');
-  const data = { tenantId: currentTenantId, number, type, size, floor, rent, notes };
+  const data = { propertyId: currentPropertyData.id, number, type, size, floor, rent };
   try {
-    if (editingUnitId) { await updateDoc(doc(db, 'units', editingUnitId), data); showToast('✅ Unit updated'); }
-    else { data.status = 'vacant'; data.createdAt = serverTimestamp(); await addDoc(collection(db, 'units'), data); showToast('✅ Unit added'); }
+    if (editingUnitId) { await updateDoc(doc(db, 'units', editingUnitId), data); logAction('Update Unit', `Updated Unit ${number}`); showToast('✅ Unit updated'); }
+    else { data.status = 'vacant'; data.createdAt = serverTimestamp(); await addDoc(collection(db, 'units'), data); logAction('Add Unit', `Added Unit ${number}`); showToast('✅ Unit added'); }
     closeModal('unitModal');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
 };
-
 window.deleteUnit = async function(id) {
   if (allTenants.find(t => t.unitId === id && t.active !== false)) return showToast('⚠️ Unit occupied', 'error');
   if (!confirm('Delete this unit?')) return;
-  try { await deleteDoc(doc(db, 'units', id)); showToast('✅ Deleted'); } catch (e) { showToast('❌ Error', 'error'); }
+  try { await deleteDoc(doc(db, 'units', id)); logAction('Delete Unit', `Deleted a unit`); showToast('✅ Deleted'); }
+  catch (e) { showToast('❌ Error', 'error'); }
 };
-
 window.setUnitFilter = function(filter, el) {
   unitFilter = filter;
   document.querySelectorAll('#unitFilterBar .filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderUnits();
+  el.classList.add('active'); renderUnits();
 };
-
 function renderUnits() {
   const el = document.getElementById('unitsList');
   if (!el) return;
@@ -978,7 +800,7 @@ function renderUnits() {
   if (unitFilter === 'vacant') f = f.filter(u => u.status === 'vacant');
   if (unitFilter === 'occupied') f = f.filter(u => u.status === 'occupied');
   if (search) f = f.filter(u => (u.number||'').toLowerCase().includes(search) || (u.type||'').toLowerCase().includes(search));
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">🏢</div><div class="e-title">No units found</div><div class="e-sub">Click "Add Unit" to start</div></div>`; return; }
+  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">🏢</div><div class="e-title">No units found</div></div>`; return; }
   el.innerHTML = f.map(u => {
     const isOcc = u.status === 'occupied';
     const tenant = allTenants.find(t => t.unitId === u.id && t.active !== false);
@@ -986,7 +808,7 @@ function renderUnits() {
       <div class="list-row-icon">${u.type === 'Shop' ? '🏪' : u.type === 'Apartment' ? '🏠' : u.type === 'Office' ? '💼' : '📦'}</div>
       <div class="list-row-info">
         <div class="list-row-title">${esc(u.number)} — ${esc(u.type)} <span class="badge ${isOcc ? 'badge-red' : 'badge-green'}">${isOcc ? '🔴 Occupied' : '🟢 Vacant'}</span></div>
-        <div class="list-row-sub">${u.floor ? '🏢 ' + esc(u.floor) + ' • ' : ''}${u.size ? '📐 ' + u.size + 'm² • ' : ''}💰 ${money(u.rent)} ETB${tenant ? '<br>👤 ' + esc(tenant.name) : ''}</div>
+        <div class="list-row-sub">💰 ${money(u.rent)} ETB${tenant ? '<br>👤 ' + esc(tenant.name) : ''}</div>
       </div>
       <div class="list-row-actions">
         <button class="action-btn" onclick="openUnitModal('${u.id}')" style="background:rgba(59,130,246,.15);color:var(--info);">✏️</button>
@@ -996,23 +818,19 @@ function renderUnits() {
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// 👥 TENANTS (Add, Save, Render)
-// ═══════════════════════════════════════════
+// TENANTS
 window.openTenantModal = function(id = null) {
   editingTenantId = id;
   document.getElementById('tenantModalTitle').textContent = id ? '✏️ Edit Tenant' : '➕ Add Tenant';
   const curUnit = id ? allTenants.find(t => t.id === id)?.unitId : null;
   const avail = allUnits.filter(u => u.status === 'vacant' || u.id === curUnit);
   document.getElementById('tenantUnit').innerHTML = '<option value="">-- Select --</option>' + avail.map(u => `<option value="${u.id}">${esc(u.number)} (${money(u.rent)} ETB)</option>`).join('');
-  
   if (id) {
     const t = allTenants.find(x => x.id === id);
     if (t) {
       document.getElementById('tenantName').value = t.name || '';
       document.getElementById('tenantPhone').value = t.phone || '';
       document.getElementById('tenantEmail').value = t.email || '';
-      document.getElementById('tenantTelegram').value = t.telegram || '';
       document.getElementById('tenantUnit').value = t.unitId || '';
       document.getElementById('tenantRent').value = t.rent || '';
       document.getElementById('tenantPaymentCycle').value = t.paymentCycle || 'monthly';
@@ -1024,7 +842,6 @@ window.openTenantModal = function(id = null) {
     document.getElementById('tenantName').value = '';
     document.getElementById('tenantPhone').value = '';
     document.getElementById('tenantEmail').value = '';
-    document.getElementById('tenantTelegram').value = '';
     document.getElementById('tenantUnit').value = '';
     document.getElementById('tenantRent').value = '';
     document.getElementById('tenantPaymentCycle').value = 'monthly';
@@ -1034,23 +851,18 @@ window.openTenantModal = function(id = null) {
   }
   document.getElementById('tenantModal').classList.add('open');
 };
-
 window.saveTenant = async function() {
   const name = document.getElementById('tenantName').value.trim();
   const phone = document.getElementById('tenantPhone').value.trim();
   const email = document.getElementById('tenantEmail').value.trim();
-  const telegram = document.getElementById('tenantTelegram').value.trim();
   const unitId = document.getElementById('tenantUnit').value;
   const rent = parseFloat(document.getElementById('tenantRent').value);
   const paymentCycle = document.getElementById('tenantPaymentCycle').value;
   const contractStart = document.getElementById('tenantContractStart').value;
   const contractEnd = document.getElementById('tenantContractEnd').value;
   const nextDue = document.getElementById('tenantNextDue').value;
-  
   if (!name || !phone || !unitId || isNaN(rent) || rent <= 0 || !contractStart || !contractEnd || !nextDue) return showToast('Fill all required fields', 'error');
-  
-  const data = { tenantId: currentTenantId, name, phone, email, telegram, unitId, rent, paymentCycle, contractStart, contractEnd, nextDue, active: true };
-  
+  const data = { propertyId: currentPropertyData.id, name, phone, email, unitId, rent, paymentCycle, contractStart, contractEnd, nextDue, active: true };
   try {
     if (editingTenantId) {
       const old = allTenants.find(x => x.id === editingTenantId);
@@ -1059,27 +871,25 @@ window.saveTenant = async function() {
         await updateDoc(doc(db, 'units', old.unitId), { status: 'vacant' });
         await updateDoc(doc(db, 'units', unitId), { status: 'occupied' });
       }
-      showToast('✅ Tenant updated');
+      logAction('Update Tenant', `Updated Tenant ${name}`); showToast('✅ Tenant updated');
     } else {
       data.createdAt = serverTimestamp();
       await addDoc(collection(db, 'tenants_list'), data);
       await updateDoc(doc(db, 'units', unitId), { status: 'occupied' });
-      showToast('✅ Tenant added');
+      logAction('Add Tenant', `Added Tenant ${name}`); showToast('✅ Tenant added');
     }
     closeModal('tenantModal');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
 };
-
 window.deleteTenant = async function(id) {
   if (!confirm('Delete tenant?')) return;
   try {
     const t = allTenants.find(x => x.id === id);
     await deleteDoc(doc(db, 'tenants_list', id));
     if (t && t.unitId) await updateDoc(doc(db, 'units', t.unitId), { status: 'vacant' });
-    showToast('✅ Deleted');
+    logAction('Delete Tenant', `Deleted Tenant ${t?.name}`); showToast('✅ Deleted');
   } catch (e) { showToast('❌ Error', 'error'); }
 };
-
 function renderTenants() {
   const el = document.getElementById('tenantsList');
   if (!el) return;
@@ -1087,7 +897,6 @@ function renderTenants() {
   let f = allTenants.filter(t => t.active !== false);
   if (search) f = f.filter(t => (t.name||'').toLowerCase().includes(search) || (t.phone||'').toLowerCase().includes(search));
   if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">No tenants found</div></div>`; return; }
-  
   const cycleLabel = { monthly: '📅 Monthly', quarterly: '📅 Quarterly', semiannual: '📅 Semi-Annual', annual: '📅 Annual' };
   el.innerHTML = f.map(t => {
     const u = allUnits.find(x => x.id === t.unitId);
@@ -1097,7 +906,7 @@ function renderTenants() {
       <div class="list-row-icon" style="background:rgba(212,175,55,.15);">👤</div>
       <div class="list-row-info">
         <div class="list-row-title">${esc(t.name)} ${cb}</div>
-        <div class="list-row-sub">📞 ${esc(t.phone)}${t.email ? ' • 📧 ' + esc(t.email) : ''}<br>🏢 Unit ${esc(u?.number || 'N/A')} • 💰 ${money(t.rent)} ETB<br>${cycleLabel[t.paymentCycle]} • Next: ${esc(t.nextDue)}</div>
+        <div class="list-row-sub">📞 ${esc(t.phone)}<br>🏢 Unit ${esc(u?.number || 'N/A')} • 💰 ${money(t.rent)} ETB</div>
       </div>
       <div class="list-row-actions">
         <button class="action-btn" onclick="openTenantModal('${t.id}')" style="background:rgba(59,130,246,.15);color:var(--info);">✏️</button>
@@ -1107,36 +916,25 @@ function renderTenants() {
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// 💰 PAYMENTS (Add, Save, Render)
-// ═══════════════════════════════════════════
+// PAYMENTS
 function populateTenantSelects() {
   const sel = document.getElementById('payTenant');
   if (!sel) return;
-  const current = sel.value;
   sel.innerHTML = '<option value="">-- Select --</option>' + allTenants.filter(t => t.active !== false).map(t => `<option value="${t.id}">${esc(t.name)} (${money(t.rent)} ETB)</option>`).join('');
-  if (current) sel.value = current;
 }
-
 function populateUnitSelects() {
   const sel = document.getElementById('utilUnit');
   if (!sel) return;
-  const current = sel.value;
   sel.innerHTML = '<option value="">-- Select --</option>' + allUnits.map(u => `<option value="${u.id}">${esc(u.number)} — ${esc(u.type)}</option>`).join('');
-  if (current) sel.value = current;
 }
-
 window.openPaymentModal = function() {
   document.getElementById('paymentModal').classList.add('open');
   document.getElementById('payMonth').value = thisMonthStr();
   document.getElementById('payDate').value = todayStr();
   document.getElementById('payAmountPaid').value = '';
   document.getElementById('payAmountDue').value = '';
-  document.getElementById('payNote').value = '';
-  document.getElementById('payMethod').value = 'cash';
   populateTenantSelects();
 };
-
 window.updatePaymentAmount = function() {
   const t = allTenants.find(x => x.id === document.getElementById('payTenant').value);
   if (t) {
@@ -1144,7 +942,6 @@ window.updatePaymentAmount = function() {
     document.getElementById('payAmountDue').value = ((t.rent || 0) * (mult[t.paymentCycle] || 1)).toFixed(2);
   }
 };
-
 window.savePayment = async function() {
   const tenantDocId = document.getElementById('payTenant').value;
   const month = document.getElementById('payMonth').value;
@@ -1152,21 +949,16 @@ window.savePayment = async function() {
   const amountPaid = parseFloat(document.getElementById('payAmountPaid').value);
   const date = document.getElementById('payDate').value;
   const method = document.getElementById('payMethod').value;
-  const note = document.getElementById('payNote').value.trim();
-  
   if (!tenantDocId || !month || isNaN(amountPaid) || amountPaid < 0 || !date) return showToast('Fill required fields', 'error');
-  
   let status = 'unpaid';
   if (amountPaid >= amountDue && amountDue > 0) status = 'paid';
   else if (amountPaid > 0) status = 'partial';
-  
   try {
     await addDoc(collection(db, 'payments'), {
-      tenantId: currentTenantId, tenantDocId, month, amountDue, amountPaid,
-      amountRemaining: Math.max(0, amountDue - amountPaid), date, method, note, status,
-      createdAt: serverTimestamp()
+      propertyId: currentPropertyData.id, tenantDocId, month, amountDue, amountPaid,
+      amountRemaining: Math.max(0, amountDue - amountPaid), date, method, status,
+      recordedBy: currentUser.email, createdAt: serverTimestamp()
     });
-    
     if (status === 'paid') {
       const t = allTenants.find(x => x.id === tenantDocId);
       if (t) {
@@ -1176,23 +968,21 @@ window.savePayment = async function() {
         await updateDoc(doc(db, 'tenants_list', tenantDocId), { nextDue: d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-01' });
       }
     }
-    showToast('✅ Payment recorded');
-    closeModal('paymentModal');
+    const tenantName = allTenants.find(x => x.id === tenantDocId)?.name;
+    logAction('Record Payment', `Recorded ${amountPaid} ETB for ${tenantName} (${month})`);
+    showToast('✅ Payment recorded'); closeModal('paymentModal');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
 };
-
 window.deletePayment = async function(id) {
   if (!confirm('Delete this payment?')) return;
-  try { await deleteDoc(doc(db, 'payments', id)); showToast('✅ Deleted'); } catch (e) { showToast('❌ Error', 'error'); }
+  try { await deleteDoc(doc(db, 'payments', id)); logAction('Delete Payment', `Deleted a payment record`); showToast('✅ Deleted'); }
+  catch (e) { showToast('❌ Error', 'error'); }
 };
-
 window.setPaymentFilter = function(f, el) {
   paymentFilter = f;
   document.querySelectorAll('#panelPayments .filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderPayments();
+  el.classList.add('active'); renderPayments();
 };
-
 function renderPayments() {
   const el = document.getElementById('paymentsList');
   if (!el) return;
@@ -1201,9 +991,7 @@ function renderPayments() {
   if (paymentFilter === 'paid') f = f.filter(p => p.status === 'paid');
   if (paymentFilter === 'unpaid') f = f.filter(p => p.status === 'unpaid');
   if (paymentFilter === 'partial') f = f.filter(p => p.status === 'partial');
-  
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No payments</div><div class="e-sub">for ${esc(month)}</div></div>`; return; }
-  
+  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No payments</div></div>`; return; }
   el.innerHTML = f.map(p => {
     const t = allTenants.find(x => x.id === p.tenantDocId);
     const sb = p.status === 'paid' ? '<span class="badge badge-green">✅ Paid</span>' : p.status === 'partial' ? '<span class="badge badge-orange">🟡 Partial</span>' : '<span class="badge badge-red">❌ Unpaid</span>';
@@ -1211,130 +999,110 @@ function renderPayments() {
       <div class="list-row-icon" style="background:rgba(16,185,129,.15);">💰</div>
       <div class="list-row-info">
         <div class="list-row-title">${esc(t?.name || 'Unknown')} ${sb}</div>
-        <div class="list-row-sub">💵 Paid: <strong>${money(p.amountPaid)}</strong> / Due: ${money(p.amountDue)}${p.amountRemaining > 0 ? '<br>⚠️ Remaining: <span style="color:var(--danger);">' + money(p.amountRemaining) + ' ETB</span>' : ''}<br>📅 ${esc(p.date)} • 💳 ${esc(p.method)}</div>
+        <div class="list-row-sub">💵 Paid: <strong>${money(p.amountPaid)}</strong> / Due: ${money(p.amountDue)}<br>📅 ${esc(p.date)}</div>
       </div>
       <div class="list-row-actions"><button class="action-btn" onclick="deletePayment('${p.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button></div>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// 💡 UTILITIES (Add, Save, Render)
-// ═══════════════════════════════════════════
+// UTILITIES
 window.openUtilityModal = function() {
   document.getElementById('utilityModal').classList.add('open');
   document.getElementById('utilMonth').value = thisMonthStr();
-  document.getElementById('utilMeterPrev').value = '';
-  document.getElementById('utilMeterCurr').value = '';
   document.getElementById('utilAmount').value = '';
   document.getElementById('utilStatus').value = 'unpaid';
   populateUnitSelects();
 };
-
 window.saveUtility = async function() {
   const unitId = document.getElementById('utilUnit').value;
   const type = document.getElementById('utilType').value;
   const month = document.getElementById('utilMonth').value;
-  const meterPrev = parseFloat(document.getElementById('utilMeterPrev').value) || 0;
-  const meterCurr = parseFloat(document.getElementById('utilMeterCurr').value) || 0;
   const amount = parseFloat(document.getElementById('utilAmount').value);
   const status = document.getElementById('utilStatus').value;
-  
   if (!unitId || !month || isNaN(amount) || amount <= 0) return showToast('Fill required fields', 'error');
-  
   try {
     await addDoc(collection(db, 'utilities'), {
-      tenantId: currentTenantId, unitId, type, month, meterPrev, meterCurr,
-      usage: Math.max(0, meterCurr - meterPrev), amount, status, createdAt: serverTimestamp()
+      propertyId: currentPropertyData.id, unitId, type, month, amount, status, createdAt: serverTimestamp()
     });
-    showToast('✅ Utility saved');
-    closeModal('utilityModal');
+    logAction('Add Utility', `Added ${type} utility for ${month}`); showToast('✅ Utility saved'); closeModal('utilityModal');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
 };
-
 window.deleteUtility = async function(id) {
   if (!confirm('Delete this utility?')) return;
-  try { await deleteDoc(doc(db, 'utilities', id)); showToast('✅ Deleted'); } catch (e) { showToast('❌ Error', 'error'); }
+  try { await deleteDoc(doc(db, 'utilities', id)); logAction('Delete Utility', `Deleted a utility record`); showToast('✅ Deleted'); }
+  catch (e) { showToast('❌ Error', 'error'); }
 };
-
 function renderUtilities() {
   const el = document.getElementById('utilitiesList');
   if (!el) return;
   const month = document.getElementById('utilityMonth')?.value || thisMonthStr();
   const f = allUtilities.filter(u => u.month === month);
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">💡</div><div class="e-title">No utilities</div><div class="e-sub">for ${esc(month)}</div></div>`; return; }
-  const icons = { water: '💧', electricity: '⚡', gas: '🔥', internet: '🌐' };
+  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">💡</div><div class="e-title">No utilities</div></div>`; return; }
+  const icons = { water: '💧', electricity: '⚡', gas: '🔥' };
   el.innerHTML = f.map(u => {
     const unit = allUnits.find(x => x.id === u.unitId);
     return `<div class="list-row">
       <div class="list-row-icon">${icons[u.type] || '💡'}</div>
       <div class="list-row-info">
-        <div class="list-row-title">${esc(unit?.number || '?')} — ${esc(u.type)} <span class="badge ${u.status === 'paid' ? 'badge-green' : 'badge-red'}">${u.status === 'paid' ? '✅ Paid' : '❌ Unpaid'}</span></div>
-        <div class="list-row-sub">💰 ${money(u.amount)} ETB${u.usage > 0 ? '<br>🔢 ' + u.usage + ' units' : ''}</div>
+        <div class="list-row-title">${esc(unit?.number || '?')} — ${esc(u.type)} <span class="badge ${u.status === 'paid' ? 'badge-green' : 'badge-red'}">${u.status}</span></div>
+        <div class="list-row-sub">💰 ${money(u.amount)} ETB</div>
       </div>
       <div class="list-row-actions"><button class="action-btn" onclick="deleteUtility('${u.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button></div>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// 📊 DASHBOARD & REPORTS
-// ═══════════════════════════════════════════
+// DASHBOARD & REPORTS
 function renderDashboard() {
   const month = thisMonthStr();
   const total = allUnits.length;
   const occ = allUnits.filter(u => u.status === 'occupied').length;
   const vac = total - occ;
   const occRate = total > 0 ? Math.round((occ / total) * 100) : 0;
-  
   const mp = allPayments.filter(p => p.month === month);
   const collected = mp.reduce((s, p) => s + (p.amountPaid || 0), 0);
   const unpaid = mp.reduce((s, p) => s + (p.amountRemaining || 0), 0);
-  
   document.getElementById('statTotalUnits').textContent = total;
   document.getElementById('statOccupied').textContent = occ + ' occupied';
   document.getElementById('statVacant').textContent = vac + ' vacant';
   document.getElementById('statCollected').textContent = money(collected);
   document.getElementById('statUnpaid').textContent = money(unpaid);
   document.getElementById('statOccupancy').textContent = occRate + '%';
-  
   const alerts = [];
   allTenants.filter(t => t.active).forEach(t => {
     const d = daysUntil(t.contractEnd);
     if (d !== null && d >= 0 && d <= 30) alerts.push({ i: '⏰', t: `${esc(t.name)} — contract expires in ${d} days`, c: 'warning' });
     else if (d !== null && d < 0) alerts.push({ i: '❌', t: `${esc(t.name)} — contract expired`, c: 'danger' });
-    const due = daysUntil(t.nextDue);
-    if (due !== null && due >= 0 && due <= 7) alerts.push({ i: '💰', t: `${esc(t.name)} — rent due in ${due} days`, c: 'info' });
   });
-  
-  const aEl = document.getElementById('alertsContainer');
-  aEl.innerHTML = alerts.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted);">✅ No alerts</div>' :
-    alerts.slice(0, 8).map(a => `<div style="padding:10px 14px;border-left:3px solid var(--${a.c==='danger'?'danger':a.c==='warning'?'warning':'info'});background:var(--bg);border-radius:6px;margin-bottom:8px;font-size:13px;">${a.i} ${a.t}</div>`).join('');
-    
-  const rEl = document.getElementById('recentPayments');
+  document.getElementById('alertsContainer').innerHTML = alerts.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted);">✅ No alerts</div>' :
+    alerts.slice(0, 8).map(a => `<div style="padding:10px 14px;border-left:3px solid var(--${a.c==='danger'?'danger':'warning'});background:var(--bg);border-radius:6px;margin-bottom:8px;font-size:13px;">${a.i} ${a.t}</div>`).join('');
   const recent = [...allPayments].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
-  rEl.innerHTML = recent.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted);">No payments</div>' :
+  document.getElementById('recentPayments').innerHTML = recent.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted);">No payments</div>' :
     recent.map(p => {
       const t = allTenants.find(x => x.id === p.tenantDocId);
-      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px;"><span>👤 ${esc(t?.name||'?')} — ${esc(p.month)}</span><strong style="color:var(--success);">${money(p.amountPaid)} ETB</strong></div>`;
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px;"><span>👤 ${esc(t?.name||'?')}</span><strong style="color:var(--success);">${money(p.amountPaid)} ETB</strong></div>`;
     }).join('');
 }
-
+function updateMobileHome() {
+  const month = thisMonthStr();
+  const mp = allPayments.filter(p => p.month === month).reduce((s, p) => s + (p.amountPaid || 0), 0);
+  const mu = allUtilities.filter(u => u.month === month).reduce((s, u) => s + (u.amount || 0), 0);
+  document.getElementById('mobTodaySales').textContent = money(mp);
+  document.getElementById('mobTodayExpenses').textContent = money(mu);
+  document.getElementById('mobTodayProfit').textContent = money(mp - mu);
+}
 function renderReports() {
   const month = document.getElementById('reportMonth')?.value || thisMonthStr();
   const mp = allPayments.filter(p => p.month === month);
   const mu = allUtilities.filter(u => u.month === month);
-  
   const revenue = mp.reduce((s, p) => s + (p.amountPaid || 0), 0);
   const unpaid = mp.reduce((s, p) => s + (p.amountRemaining || 0), 0);
   const expenses = mu.reduce((s, u) => s + (u.amount || 0), 0);
-  const net = revenue - expenses;
-  
   document.getElementById('repRevenue').textContent = money(revenue);
   document.getElementById('repExpenses').textContent = money(expenses);
-  document.getElementById('repNet').textContent = money(net);
+  document.getElementById('repNet').textContent = money(revenue - expenses);
   document.getElementById('repUnpaid').textContent = money(unpaid);
-  
   const types = {};
   allUnits.forEach(u => {
     if (!types[u.type]) types[u.type] = { total: 0, occ: 0, vac: 0 };
@@ -1342,63 +1110,102 @@ function renderReports() {
     if (u.status === 'occupied') types[u.type].occ++;
     else types[u.type].vac++;
   });
-  
   document.getElementById('unitStatusSummary').innerHTML = Object.keys(types).map(type => {
     const s = types[type];
     return `<div style="padding:12px 0;border-bottom:1px solid var(--border);"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>${esc(type)}</strong><span style="color:var(--text-muted);">${s.total} total</span></div><div style="display:flex;gap:8px;font-size:12px;"><span class="badge badge-red">${s.occ} occupied</span><span class="badge badge-green">${s.vac} vacant</span></div></div>`;
   }).join('') || '<div style="text-align:center;padding:20px;color:var(--text-muted);">No units</div>';
 }
 
-// ═══════════════════════════════════════════
-// ⚙️ SETTINGS
-// ═══════════════════════════════════════════
+// SETTINGS & EMPLOYEES
 window.saveSettings = async function() {
   const name = document.getElementById('settingPropertyName').value.trim();
   const phone = document.getElementById('settingPropertyPhone').value.trim();
   const address = document.getElementById('settingPropertyAddress').value.trim();
   try {
-    await updateDoc(doc(db, 'tenants', currentTenantId), { name, phone, address });
+    await updateDoc(doc(db, 'properties', currentPropertyData.id), { name, phone, address });
     document.getElementById('hdrBusinessName').textContent = name;
-    showToast('✅ Settings saved');
+    logAction('Update Settings', `Updated property settings`); showToast('✅ Settings saved');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
 };
-
-window.saveNotificationSettings = async function() {
-  const smsProvider = document.getElementById('settingSMSProvider').value;
-  const smsKey = document.getElementById('settingSMSKey').value.trim();
-  const smsSender = document.getElementById('settingSMSSender').value.trim();
-  const telegramToken = document.getElementById('settingTelegramToken').value.trim();
-  const telegramChatId = document.getElementById('settingTelegramChatId').value.trim();
-  const msgTemplate = document.getElementById('settingMsgTemplate').value.trim();
+window.changePassword = async function() {
+  const newPass = document.getElementById('newPassword').value;
+  if (newPass.length < 6) return showToast('Password must be at least 6 characters', 'error');
   try {
-    await updateDoc(doc(db, 'tenants', currentTenantId), { smsProvider, smsKey, smsSender, telegramToken, telegramChatId, msgTemplate });
-    showToast('✅ Notification settings saved');
-  } catch (e) { showToast('❌ ' + e.message, 'error'); }
+    await updatePassword(currentUser, newPass);
+    document.getElementById('newPassword').value = '';
+    logAction('Security', `Changed password`); showToast('✅ Password updated successfully');
+  } catch (e) {
+    if (e.code === 'auth/requires-recent-login') showToast('Please logout and login again first', 'error');
+    else showToast('❌ ' + e.message, 'error');
+  }
 };
-
-window.testNotification = async function() {
-  const token = document.getElementById('settingTelegramToken').value.trim();
-  const chatId = document.getElementById('settingTelegramChatId').value.trim();
-  if (!token || !chatId) return showToast('⚠️ Telegram Token & Chat ID required', 'warning');
-  
+window.changeLanguage = function() {
+  currentLanguage = document.getElementById('appLanguage').value;
+  updateDoc(doc(db, 'users', currentUser.uid), { language: currentLanguage }).catch(()=>{});
+  showToast('✅ Language changed (Reloading...)');
+  setTimeout(() => window.location.reload(), 1000);
+};
+window.openEmployeeModal = function() {
+  document.getElementById('employeeModal').classList.add('open');
+  document.getElementById('empEmail').value = '';
+  document.getElementById('empPassword').value = '123456';
+};
+window.saveEmployee = async function() {
+  const email = document.getElementById('empEmail').value.trim();
+  const pass = document.getElementById('empPassword').value.trim();
+  const permPayments = document.getElementById('permPayments').checked;
+  const permUtilities = document.getElementById('permUtilities').checked;
+  if (!email || pass.length < 6) return showToast('Valid email and 6+ char password required', 'error');
   try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text: '🧪 Test message from HaniTech Property Manager!' })
+    const secondaryApp = initializeApp(firebaseConfig, 'Sec-' + Date.now());
+    const secAuth = getAuth(secondaryApp);
+    const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      email: email, role: 'employee', propertyId: currentPropertyData.id,
+      isTempPassword: true, permissions: { payments: permPayments, utilities: permUtilities },
+      createdAt: serverTimestamp()
     });
-    const data = await res.json();
-    if (data.ok) showToast('✅ Telegram sent successfully!');
-    else showToast('❌ Telegram error: ' + data.description, 'error');
-  } catch (e) { showToast('❌ Network error', 'error'); }
+    await deleteApp(secondaryApp);
+    closeModal('employeeModal');
+    logAction('Add Employee', `Created employee account for ${email}`);
+    showToast('✅ Employee created successfully');
+  } catch (e) { showToast('❌ Error: ' + e.message, 'error'); }
 };
+function renderEmployees() {
+  const el = document.getElementById('employeesList');
+  if (!el) return;
+  const emps = allEmployees.filter(e => e.role === 'employee');
+  if (emps.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">No employees</div></div>`; return; }
+  el.innerHTML = emps.map(e => `
+    <div class="list-row">
+      <div class="list-row-icon">👷</div>
+      <div class="list-row-info">
+        <div class="list-row-title">${esc(e.email)}</div>
+        <div class="list-row-sub">Added: ${e.createdAt ? new Date(e.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function renderAuditLogs() {
+  const el = document.getElementById('auditTrailList');
+  if (!el) return;
+  if (allAuditLogs.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">📝</div><div class="e-title">No activity yet</div></div>`; return; }
+  el.innerHTML = allAuditLogs.map(log => {
+    const date = log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleString() : 'N/A';
+    return `<div style="padding:10px 0; border-bottom:1px solid var(--border);">
+      <div style="font-size:12px; font-weight:700; color:var(--primary);">${esc(log.action)}</div>
+      <div style="font-size:13px; margin:2px 0;">${esc(log.details)}</div>
+      <div style="font-size:11px; color:var(--text-muted);">👤 ${esc(log.userName)} • 📅 ${date}</div>
+    </div>`;
+  }).join('');
+}
 
-// ═══════════════════════════════════════════
-// 🚀 BOOT
-// ═══════════════════════════════════════════
+// INITIALIZATION
 setTimeout(() => {
   document.getElementById('splashScreen').classList.add('fade-out');
   setTimeout(() => { document.getElementById('splashScreen').style.display = 'none'; }, 500);
 }, 1500);
 </script>
+
 </body>
 </html>
