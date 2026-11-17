@@ -7,15 +7,10 @@
 <meta name="theme-color" content="#1a365d">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
 <style>
-/* ═══════════════════════════════════════════
-   CSS ሙሉ በሙሉ (ከቀድሞው ጋር አንድ ነው)
-   ═══════════════════════════════════════════ */
 :root {
   --primary: #1a365d; --primary-light: #2c5282; --accent: #d4af37;
   --bg: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --text-muted: #64748b;
@@ -72,10 +67,16 @@ header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; 
 .h-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.2s; }
 .h-btn:hover { background: rgba(255,255,255,0.2); }
 
+/* PROPERTY SWITCHER (PRO) */
+.prop-switcher { padding: 10px 14px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 8px; display: none; border: 1px solid rgba(255,255,255,0.1); }
+.prop-switcher.active { display: block; }
+.prop-switcher label { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; display: block; text-transform: uppercase; font-weight: 800; }
+.prop-switcher select { padding: 8px; font-size: 13px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); font-weight: 600; }
+
 /* LAYOUT */
 .main-content-wrapper { display: flex; flex-direction: row; flex: 1; overflow: hidden; background: var(--panel-bg); }
 .tabs-wrapper { display: flex; flex-direction: row; flex: 1; overflow: hidden; width: 100%; }
-.tabs { display: flex; flex-direction: column; width: 230px; background: var(--card-bg); border-right: 1px solid var(--border); padding: 16px 10px; gap: 4px; overflow-y: auto; flex-shrink: 0; height: 100%; }
+.tabs { display: flex; flex-direction: column; width: 240px; background: var(--card-bg); border-right: 1px solid var(--border); padding: 16px 10px; gap: 4px; overflow-y: auto; flex-shrink: 0; height: 100%; }
 .menu-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; transition: all 0.2s; user-select: none; }
 .menu-header:hover { background: var(--bg); color: var(--text-main); }
 .menu-header.active { background: var(--primary); color: #fff; }
@@ -83,11 +84,13 @@ header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; 
 .menu-header .m-left i { font-size: 18px; font-style: normal; }
 .sidebar-footer { margin-top: auto; padding: 12px; text-align: center; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); }
 .sidebar-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
-.panels { flex: 1; padding: 20px; background: var(--panel-bg); overflow-y: auto; width: calc(100% - 230px); }
+
+/* PANELS */
+.panels { flex: 1; padding: 20px; background: var(--panel-bg); overflow-y: auto; width: calc(100% - 240px); }
 .panel { display: none; }
 .panel.active { display: block !important; }
 
-/* CARDS & STATS */
+/* CARDS */
 .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); }
 .card-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
@@ -251,21 +254,53 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 
   <div class="main-content-wrapper">
     <div class="tabs-wrapper">
+      
+      <!-- SIDEBAR -->
       <div class="tabs" id="dynamicSidebar">
-        <div class="sidebar-footer">Powered by <a href="#">HaniTech</a></div>
+        <!-- Property Switcher (Pro only) -->
+        <div class="prop-switcher" id="propertySwitcher">
+          <label>🏢 Select Property</label>
+          <select id="activePropertySelect" onchange="switchProperty(this.value)"></select>
+        </div>
+
+        <div class="menu-header active" onclick="switchPage('panelDashboard', this)" data-tab="panelDashboard"><div class="m-left"><i>📊</i> <span>Dashboard</span></div></div>
+        <div class="menu-header" onclick="switchPage('panelUnits', this)" data-tab="panelUnits"><div class="m-left"><i>🏢</i> <span>Units</span></div></div>
+        <div class="menu-header" onclick="switchPage('panelTenants', this)" data-tab="panelTenants"><div class="m-left"><i>👥</i> <span>Tenants</span></div></div>
+        <div class="menu-header" onclick="switchPage('panelPayments', this)" data-tab="panelPayments"><div class="m-left"><i>💰</i> <span>Payments</span></div></div>
+        <div class="menu-header" onclick="switchPage('panelUtilities', this)" data-tab="panelUtilities"><div class="m-left"><i>💡</i> <span>Utilities</span></div></div>
+        <div class="menu-header" onclick="switchPage('panelReports', this)" data-tab="panelReports"><div class="m-left"><i>📈</i> <span>Reports</span></div></div>
+        <div class="menu-header" onclick="switchPage('panelSettings', this)" data-tab="panelSettings"><div class="m-left"><i>⚙️</i> <span>Settings</span></div></div>
+        
+        <div class="sidebar-footer">
+          Powered by <a href="#">HaniTech</a>
+        </div>
       </div>
 
+      <!-- PANELS -->
       <div class="panels">
-        <!-- MOBILE HOME -->
+
+        <!-- MOBILE HOME (Monthly Summary) -->
         <div class="panel" id="panelMobileHome">
           <div class="mobile-summary-card">
-            <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;"><span>📅</span> Today's Summary</div>
+            <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+              <span>📅</span> Monthly Summary
+            </div>
             <div class="mobile-summary-row">
-              <div class="mobile-summary-item"><div class="lbl">Sales</div><div class="val green" id="mobTodaySales">0.00</div></div>
-              <div class="mobile-summary-item"><div class="lbl">Expenses</div><div class="val red" id="mobTodayExpenses">0.00</div></div>
-              <div class="mobile-summary-item"><div class="lbl">Profit</div><div class="val blue" id="mobTodayProfit">0.00</div></div>
+              <div class="mobile-summary-item">
+                <div class="lbl">Collected</div>
+                <div class="val green" id="mobMonthCollected">0.00</div>
+              </div>
+              <div class="mobile-summary-item">
+                <div class="lbl">Expenses</div>
+                <div class="val red" id="mobMonthExpenses">0.00</div>
+              </div>
+              <div class="mobile-summary-item">
+                <div class="lbl">Net Profit</div>
+                <div class="val blue" id="mobMonthProfit">0.00</div>
+              </div>
             </div>
           </div>
+          
           <h3 style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 16px;">⚡ Quick Actions</h3>
           <div class="qa-grid" id="dynamicQuickActions"></div>
         </div>
@@ -335,8 +370,20 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
         <div class="panel" id="panelReports">
           <div class="card">
             <div class="card-title"><span>📊 Reports</span></div>
-            <label class="field-label" style="margin-top:0;">📅 Month</label>
-            <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+              <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
+              <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📆 Yearly</button>
+            </div>
+            
+            <div id="monthlyReportSection">
+              <label class="field-label" style="margin-top:0;">📅 Month</label>
+              <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
+            </div>
+            <div id="yearlyReportSection" style="display:none;">
+              <label class="field-label" style="margin-top:0;">📅 Year</label>
+              <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
+            </div>
+
             <div class="stats-grid">
               <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
               <div class="stat-card red"><div class="s-label">Expenses</div><div class="s-value" id="repExpenses">0</div></div>
@@ -359,6 +406,16 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             <input type="text" id="settingPropertyAddress" placeholder="Addis Ababa...">
             <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
           </div>
+
+          <!-- Multi-Property Management (Pro Only) -->
+          <div class="card" id="multiPropertyCard" style="display:none;">
+            <div class="card-title">
+              <span>🏢 My Properties (PRO)</span>
+              <button class="btn btn-primary btn-sm" onclick="openAddPropertyModal()">➕ Add Property</button>
+            </div>
+            <div id="propertiesList"></div>
+          </div>
+
           <div class="card">
             <div class="card-title"><span>🔐 Security & Language</span></div>
             <label class="field-label" style="margin-top:0;">🔒 Change Password</label>
@@ -367,14 +424,17 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             <label class="field-label">🌐 App Language</label>
             <select id="appLanguage" onchange="changeLanguage()"><option value="en">English</option><option value="am">አማርኛ (Amharic)</option></select>
           </div>
+
           <div class="card" id="employeeManagementCard" style="display:none;">
             <div class="card-title"><span>👥 Employee Management</span><button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">➕ Add Employee</button></div>
             <div id="employeesList"></div>
           </div>
+          
           <div class="card" id="auditTrailCard" style="display:none;">
             <div class="card-title"><span>📝 Audit Trail</span></div>
             <div id="auditTrailList" style="max-height: 300px; overflow-y: auto;"></div>
           </div>
+
           <div class="card">
             <div class="card-title"><span>🎨 Theme</span></div>
             <div style="display:flex; gap:10px;">
@@ -383,6 +443,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -475,7 +536,18 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   </div>
 </div>
 
-<!-- FIREBASE LOGIC (INLINE SCRIPT) -->
+<!-- Add Property Modal (Pro Only) -->
+<div class="modal-overlay" id="addPropertyModal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>➕ Add Property (PRO)</h3><button class="modal-close" onclick="closeModal('addPropertyModal')">×</button></div>
+    <div class="modal-body">
+      <label class="field-label" style="margin-top:0;">🏢 Property Name *</label><input type="text" id="newPropName" placeholder="e.g. Sunrise Building">
+      <label class="field-label">📍 Address</label><input type="text" id="newPropAddress" placeholder="Bole, Addis Ababa">
+      <button class="btn btn-success" onclick="saveNewProperty()" style="margin-top:16px;">💾 Create Property</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
@@ -503,14 +575,13 @@ const db = getFirestore(app);
 
 // GLOBAL STATE
 let currentUser = null, currentUserData = null, currentPropertyData = null;
-let currentLanguage = 'en';
-let allUnits = [], allTenants = [], allPayments = [], allUtilities = [], allEmployees = [], allAuditLogs = [];
+let currentLanguage = 'en', currentReportView = 'monthly';
+let allUnits = [], allTenants = [], allPayments = [], allUtilities = [], allEmployees = [], allAuditLogs = [], allProperties = [];
 let editingUnitId = null, editingTenantId = null;
 let unitFilter = 'all', paymentFilter = 'all';
 let unsubUnits, unsubTenants, unsubPayments, unsubUtilities, unsubEmployees, unsubAudit;
 
 // HELPERS
-const t = (en, am) => currentLanguage === 'am' ? am : en;
 window.showToast = function(msg, type = 'success') {
   const existing = document.querySelector('.toast-notification');
   if (existing) existing.remove();
@@ -593,39 +664,102 @@ async function loadUserData(user) {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     if (!userDoc.exists()) { alert('⚠️ User record not found. Contact admin.'); return logout(); }
     currentUserData = userDoc.data();
-    if (currentUserData.isTempPassword === true) { document.getElementById('firstLoginModal').classList.add('open'); return; }
     
-    const propDoc = await getDoc(doc(db, 'properties', currentUserData.propertyId));
+    // Check if owner has multiple properties (PRO feature)
+    let hasMultipleProps = false;
+    if (currentUserData.role === 'owner') {
+      const propsQuery = query(collection(db, 'properties'), where('ownerUid', '==', user.uid));
+      const propsSnap = await getDocs(propsQuery);
+      if (!propsSnap.empty) {
+        allProperties = [];
+        propsSnap.forEach(d => allProperties.push({ id: d.id, ...d.data() }));
+        hasMultipleProps = allProperties.length > 1;
+      }
+    }
+
+    // Load current property
+    const propId = currentUserData.propertyId;
+    const propDoc = await getDoc(doc(db, 'properties', propId));
     if (!propDoc.exists()) { alert('⚠️ Property not found. Contact admin.'); return logout(); }
     currentPropertyData = { id: propDoc.id, ...propDoc.data() };
 
-    const today = todayStr();
     if (currentPropertyData.isSuspended) { alert('🚫 Your account is suspended. Please contact support.'); return logout(); }
-    if (currentPropertyData.expiryDate && currentPropertyData.expiryDate < today) { alert('⏳ Subscription expired. Please contact support to renew.'); return logout(); }
+    
+    // Populate Property Switcher (PRO only)
+    if (hasMultipleProps) {
+      document.getElementById('propertySwitcher').classList.add('active');
+      document.getElementById('multiPropertyCard').style.display = 'block';
+      const sel = document.getElementById('activePropertySelect');
+      sel.innerHTML = allProperties.map(p => `<option value="${p.id}" ${p.id === propId ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+      renderPropertiesList();
+    }
+
+    // Force password change if temp
+    if (currentUserData.isTempPassword === true) { 
+      document.getElementById('firstLoginModal').classList.add('open'); 
+      return; 
+    }
 
     document.getElementById('hdrBusinessName').textContent = currentPropertyData.name || 'Property';
     document.getElementById('hdrUserEmail').textContent = user.email;
     document.getElementById('hdrUserInitial').textContent = (user.email || 'U').charAt(0).toUpperCase();
     const roleMap = { owner: '👑 Owner', manager: '🎯 Manager', accountant: '🧰 Accountant', employee: '👷 Employee' };
     document.getElementById('hdrRoleBadge').textContent = roleMap[currentUserData.role] || 'User';
+    
     if (currentUserData.darkMode) document.body.classList.add('dark-mode');
     currentLanguage = currentUserData.language || 'en';
     
+    // Set default dates
     document.getElementById('paymentMonth').value = thisMonthStr();
     document.getElementById('utilityMonth').value = thisMonthStr();
     document.getElementById('reportMonth').value = thisMonthStr();
+    document.getElementById('reportYear').value = new Date().getFullYear();
+
+    // Populate settings values
     document.getElementById('settingPropertyName').value = currentPropertyData.name || '';
     document.getElementById('settingPropertyPhone').value = currentPropertyData.phone || '';
     document.getElementById('settingPropertyAddress').value = currentPropertyData.address || '';
+    
     if (currentUserData.role === 'owner' || currentUserData.role === 'manager') {
       document.getElementById('employeeManagementCard').style.display = 'block';
       document.getElementById('auditTrailCard').style.display = 'block';
     }
-    renderSidebar(); renderMobileNav(); renderQuickActions(); loadRealtimeData();
+    
+    renderSidebar();
+    renderMobileNav();
+    renderQuickActions();
+    loadRealtimeData();
+
     if (window.innerWidth <= 768) switchPage('panelMobileHome', null);
     else switchPage('panelDashboard', null);
   } catch (err) { console.error(err); alert('❌ Error loading data: ' + err.message); }
 }
+
+window.switchProperty = async function(propId) {
+  if (!propId || propId === currentPropertyData.id) return;
+  showToast('Loading new property...', 'info');
+  // Clear old listeners
+  if (unsubUnits) unsubUnits(); if (unsubTenants) unsubTenants(); if (unsubPayments) unsubPayments();
+  if (unsubUtilities) unsubUtilities(); if (unsubEmployees) unsubEmployees(); if (unsubAudit) unsubAudit();
+
+  // Load new property
+  const propDoc = await getDoc(doc(db, 'properties', propId));
+  if (!propDoc.exists()) return showToast('Property not found!', 'error');
+  currentPropertyData = { id: propDoc.id, ...propDoc.data() };
+  
+  // Update UI
+  document.getElementById('hdrBusinessName').textContent = currentPropertyData.name || 'Property';
+  document.getElementById('settingPropertyName').value = currentPropertyData.name || '';
+  document.getElementById('settingPropertyPhone').value = currentPropertyData.phone || '';
+  document.getElementById('settingPropertyAddress').value = currentPropertyData.address || '';
+  
+  await updateDoc(doc(db, 'users', currentUser.uid), { propertyId: propId });
+  currentUserData.propertyId = propId;
+
+  loadRealtimeData();
+  renderDashboard();
+  showToast('✅ Property switched');
+};
 
 window.forceFirstLoginPasswordChange = async function() {
   const newPass = document.getElementById('firstNewPassword').value;
@@ -679,7 +813,16 @@ function loadRealtimeData() {
 
 function renderSidebar() {
   const sidebar = document.getElementById('dynamicSidebar');
+  const isPro = document.getElementById('propertySwitcher').classList.contains('active');
+  
   sidebar.innerHTML = `
+    ${isPro ? `
+      <div class="prop-switcher active" id="propertySwitcher">
+        <label>🏢 Select Property</label>
+        <select id="activePropertySelect" onchange="switchProperty(this.value)">
+          ${allProperties.map(p => `<option value="${p.id}" ${p.id === currentPropertyData.id ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
+        </select>
+      </div>` : ''}
     <div class="menu-header active" onclick="switchPage('panelDashboard', this)" data-tab="panelDashboard"><div class="m-left"><i>📊</i> <span>Dashboard</span></div></div>
     <div class="menu-header" onclick="switchPage('panelUnits', this)" data-tab="panelUnits"><div class="m-left"><i>🏢</i> <span>Units</span></div></div>
     <div class="menu-header" onclick="switchPage('panelTenants', this)" data-tab="panelTenants"><div class="m-left"><i>👥</i> <span>Tenants</span></div></div>
@@ -916,7 +1059,7 @@ function renderTenants() {
   }).join('');
 }
 
-// PAYMENTS
+// PAYMENTS & UTILITIES (Same as before)
 function populateTenantSelects() {
   const sel = document.getElementById('payTenant');
   if (!sel) return;
@@ -1006,7 +1149,6 @@ function renderPayments() {
   }).join('');
 }
 
-// UTILITIES
 window.openUtilityModal = function() {
   document.getElementById('utilityModal').classList.add('open');
   document.getElementById('utilMonth').value = thisMonthStr();
@@ -1063,12 +1205,14 @@ function renderDashboard() {
   const mp = allPayments.filter(p => p.month === month);
   const collected = mp.reduce((s, p) => s + (p.amountPaid || 0), 0);
   const unpaid = mp.reduce((s, p) => s + (p.amountRemaining || 0), 0);
+  
   document.getElementById('statTotalUnits').textContent = total;
   document.getElementById('statOccupied').textContent = occ + ' occupied';
   document.getElementById('statVacant').textContent = vac + ' vacant';
   document.getElementById('statCollected').textContent = money(collected);
   document.getElementById('statUnpaid').textContent = money(unpaid);
   document.getElementById('statOccupancy').textContent = occRate + '%';
+  
   const alerts = [];
   allTenants.filter(t => t.active).forEach(t => {
     const d = daysUntil(t.contractEnd);
@@ -1077,6 +1221,7 @@ function renderDashboard() {
   });
   document.getElementById('alertsContainer').innerHTML = alerts.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted);">✅ No alerts</div>' :
     alerts.slice(0, 8).map(a => `<div style="padding:10px 14px;border-left:3px solid var(--${a.c==='danger'?'danger':'warning'});background:var(--bg);border-radius:6px;margin-bottom:8px;font-size:13px;">${a.i} ${a.t}</div>`).join('');
+    
   const recent = [...allPayments].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
   document.getElementById('recentPayments').innerHTML = recent.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-muted);">No payments</div>' :
     recent.map(p => {
@@ -1084,25 +1229,55 @@ function renderDashboard() {
       return `<div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px;"><span>👤 ${esc(t?.name||'?')}</span><strong style="color:var(--success);">${money(p.amountPaid)} ETB</strong></div>`;
     }).join('');
 }
+
 function updateMobileHome() {
   const month = thisMonthStr();
   const mp = allPayments.filter(p => p.month === month).reduce((s, p) => s + (p.amountPaid || 0), 0);
   const mu = allUtilities.filter(u => u.month === month).reduce((s, u) => s + (u.amount || 0), 0);
-  document.getElementById('mobTodaySales').textContent = money(mp);
-  document.getElementById('mobTodayExpenses').textContent = money(mu);
-  document.getElementById('mobTodayProfit').textContent = money(mp - mu);
+  document.getElementById('mobMonthCollected').textContent = money(mp);
+  document.getElementById('mobMonthExpenses').textContent = money(mu);
+  document.getElementById('mobMonthProfit').textContent = money(mp - mu);
 }
+
+window.switchReportView = function(view) {
+  currentReportView = view;
+  document.querySelectorAll('#panelReports .filter-chip').forEach(c => c.classList.remove('active'));
+  if (view === 'monthly') {
+    document.getElementById('btnMonthlyReport').classList.add('active');
+    document.getElementById('monthlyReportSection').style.display = 'block';
+    document.getElementById('yearlyReportSection').style.display = 'none';
+  } else {
+    document.getElementById('btnYearlyReport').classList.add('active');
+    document.getElementById('monthlyReportSection').style.display = 'none';
+    document.getElementById('yearlyReportSection').style.display = 'block';
+  }
+  renderReports();
+};
+
 function renderReports() {
+  let revenue = 0, unpaid = 0, expenses = 0;
   const month = document.getElementById('reportMonth')?.value || thisMonthStr();
-  const mp = allPayments.filter(p => p.month === month);
-  const mu = allUtilities.filter(u => u.month === month);
-  const revenue = mp.reduce((s, p) => s + (p.amountPaid || 0), 0);
-  const unpaid = mp.reduce((s, p) => s + (p.amountRemaining || 0), 0);
-  const expenses = mu.reduce((s, u) => s + (u.amount || 0), 0);
+  const year = document.getElementById('reportYear')?.value || new Date().getFullYear();
+
+  if (currentReportView === 'monthly') {
+    const mp = allPayments.filter(p => p.month === month);
+    const mu = allUtilities.filter(u => u.month === month);
+    revenue = mp.reduce((s, p) => s + (p.amountPaid || 0), 0);
+    unpaid = mp.reduce((s, p) => s + (p.amountRemaining || 0), 0);
+    expenses = mu.reduce((s, u) => s + (u.amount || 0), 0);
+  } else {
+    const mp = allPayments.filter(p => p.month && p.month.startsWith(year.toString()));
+    const mu = allUtilities.filter(u => u.month && u.month.startsWith(year.toString()));
+    revenue = mp.reduce((s, p) => s + (p.amountPaid || 0), 0);
+    unpaid = mp.reduce((s, p) => s + (p.amountRemaining || 0), 0);
+    expenses = mu.reduce((s, u) => s + (u.amount || 0), 0);
+  }
+
   document.getElementById('repRevenue').textContent = money(revenue);
   document.getElementById('repExpenses').textContent = money(expenses);
   document.getElementById('repNet').textContent = money(revenue - expenses);
   document.getElementById('repUnpaid').textContent = money(unpaid);
+  
   const types = {};
   allUnits.forEach(u => {
     if (!types[u.type]) types[u.type] = { total: 0, occ: 0, vac: 0 };
@@ -1127,6 +1302,45 @@ window.saveSettings = async function() {
     logAction('Update Settings', `Updated property settings`); showToast('✅ Settings saved');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
 };
+
+window.openAddPropertyModal = function() {
+  document.getElementById('addPropertyModal').classList.add('open');
+  document.getElementById('newPropName').value = '';
+  document.getElementById('newPropAddress').value = '';
+};
+
+window.saveNewProperty = async function() {
+  const name = document.getElementById('newPropName').value.trim();
+  const address = document.getElementById('newPropAddress').value.trim();
+  if (!name) return showToast('Property name required', 'error');
+  try {
+    const ref = await addDoc(collection(db, 'properties'), {
+      name, address, ownerUid: currentUser.uid, ownerEmail: currentUser.email,
+      plan: 'pro', expiryDate: currentPropertyData.expiryDate,
+      isSuspended: false, createdAt: serverTimestamp()
+    });
+    allProperties.push({ id: ref.id, name, address, ownerUid: currentUser.uid, ownerEmail: currentUser.email, plan: 'pro', expiryDate: currentPropertyData.expiryDate });
+    closeModal('addPropertyModal');
+    showToast('✅ Property created');
+    renderPropertiesList();
+    renderSidebar(); // Update switcher dropdown
+  } catch (e) { showToast('❌ ' + e.message, 'error'); }
+};
+
+function renderPropertiesList() {
+  const el = document.getElementById('propertiesList');
+  if (!el) return;
+  el.innerHTML = allProperties.map(p => `
+    <div class="list-row">
+      <div class="list-row-icon">🏢</div>
+      <div class="list-row-info">
+        <div class="list-row-title">${esc(p.name)} ${p.id === currentPropertyData.id ? '<span class="badge badge-green">Active</span>' : ''}</div>
+        <div class="list-row-sub">📍 ${esc(p.address || 'No address')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
 window.changePassword = async function() {
   const newPass = document.getElementById('newPassword').value;
   if (newPass.length < 6) return showToast('Password must be at least 6 characters', 'error');
