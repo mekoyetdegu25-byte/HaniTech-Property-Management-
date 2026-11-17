@@ -661,36 +661,65 @@ onAuthStateChanged(auth, async (user) => {
 async function loadUserData(user) {
   currentUser = user;
   try {
+    // 1. Get User Data
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     if (!userDoc.exists()) { alert('⚠️ User record not found. Contact admin.'); return logout(); }
     currentUserData = userDoc.data();
     
-    // Check if owner has multiple properties (PRO feature)
+    // 2. Load All Properties for this Owner (ለ Pro ተጠቃሚዎች)
     let hasMultipleProps = false;
     if (currentUserData.role === 'owner') {
-      const propsQuery = query(collection(db, 'properties'), where('ownerUid', '==', user.uid));
+      // በ ownerEmail እንፈልግ (ምክንያቱም አድሚን ፓነር ownerUid ላይመዘግብ ይችላል)
+      const propsQuery = query(collection(db, 'properties'), where('ownerEmail', '==', user.email));
       const propsSnap = await getDocs(propsQuery);
+      
       if (!propsSnap.empty) {
         allProperties = [];
         propsSnap.forEach(d => allProperties.push({ id: d.id, ...d.data() }));
         hasMultipleProps = allProperties.length > 1;
+        
+        // ከ users ውስጥ propertyId ከሌለ የመጀመሪያውን እንውሰድ
+        if (!currentUserData.propertyId) {
+           currentUserData.propertyId = allProperties[0].id;
+        }
       }
     }
 
-    // Load current property
+    // 3. Load Current Property Data
     const propId = currentUserData.propertyId;
-    const propDoc = await getDoc(doc(db, 'properties', propId));
-    if (!propDoc.exists()) { alert('⚠️ Property not found. Contact admin.'); return logout(); }
+    
+    if (!propId) {
+       alert('⚠️ No property assigned to this account. Contact admin.');
+       return logout();
+    }
+    
+    let propDoc = await getDoc(doc(db, 'properties', propId));
+    
+    // በ propertyId ካልተገኘ በ ownerEmail እንደገና እንሞክር
+    if (!propDoc.exists()) {
+       const q = query(collection(db, 'properties'), where('ownerEmail', '==', user.email));
+       const qSnap = await getDocs(q);
+       if (!qSnap.empty) {
+          propDoc = qSnap.docs[0];
+          // በ users ውስጥም እናስተካክል
+          await updateDoc(doc(db, 'users', user.uid), { propertyId: propDoc.id });
+          currentUserData.propertyId = propDoc.id;
+       } else {
+          alert('⚠️ Property not found. Contact admin.');
+          return logout();
+       }
+    }
+    
     currentPropertyData = { id: propDoc.id, ...propDoc.data() };
-
-    if (currentPropertyData.isSuspended) { alert('🚫 Your account is suspended. Please contact support.'); return logout(); }
+    
+    if (currentPropertyData.isSuspended) { alert('🚫 Your account is suspended.'); return logout(); }
     
     // Populate Property Switcher (PRO only)
     if (hasMultipleProps) {
       document.getElementById('propertySwitcher').classList.add('active');
       document.getElementById('multiPropertyCard').style.display = 'block';
       const sel = document.getElementById('activePropertySelect');
-      sel.innerHTML = allProperties.map(p => `<option value="${p.id}" ${p.id === propId ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
+      sel.innerHTML = allProperties.map(p => `<option value="${p.id}" ${p.id === currentPropertyData.id ? 'selected' : ''}>${esc(p.name)}</option>`).join('');
       renderPropertiesList();
     }
 
@@ -699,7 +728,8 @@ async function loadUserData(user) {
       document.getElementById('firstLoginModal').classList.add('open'); 
       return; 
     }
-
+    
+    // ቀሪው ኮድ ልክ እንደነበረው ይቀጥላል...
     document.getElementById('hdrBusinessName').textContent = currentPropertyData.name || 'Property';
     document.getElementById('hdrUserEmail').textContent = user.email;
     document.getElementById('hdrUserInitial').textContent = (user.email || 'U').charAt(0).toUpperCase();
@@ -709,13 +739,11 @@ async function loadUserData(user) {
     if (currentUserData.darkMode) document.body.classList.add('dark-mode');
     currentLanguage = currentUserData.language || 'en';
     
-    // Set default dates
     document.getElementById('paymentMonth').value = thisMonthStr();
     document.getElementById('utilityMonth').value = thisMonthStr();
     document.getElementById('reportMonth').value = thisMonthStr();
     document.getElementById('reportYear').value = new Date().getFullYear();
 
-    // Populate settings values
     document.getElementById('settingPropertyName').value = currentPropertyData.name || '';
     document.getElementById('settingPropertyPhone').value = currentPropertyData.phone || '';
     document.getElementById('settingPropertyAddress').value = currentPropertyData.address || '';
@@ -732,9 +760,12 @@ async function loadUserData(user) {
 
     if (window.innerWidth <= 768) switchPage('panelMobileHome', null);
     else switchPage('panelDashboard', null);
-  } catch (err) { console.error(err); alert('❌ Error loading data: ' + err.message); }
+    
+  } catch (err) { 
+    console.error(err); 
+    alert('❌ Error loading data: ' + err.message); 
+  }
 }
-
 window.switchProperty = async function(propId) {
   if (!propId || propId === currentPropertyData.id) return;
   showToast('Loading new property...', 'info');
