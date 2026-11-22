@@ -465,19 +465,48 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
                 <span>📊 Reports</span>
                 <button class="btn btn-outline btn-sm" onclick="printReport()" style="margin-top:0;">🖨️ Print</button>
               </div>
-              <div style="display:flex; gap:10px; margin-bottom:16px;">
-                <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
-                <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📆 Yearly</button>
-              </div>
-              
-              <div id="monthlyReportSection">
-                <label class="field-label" style="margin-top:0;">📅 Month</label>
-                <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
-              </div>
-              <div id="yearlyReportSection" style="display:none;">
-                <label class="field-label" style="margin-top:0;">📅 Year</label>
-                <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
-              </div>
+              <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+  <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
+  <button class="filter-chip" id="btnQuarterlyReport" onclick="switchReportView('quarterly')">📆 Quarterly</button>
+  <button class="filter-chip" id="btnSemiAnnualReport" onclick="switchReportView('semiannual')">📅 Semi-Annual</button>
+  <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📅 Yearly</button>
+</div>
+
+<!-- Monthly Section -->
+<div id="monthlyReportSection">
+  <label class="field-label" style="margin-top:0;">📅 Month</label>
+  <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
+</div>
+
+<!-- Quarterly Section -->
+<div id="quarterlyReportSection" style="display:none;">
+  <label class="field-label" style="margin-top:0;">📅 Year</label>
+  <input type="number" id="reportQuarterYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
+  <label class="field-label">📅 Quarter</label>
+  <select id="reportQuarter" onchange="renderReports()" style="margin-bottom:16px;">
+    <option value="Q1">Q1 (Jan - Mar)</option>
+    <option value="Q2">Q2 (Apr - Jun)</option>
+    <option value="Q3">Q3 (Jul - Sep)</option>
+    <option value="Q4">Q4 (Oct - Dec)</option>
+  </select>
+</div>
+
+<!-- Semi-Annual Section -->
+<div id="semiAnnualReportSection" style="display:none;">
+  <label class="field-label" style="margin-top:0;">📅 Year</label>
+  <input type="number" id="reportSemiYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
+  <label class="field-label">📅 Half</label>
+  <select id="reportSemi" onchange="renderReports()" style="margin-bottom:16px;">
+    <option value="H1">H1 (Jan - Jun)</option>
+    <option value="H2">H2 (Jul - Dec)</option>
+  </select>
+</div>
+
+<!-- Yearly Section -->
+<div id="yearlyReportSection" style="display:none;">
+  <label class="field-label" style="margin-top:0;">📅 Year</label>
+  <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
+</div>
 
               <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
@@ -1591,13 +1620,23 @@ function updateMobileHome() {
 window.switchReportView = function(view) {
   currentReportView = view;
   document.querySelectorAll('#panelReports .filter-chip').forEach(c => c.classList.remove('active'));
+  
+  document.getElementById('monthlyReportSection').style.display = 'none';
+  document.getElementById('quarterlyReportSection').style.display = 'none';
+  document.getElementById('semiAnnualReportSection').style.display = 'none';
+  document.getElementById('yearlyReportSection').style.display = 'none';
+
   if (view === 'monthly') {
     document.getElementById('btnMonthlyReport').classList.add('active');
     document.getElementById('monthlyReportSection').style.display = 'block';
-    document.getElementById('yearlyReportSection').style.display = 'none';
+  } else if (view === 'quarterly') {
+    document.getElementById('btnQuarterlyReport').classList.add('active');
+    document.getElementById('quarterlyReportSection').style.display = 'block';
+  } else if (view === 'semiannual') {
+    document.getElementById('btnSemiAnnualReport').classList.add('active');
+    document.getElementById('semiAnnualReportSection').style.display = 'block';
   } else {
     document.getElementById('btnYearlyReport').classList.add('active');
-    document.getElementById('monthlyReportSection').style.display = 'none';
     document.getElementById('yearlyReportSection').style.display = 'block';
   }
   renderReports();
@@ -1605,16 +1644,37 @@ window.switchReportView = function(view) {
 
 function renderReports() {
   let revenue = 0, unpaid = 0, expenses = 0;
-  const month = document.getElementById('reportMonth')?.value || thisMonthStr();
-  const year = document.getElementById('reportYear')?.value || new Date().getFullYear();
-
   let filteredPayments = [], filteredUtilities = [];
+  let periodLabel = "";
+
   if (currentReportView === 'monthly') {
+    const month = document.getElementById('reportMonth')?.value || thisMonthStr();
     filteredPayments = allPayments.filter(p => p.month === month);
     filteredUtilities = allUtilities.filter(u => u.month === month);
+    periodLabel = month;
+  } else if (currentReportView === 'quarterly') {
+    const year = document.getElementById('reportQuarterYear')?.value || new Date().getFullYear();
+    const q = document.getElementById('reportQuarter')?.value || 'Q1';
+    const months = q === 'Q1' ? ['01','02','03'] : q === 'Q2' ? ['04','05','06'] : q === 'Q3' ? ['07','08','09'] : ['10','11','12'];
+    const prefixes = months.map(m => `${year}-${m}`);
+    
+    filteredPayments = allPayments.filter(p => p.month && prefixes.includes(p.month));
+    filteredUtilities = allUtilities.filter(u => u.month && prefixes.includes(u.month));
+    periodLabel = `${q} ${year}`;
+  } else if (currentReportView === 'semiannual') {
+    const year = document.getElementById('reportSemiYear')?.value || new Date().getFullYear();
+    const h = document.getElementById('reportSemi')?.value || 'H1';
+    const months = h === 'H1' ? ['01','02','03','04','05','06'] : ['07','08','09','10','11','12'];
+    const prefixes = months.map(m => `${year}-${m}`);
+    
+    filteredPayments = allPayments.filter(p => p.month && prefixes.includes(p.month));
+    filteredUtilities = allUtilities.filter(u => u.month && prefixes.includes(u.month));
+    periodLabel = `${h} ${year}`;
   } else {
+    const year = document.getElementById('reportYear')?.value || new Date().getFullYear();
     filteredPayments = allPayments.filter(p => p.month && p.month.startsWith(year.toString()));
     filteredUtilities = allUtilities.filter(u => u.month && u.month.startsWith(year.toString()));
+    periodLabel = `Year ${year}`;
   }
   
   revenue = filteredPayments.reduce((s, p) => s + (p.amountPaid || 0), 0);
@@ -1626,6 +1686,9 @@ function renderReports() {
   document.getElementById('repNet').textContent = money(revenue - expenses);
   document.getElementById('repUnpaid').textContent = money(unpaid);
   
+  // Store current period label globally for print
+  window.currentReportPeriodLabel = periodLabel;
+
   const types = {};
   allUnits.forEach(u => {
     if (!types[u.type]) types[u.type] = { total: 0, occ: 0, vac: 0 };
@@ -1725,15 +1788,37 @@ function renderDetailedReport(payments, utilities) {
     html += `</tbody></table></div>`;
   }
   
+  // ========== TENANT LIST SUMMARY (Added as requested) ==========
+  html += `<h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin: 24px 0 10px;">👥 Tenant List Summary</h4>`;
+  html += `<div style="overflow-x:auto;"><table class="report-table"><thead><tr>
+    <th>#</th><th>Tenant Name</th><th>Phone</th><th>Unit</th><th class="text-right">Monthly Rent</th><th>Contract End</th>
+  </tr></thead><tbody>`;
+  
+  const activeTenants = allTenants.filter(t => t.active !== false);
+  if (activeTenants.length === 0) {
+    html += `<tr><td colspan="6" style="text-align:center; padding: 20px;">No tenants registered</td></tr>`;
+  } else {
+    activeTenants.forEach((tn, idx) => {
+      const unit = allUnits.find(u => u.id === tn.unitId);
+      html += `<tr>
+        <td>${idx + 1}</td>
+        <td><strong>${esc(tn.name)}</strong></td>
+        <td>${esc(tn.phone || '-')}</td>
+        <td>${esc(unit?.number || '-')}</td>
+        <td class="text-right">${money(tn.rent)}</td>
+        <td>${esc(tn.contractEnd || '-')}</td>
+      </tr>`;
+    });
+  }
+  html += `</tbody></table></div>`;
+  
   el.innerHTML = html;
 }
 
 // PRINT REPORT
 window.printReport = function() {
   const propName = currentPropertyData?.name || 'Property';
-  const reportMonth = document.getElementById('reportMonth')?.value || thisMonthStr();
-  const reportYear = document.getElementById('reportYear')?.value || new Date().getFullYear();
-  const period = currentReportView === 'monthly' ? reportMonth : reportYear;
+  const period = window.currentReportPeriodLabel || "Selected Period";
   const printDate = new Date().toLocaleString();
   
   const headerHtml = `
@@ -1742,7 +1827,7 @@ window.printReport = function() {
         <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
         <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
         <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
-        <p style="margin: 10px 0 0; font-size: 11px; color: #94a3b8;">Powered by HaniTech Property Manager</p>
+        <!-- "Powered by HaniTech" has been removed as requested -->
       </div>
     </div>
   `;
@@ -1750,6 +1835,15 @@ window.printReport = function() {
   const container = document.querySelector('.panels');
   if (!document.getElementById('printHeader')) {
     container.insertAdjacentHTML('afterbegin', headerHtml);
+  } else {
+    // Update existing header
+    document.getElementById('printHeader').innerHTML = `
+      <div style="text-align:center; border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
+        <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
+        <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
+      </div>
+    `;
   }
   
   document.getElementById('printHeader').style.display = 'block';
