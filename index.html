@@ -99,6 +99,11 @@ header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; 
 .panel { display: none; }
 .panel.active { display: block !important; }
 
+/* DESKTOP GRID LAYOUT (Card View) */
+.desktop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+@media (max-width: 1200px) { .desktop-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) { .desktop-grid { grid-template-columns: 1fr; } }
+
 /* CARDS */
 .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); }
 .card-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -152,6 +157,13 @@ label.field-label:first-of-type { margin-top: 0; }
 .empty-state .e-title { font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 6px; }
 .empty-state .e-sub { font-size: 12.5px; }
 
+/* PAGINATION */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+.page-btn { padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text-main); cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+.page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.page-btn:hover:not(.active) { background: var(--bg); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
 /* MOBILE HOME */
 .mobile-summary-card { background: var(--primary); border-radius: 12px; padding: 20px; color: #fff; margin-bottom: 20px; }
 .mobile-summary-row { display: flex; justify-content: space-between; align-items: center; text-align: center; }
@@ -196,6 +208,42 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 .report-table tr:hover td { background: var(--bg); }
 .report-table .text-right { text-align: right; }
 
+/* DANGER ZONE */
+.danger-zone { border: 2px dashed var(--danger) !important; background: rgba(239, 68, 68, 0.05) !important; }
+.danger-zone .card-title { color: var(--danger); }
+
+/* LANGUAGE SWITCHER */
+.lang-switch { display: flex; align-items: center; gap: 8px; }
+.lang-btn { padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text-main); cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+.lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.lang-btn:hover:not(.active) { background: var(--bg); }
+
+/* PRINT STYLES */
+@media print {
+  body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
+  #splashScreen, #loginScreen, header, .mobile-bottom-nav, .tabs, .sidebar-footer, 
+  .menu-header, .subscription-banner, .action-btn, .filter-bar, 
+  .btn, .modal-overlay, .toast-notification, .h-btn, .prop-selector-wrap,
+  #employeeManagementCard, #auditTrailCard, #multiPropertyCard,
+  #panelReports .card:first-child, .pagination {
+    display: none !important;
+  }
+  #mainApp, .main-content-wrapper, .tabs-wrapper, .panels, .panel.active { 
+    display: block !important; width: 100% !important; padding: 0 !important; 
+    margin: 0 !important; overflow: visible !important; height: auto !important;
+  }
+  .panel.active > .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
+  .report-table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; }
+  .report-table th, .report-table td { border: 1px solid #ccc !important; padding: 6px 8px !important; }
+  .report-table th { background: #f0f0f0 !important; color: #000 !important; }
+  .stats-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-bottom: 20px !important; }
+  .stat-card { border: 1px solid #ddd !important; border-left: 4px solid #1a365d !important; background: #fff !important; }
+  .stat-card .s-label, .stat-card .s-value { color: #000 !important; }
+  h3, h4, .card-title { color: #000 !important; }
+  #printHeader { display: block !important; }
+  @page { margin: 15mm; size: A4; }
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .prop-selector-wrap { max-width: 180px; }
@@ -218,7 +266,6 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   .subscription-banner { font-size: 11px !important; padding: 10px 12px !important; }
   .report-table { font-size: 11px; }
   .report-table th, .report-table td { padding: 6px 4px; }
-  
   .prop-selector-wrap { max-width: 140px; padding: 3px 4px 3px 8px; }
   .prop-selector-wrap select { max-width: 110px; font-size: 11px; padding: 4px 4px; }
   .prop-selector-wrap .ps-icon { font-size: 12px; }
@@ -291,6 +338,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
         <span class="ps-icon">🏢</span>
         <select id="propSelector" onchange="switchProperty(this.value)"></select>
       </div>
+      <button class="h-btn" onclick="refreshData()" title="Refresh">🔄</button>
       <span class="role-badge" id="hdrRoleBadge">👑 Owner</span>
       <button class="h-btn" onclick="logout()" title="Sign Out">🚪</button>
     </div>
@@ -335,14 +383,25 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 
         <!-- DASHBOARD -->
         <div class="panel" id="panelDashboard">
-          <div class="stats-grid">
-            <div class="stat-card blue"><div class="s-label">🏢 Total Units</div><div class="s-value" id="statTotalUnits">0</div><div class="s-sub" id="statOccupied">0 occupied</div></div>
-            <div class="stat-card green"><div class="s-label">💰 Collected (Month)</div><div class="s-value" id="statCollected">0</div><div class="s-sub">ETB paid this month</div></div>
-            <div class="stat-card red"><div class="s-label">⚠️ Unpaid (Month)</div><div class="s-value" id="statUnpaid">0</div><div class="s-sub">ETB outstanding</div></div>
-            <div class="stat-card orange"><div class="s-label">📊 Occupancy</div><div class="s-value" id="statOccupancy">0%</div><div class="s-sub" id="statVacant">0 vacant</div></div>
+          <div class="desktop-grid">
+            <div class="card">
+              <div class="card-title"><span>📊 Summary</span></div>
+              <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="stat-card blue"><div class="s-label">🏢 Total Units</div><div class="s-value" id="statTotalUnits">0</div><div class="s-sub" id="statOccupied">0 occupied</div></div>
+                <div class="stat-card orange"><div class="s-label">📊 Occupancy</div><div class="s-value" id="statOccupancy">0%</div><div class="s-sub" id="statVacant">0 vacant</div></div>
+                <div class="stat-card green"><div class="s-label">💰 Collected</div><div class="s-value" id="statCollected">0</div><div class="s-sub">ETB this month</div></div>
+                <div class="stat-card red"><div class="s-label">⚠️ Unpaid</div><div class="s-value" id="statUnpaid">0</div><div class="s-sub">ETB outstanding</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span>⚠️ Alerts</span></div>
+              <div id="alertsContainer"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span>📅 Recent Payments</span></div>
+              <div id="recentPayments"></div>
+            </div>
           </div>
-          <div class="card"><div class="card-title"><span>⚠️ Alerts</span></div><div id="alertsContainer"></div></div>
-          <div class="card"><div class="card-title"><span>📅 Recent Payments</span></div><div id="recentPayments"></div></div>
         </div>
 
         <!-- UNITS -->
@@ -356,6 +415,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             </div>
             <input type="text" id="searchUnits" placeholder="🔍 Search unit..." oninput="renderUnits()" style="margin-bottom:16px;">
             <div id="unitsList"></div>
+            <div id="unitsPagination"></div>
           </div>
         </div>
 
@@ -365,6 +425,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             <div class="card-title"><span>👥 Tenants</span><button class="btn btn-primary btn-sm" onclick="openTenantModal()">➕ Add Tenant</button></div>
             <input type="text" id="searchTenants" placeholder="🔍 Search tenant..." oninput="renderTenants()" style="margin-bottom:16px;">
             <div id="tenantsList"></div>
+            <div id="tenantsPagination"></div>
           </div>
         </div>
 
@@ -381,6 +442,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
               <button class="filter-chip" onclick="setPaymentFilter('partial', this)">🟡 Partial</button>
             </div>
             <div id="paymentsList"></div>
+            <div id="paymentsPagination"></div>
           </div>
         </div>
 
@@ -391,90 +453,110 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             <label class="field-label" style="margin-top:0;">📅 Select Month</label>
             <input type="month" id="utilityMonth" onchange="renderUtilities()" style="margin-bottom:16px;">
             <div id="utilitiesList"></div>
+            <div id="utilitiesPagination"></div>
           </div>
         </div>
 
         <!-- REPORTS -->
         <div class="panel" id="panelReports">
-          <div class="card">
-            <div class="card-title"><span>📊 Reports</span></div>
-            <div style="display:flex; gap:10px; margin-bottom:16px;">
-              <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
-              <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📆 Yearly</button>
-            </div>
-            
-            <div id="monthlyReportSection">
-              <label class="field-label" style="margin-top:0;">📅 Month</label>
-              <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
-            </div>
-            <div id="yearlyReportSection" style="display:none;">
-              <label class="field-label" style="margin-top:0;">📅 Year</label>
-              <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
-            </div>
+          <div class="desktop-grid">
+            <div class="card">
+              <div class="card-title">
+                <span>📊 Reports</span>
+                <button class="btn btn-outline btn-sm" onclick="printReport()" style="margin-top:0;">🖨️ Print</button>
+              </div>
+              <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
+                <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📆 Yearly</button>
+              </div>
+              
+              <div id="monthlyReportSection">
+                <label class="field-label" style="margin-top:0;">📅 Month</label>
+                <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
+              </div>
+              <div id="yearlyReportSection" style="display:none;">
+                <label class="field-label" style="margin-top:0;">📅 Year</label>
+                <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
+              </div>
 
-            <div class="stats-grid">
-              <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
-              <div class="stat-card red"><div class="s-label">Expenses</div><div class="s-value" id="repExpenses">0</div></div>
-              <div class="stat-card blue"><div class="s-label">Net</div><div class="s-value" id="repNet">0</div></div>
-              <div class="stat-card orange"><div class="s-label">Unpaid</div><div class="s-value" id="repUnpaid">0</div></div>
+              <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
+                <div class="stat-card red"><div class="s-label">Expenses</div><div class="s-value" id="repExpenses">0</div></div>
+                <div class="stat-card blue"><div class="s-label">Net</div><div class="s-value" id="repNet">0</div></div>
+                <div class="stat-card orange"><div class="s-label">Unpaid</div><div class="s-value" id="repUnpaid">0</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span>🏢 Unit Status Summary</span></div>
+              <div id="unitStatusSummary"></div>
             </div>
           </div>
-          <div class="card"><div class="card-title"><span>🏢 Unit Status Summary</span></div><div id="unitStatusSummary"></div></div>
-          <div class="card"><div class="card-title"><span>📋 Detailed Breakdown</span></div><div id="detailedReport"></div></div>
+          <div class="card">
+            <div class="card-title"><span>📋 Detailed Breakdown</span></div>
+            <div id="detailedReport"></div>
+          </div>
         </div>
 
         <!-- SETTINGS -->
         <div class="panel" id="panelSettings">
-          <div class="card">
-            <div class="card-title"><span>⚙️ Property Settings</span></div>
-            <label class="field-label" style="margin-top:0;">🏢 Property Name</label>
-            <input type="text" id="settingPropertyName" placeholder="Property name">
-            <label class="field-label">📞 Phone</label>
-            <input type="text" id="settingPropertyPhone" placeholder="+251...">
-            <label class="field-label">📍 Address</label>
-            <input type="text" id="settingPropertyAddress" placeholder="Addis Ababa...">
-            <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
-          </div>
-
-          <!-- Add Property Card (Always visible, checks plan) -->
-          <div class="card" id="multiPropertyCard">
-            <div class="card-title">
-              <span>🏢 My Properties</span>
-              <button class="btn btn-primary btn-sm" onclick="handleAddProperty()">➕ Add Property</button>
+          <div class="desktop-grid">
+            <div class="card">
+              <div class="card-title"><span>⚙️ Property Settings</span></div>
+              <label class="field-label" style="margin-top:0;">🏢 Property Name</label>
+              <input type="text" id="settingPropertyName" placeholder="Property name">
+              <label class="field-label">📞 Phone</label>
+              <input type="text" id="settingPropertyPhone" placeholder="+251...">
+              <label class="field-label">📍 Address</label>
+              <input type="text" id="settingPropertyAddress" placeholder="Addis Ababa...">
+              <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
             </div>
-            <div id="propertiesList"></div>
-          </div>
 
-          <div class="card">
-            <div class="card-title"><span>🔐 Security & Language</span></div>
-            <label class="field-label" style="margin-top:0;">🔒 Change Password</label>
-            <input type="password" id="newPassword" placeholder="New Password (min 6 chars)">
-            <button class="btn btn-primary" onclick="changePassword()">🔒 Update Password</button>
-            <label class="field-label">🌐 App Language</label>
-            <select id="appLanguage" onchange="changeLanguage()">
-              <option value="en">English</option>
-              <option value="am">አማርኛ (Amharic)</option>
-            </select>
-          </div>
-
-          <div class="card" id="employeeManagementCard" style="display:none;">
-            <div class="card-title"><span>👥 Employee Management</span><button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">➕ Add Employee</button></div>
-            <div id="employeesList"></div>
-          </div>
-          
-          <div class="card" id="auditTrailCard" style="display:none;">
-            <div class="card-title">
-              <span>📝 Audit Trail</span>
-              <button class="btn btn-danger btn-sm" onclick="clearAuditTrail()">🗑️ Clear All</button>
+            <div class="card" id="multiPropertyCard">
+              <div class="card-title">
+                <span>🏢 My Properties</span>
+                <button class="btn btn-primary btn-sm" onclick="handleAddProperty()">➕ Add Property</button>
+              </div>
+              <div id="propertiesList"></div>
             </div>
-            <div id="auditTrailList" style="max-height: 300px; overflow-y: auto;"></div>
-          </div>
 
-          <div class="card">
-            <div class="card-title"><span>🎨 Theme</span></div>
-            <div style="display:flex; gap:10px;">
-              <button class="btn btn-outline" onclick="toggleDarkMode(false)" style="margin-top:0;">☀️ Light</button>
-              <button class="btn btn-outline" onclick="toggleDarkMode(true)" style="margin-top:0;">🌙 Dark</button>
+            <div class="card">
+              <div class="card-title"><span>🔐 Security & Language</span></div>
+              <label class="field-label" style="margin-top:0;">🔒 Change Password</label>
+              <input type="password" id="newPassword" placeholder="New Password (min 6 chars)">
+              <button class="btn btn-primary" onclick="changePassword()">🔒 Update Password</button>
+              <label class="field-label">🌐 App Language</label>
+              <div class="lang-switch" style="margin-top:8px;">
+                <button class="lang-btn ${currentLanguage === 'en' ? 'active' : ''}" onclick="changeLanguage('en')">English</button>
+                <button class="lang-btn ${currentLanguage === 'am' ? 'active' : ''}" onclick="changeLanguage('am')">አማርኛ</button>
+              </div>
+            </div>
+
+            <div class="card" id="employeeManagementCard" style="display:none;">
+              <div class="card-title"><span>👥 Employee Management</span><button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">➕ Add Employee</button></div>
+              <div id="employeesList"></div>
+            </div>
+            
+            <div class="card" id="auditTrailCard" style="display:none;">
+              <div class="card-title">
+                <span>📝 Audit Trail</span>
+                <button class="btn btn-danger btn-sm" onclick="clearAuditTrail()">🗑️ Clear All</button>
+              </div>
+              <div id="auditTrailList" style="max-height: 300px; overflow-y: auto;"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-title"><span>🎨 Theme</span></div>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btn-outline" onclick="toggleDarkMode(false)" style="margin-top:0;">☀️ Light</button>
+                <button class="btn btn-outline" onclick="toggleDarkMode(true)" style="margin-top:0;">🌙 Dark</button>
+              </div>
+            </div>
+
+            <!-- DANGER ZONE -->
+            <div class="card danger-zone">
+              <div class="card-title"><span>🚨 Danger Zone</span></div>
+              <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Actions here are irreversible. Proceed with caution.</p>
+              <button class="btn btn-danger" onclick="deleteAllData()">🗑️ Delete All Property Data</button>
             </div>
           </div>
         </div>
@@ -534,7 +616,18 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
     <div class="modal-header"><h3>💡 Add Utility</h3><button class="modal-close" onclick="closeModal('utilityModal')">×</button></div>
     <div class="modal-body">
       <label class="field-label" style="margin-top:0;">🏢 Unit (Optional)</label><select id="utilUnit"><option value="">-- None --</option></select>
-      <label class="field-label">📁 Type *</label><select id="utilType"><option value="water">💧 Water</option><option value="electricity">⚡ Electricity</option><option value="gas">🔥 Gas</option><option value="internet">🌐 Internet</option><option value="maintenance">🔧 Maintenance</option><option value="other">📦 Other</option></select>
+      <label class="field-label">📁 Type *</label>
+      <select id="utilType">
+        <option value="water">💧 Water</option>
+        <option value="electricity">⚡ Electricity</option>
+        <option value="gas">🔥 Gas</option>
+        <option value="internet">🌐 Internet</option>
+        <option value="maintenance">🔧 Maintenance</option>
+        <option value="security">🛡️ Security</option>
+        <option value="cleaning">🧹 Cleaning</option>
+        <option value="parking">🅿️ Parking</option>
+        <option value="other">📦 Other</option>
+      </select>
       <label class="field-label">📅 Month *</label><input type="month" id="utilMonth">
       <label class="field-label">💰 Total Amount (ETB) *</label><input type="number" id="utilAmount" placeholder="0.00" step="any">
       <label class="field-label">✅ Status</label><select id="utilStatus"><option value="unpaid">❌ Unpaid</option><option value="paid">✅ Paid</option></select>
@@ -563,8 +656,12 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
       <label class="field-label">🔒 Temporary Password *</label><input type="text" id="empPassword" value="123456">
       <label class="field-label">🎯 Permissions</label>
       <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" id="permPayments" checked style="width:auto;"> Can Record Payments</label>
-        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" id="permUtilities" checked style="width:auto;"> Can Add Utilities</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" class="perm-check" value="dashboard" checked style="width:auto;"> Dashboard</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" class="perm-check" value="units" checked style="width:auto;"> Units</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" class="perm-check" value="tenants" checked style="width:auto;"> Tenants</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" class="perm-check" value="payments" checked style="width:auto;"> Payments</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" class="perm-check" value="utilities" checked style="width:auto;"> Utilities</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal; cursor:pointer;"><input type="checkbox" class="perm-check" value="reports" checked style="width:auto;"> Reports</label>
       </div>
       <button class="btn btn-primary" onclick="saveEmployee()" style="margin-top:16px;">💾 Create Employee</button>
     </div>
@@ -615,6 +712,17 @@ let editingUnitId = null, editingTenantId = null;
 let unitFilter = 'all', paymentFilter = 'all';
 let unsubUnits, unsubTenants, unsubPayments, unsubUtilities, unsubEmployees, unsubAudit;
 
+// PAGINATION STATE
+let unitsPage = 1, tenantsPage = 1, paymentsPage = 1, utilitiesPage = 1;
+const PAGE_SIZE = 10;
+
+// TRANSLATIONS (Simplified for demonstration)
+const TRANSLATIONS = {
+  en: { dashboard: "Dashboard", units: "Units", tenants: "Tenants", payments: "Payments", utilities: "Utilities", reports: "Reports", settings: "Settings", home: "Home", save_settings: "Save Settings", add_property: "Add Property" },
+  am: { dashboard: "ዳሽቦርድ", units: "ክፍሎች", tenants: "ተከራዮች", payments: "ክፍያዎች", utilities: "መገልገያዎች", reports: "ሪፖርቶች", settings: "ቅንብሮች", home: "መነሻ", save_settings: "ቅንብሮችን አስቀምጥ", add_property: "ፕሮፐርቲ ጨምር" }
+};
+function t(key) { return TRANSLATIONS[currentLanguage]?.[key] || TRANSLATIONS.en[key] || key; }
+
 // HELPERS
 window.showToast = function(msg, type = 'success') {
   const existing = document.querySelector('.toast-notification');
@@ -658,7 +766,6 @@ window.hideSubscriptionBanner = function() {
 
 function checkSubscription() {
   if (!currentPropertyData) return;
-  const plan = currentPropertyData.plan || 'basic';
   const expiry = currentPropertyData.expiryDate;
   if (!expiry) return;
   
@@ -681,6 +788,17 @@ function checkSubscription() {
     banner.classList.add('show');
   }
 }
+
+// REFRESH FUNCTION
+window.refreshData = function() {
+  showToast('Refreshing data...', 'info');
+  if (currentUserData) {
+    if (unsubUnits) unsubUnits(); if (unsubTenants) unsubTenants(); if (unsubPayments) unsubPayments();
+    if (unsubUtilities) unsubUtilities(); if (unsubEmployees) unsubEmployees(); if (unsubAudit) unsubAudit();
+    loadRealtimeData();
+    showToast('✅ Data refreshed');
+  }
+};
 
 // AUTH
 window.login = async function() {
@@ -735,24 +853,18 @@ async function loadUserData(user) {
     if (!userDoc.exists()) { alert('⚠️ User record not found. Contact admin.'); return logout(); }
     currentUserData = userDoc.data();
     
-    // Load All Properties for Owner
     if (currentUserData.role === 'owner') {
       const propsQuery = query(collection(db, 'properties'), where('ownerEmail', '==', user.email));
       const propsSnap = await getDocs(propsQuery);
       if (!propsSnap.empty) {
         allProperties = [];
         propsSnap.forEach(d => allProperties.push({ id: d.id, ...d.data() }));
-        if (!currentUserData.propertyId) {
-          currentUserData.propertyId = allProperties[0].id;
-        }
+        if (!currentUserData.propertyId) currentUserData.propertyId = allProperties[0].id;
       }
     }
 
     const propId = currentUserData.propertyId;
-    if (!propId) {
-      alert('⚠️ No property assigned to this account. Contact admin.');
-      return logout();
-    }
+    if (!propId) { alert('⚠️ No property assigned to this account. Contact admin.'); return logout(); }
     
     let propDoc = await getDoc(doc(db, 'properties', propId));
     if (!propDoc.exists()) {
@@ -762,16 +874,12 @@ async function loadUserData(user) {
         propDoc = qSnap.docs[0];
         await updateDoc(doc(db, 'users', user.uid), { propertyId: propDoc.id });
         currentUserData.propertyId = propDoc.id;
-      } else {
-        alert('⚠️ Property not found. Contact admin.');
-        return logout();
-      }
+      } else { alert('⚠️ Property not found. Contact admin.'); return logout(); }
     }
     
     currentPropertyData = { id: propDoc.id, ...propDoc.data() };
     if (currentPropertyData.isSuspended) { alert('🚫 Your account is suspended.'); return logout(); }
     
-    // Setup Property Selector in Header
     if (allProperties.length > 0) {
       document.getElementById('propSelectorWrap').style.display = 'flex';
       const sel = document.getElementById('propSelector');
@@ -781,13 +889,11 @@ async function loadUserData(user) {
       renderPropertiesList();
     }
 
-    // Force password change
     if (currentUserData.isTempPassword === true) { 
       document.getElementById('firstLoginModal').classList.add('open'); 
       return; 
     }
     
-    // Update UI
     document.getElementById('hdrBusinessName').textContent = currentPropertyData.name || 'Property';
     document.getElementById('hdrUserEmail').textContent = user.email;
     document.getElementById('hdrUserInitial').textContent = (user.email || 'U').charAt(0).toUpperCase();
@@ -796,7 +902,6 @@ async function loadUserData(user) {
     
     if (currentUserData.darkMode) document.body.classList.add('dark-mode');
     currentLanguage = currentUserData.language || 'en';
-    document.getElementById('appLanguage').value = currentLanguage;
     
     document.getElementById('paymentMonth').value = thisMonthStr();
     document.getElementById('utilityMonth').value = thisMonthStr();
@@ -812,6 +917,7 @@ async function loadUserData(user) {
       document.getElementById('auditTrailCard').style.display = 'block';
     }
     
+    applyTranslations();
     renderSidebar();
     renderMobileNav();
     renderQuickActions();
@@ -878,11 +984,39 @@ window.forceFirstLoginPasswordChange = async function() {
   }
 };
 
+// LANGUAGE TRANSLATIONS
+function applyTranslations() {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const translated = t(key);
+    if (translated) {
+      // Only change text if not containing HTML
+      if (!el.innerHTML.includes('<')) el.textContent = translated;
+    }
+  });
+}
+
+window.changeLanguage = function(lang) {
+  currentLanguage = lang;
+  updateDoc(doc(db, 'users', currentUser.uid), { language: lang }).catch(()=>{});
+  applyTranslations();
+  renderSidebar();
+  renderMobileNav();
+  renderQuickActions();
+  renderDashboard();
+  renderUnits();
+  renderTenants();
+  renderPayments();
+  renderUtilities();
+  renderReports();
+  showToast(lang === 'am' ? '✅ ቋንቋ ወደ አማርኛ ተቀይሯል' : '✅ Language changed to English');
+};
+
 // SINGLE UNIFIED REALTIME DATA LOADER
 function loadRealtimeData() {
   const pid = currentPropertyData.id;
   
-  // ዳታው ሲመጣ ሁሉንም ፔጆች አንድ ላይ የሚያዘምን
   const refreshAll = () => {
     renderUnits();
     renderDashboard();
@@ -931,27 +1065,28 @@ function loadRealtimeData() {
   }
 }
 
+// UI RENDERING FUNCTIONS
 function renderSidebar() {
   const sidebar = document.getElementById('dynamicSidebar');
   sidebar.innerHTML = `
-    <div class="menu-header active" onclick="switchPage('panelDashboard', this)" data-tab="panelDashboard"><div class="m-left"><i>📊</i> <span>Dashboard</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelUnits', this)" data-tab="panelUnits"><div class="m-left"><i>🏢</i> <span>Units</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelTenants', this)" data-tab="panelTenants"><div class="m-left"><i>👥</i> <span>Tenants</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelPayments', this)" data-tab="panelPayments"><div class="m-left"><i>💰</i> <span>Payments</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelUtilities', this)" data-tab="panelUtilities"><div class="m-left"><i>💡</i> <span>Utilities</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelReports', this)" data-tab="panelReports"><div class="m-left"><i>📈</i> <span>Reports</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelSettings', this)" data-tab="panelSettings"><div class="m-left"><i>⚙️</i> <span>Settings</span></div></div>
+    <div class="menu-header active" onclick="switchPage('panelDashboard', this)" data-tab="panelDashboard"><div class="m-left"><i>📊</i> <span>${t('dashboard')}</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelUnits', this)" data-tab="panelUnits"><div class="m-left"><i>🏢</i> <span>${t('units')}</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelTenants', this)" data-tab="panelTenants"><div class="m-left"><i>👥</i> <span>${t('tenants')}</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelPayments', this)" data-tab="panelPayments"><div class="m-left"><i>💰</i> <span>${t('payments')}</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelUtilities', this)" data-tab="panelUtilities"><div class="m-left"><i>💡</i> <span>${t('utilities')}</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelReports', this)" data-tab="panelReports"><div class="m-left"><i>📈</i> <span>${t('reports')}</span></div></div>
+    <div class="menu-header" onclick="switchPage('panelSettings', this)" data-tab="panelSettings"><div class="m-left"><i>⚙️</i> <span>${t('settings')}</span></div></div>
     <div class="sidebar-footer">Powered by <a href="#">HaniTech</a></div>
   `;
 }
 
 function renderMobileNav() {
   const items = [
-    { panel: 'panelMobileHome', icon: '🏠', label: 'Home' },
-    { panel: 'panelUnits', icon: '🏢', label: 'Units' },
-    { panel: 'panelTenants', icon: '👥', label: 'Tenants' },
-    { panel: 'panelPayments', icon: '💰', label: 'Payments' },
-    { panel: 'panelSettings', icon: '⚙️', label: 'Settings' }
+    { panel: 'panelMobileHome', icon: '🏠', label: t('home') },
+    { panel: 'panelUnits', icon: '🏢', label: t('units') },
+    { panel: 'panelTenants', icon: '👥', label: t('tenants') },
+    { panel: 'panelPayments', icon: '💰', label: t('payments') },
+    { panel: 'panelSettings', icon: '⚙️', label: t('settings') }
   ];
   document.getElementById('mobileBottomNav').innerHTML = items.map((item, i) => `
     <button class="mobile-nav-item ${i === 0 ? 'active' : ''}" data-tab="${item.panel}" onclick="mobileNavClick('${item.panel}', this)">
@@ -962,10 +1097,10 @@ function renderMobileNav() {
 
 function renderQuickActions() {
   const actions = [
-    { panel: 'panelUnits', icon: '🏢', label: 'Units', color: 'info' },
-    { panel: 'panelPayments', icon: '💰', label: 'Payments', color: 'warning' },
-    { panel: 'panelUtilities', icon: '💡', label: 'Utilities', color: 'success' },
-    { panel: 'panelReports', icon: '📊', label: 'Reports', color: 'purple' }
+    { panel: 'panelUnits', icon: '🏢', label: t('units'), color: 'info' },
+    { panel: 'panelPayments', icon: '💰', label: t('payments'), color: 'warning' },
+    { panel: 'panelUtilities', icon: '💡', label: t('utilities'), color: 'success' },
+    { panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' }
   ];
   const colorMap = {
     warning: 'background:rgba(245,158,11,0.1); color:var(--warning);',
@@ -989,12 +1124,13 @@ window.switchPage = function(panelId, el) {
   else document.querySelector(`.menu-header[data-tab="${panelId}"]`)?.classList.add('active');
   document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
   document.querySelector(`.mobile-nav-item[data-tab="${panelId}"]`)?.classList.add('active');
+  
   if (panelId === 'panelDashboard') renderDashboard();
   if (panelId === 'panelMobileHome') updateMobileHome();
-  if (panelId === 'panelUnits') renderUnits();
-  if (panelId === 'panelTenants') renderTenants();
-  if (panelId === 'panelPayments') renderPayments();
-  if (panelId === 'panelUtilities') renderUtilities();
+  if (panelId === 'panelUnits') { unitsPage = 1; renderUnits(); }
+  if (panelId === 'panelTenants') { tenantsPage = 1; renderTenants(); }
+  if (panelId === 'panelPayments') { paymentsPage = 1; renderPayments(); }
+  if (panelId === 'panelUtilities') { utilitiesPage = 1; renderUtilities(); }
   if (panelId === 'panelReports') renderReports();
 };
 window.mobileNavClick = function(panelId, el) {
@@ -1002,11 +1138,39 @@ window.mobileNavClick = function(panelId, el) {
   switchPage(panelId, null);
 };
 
+// PAGINATION RENDER HELPER
+function renderPagination(containerId, totalItems, currentPage, onPageChange) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+  if (totalPages <= 1) { container.innerHTML = ''; return; }
+  
+  let html = '<div class="pagination">';
+  html += `<button class="page-btn" onclick="${onPageChange}(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>« Prev</button>`;
+  
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+      html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="${onPageChange}(${i})">${i}</button>`;
+    } else if (i === currentPage - 2 || i === currentPage + 2) {
+      html += '<span style="padding:0 4px;">...</span>';
+    }
+  }
+  
+  html += `<button class="page-btn" onclick="${onPageChange}(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next »</button>`;
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+window.changeUnitsPage = function(page) { unitsPage = page; renderUnits(); };
+window.changeTenantsPage = function(page) { tenantsPage = page; renderTenants(); };
+window.changePaymentsPage = function(page) { paymentsPage = page; renderPayments(); };
+window.changeUtilitiesPage = function(page) { utilitiesPage = page; renderUtilities(); };
+
 // UNITS
 window.openUnitModal = function(id = null) {
   editingUnitId = id;
   document.getElementById('unitModalTitle').textContent = id ? '✏️ Edit Unit' : '➕ Add Unit';
-  
   if (id) {
     const u = allUnits.find(x => x.id === id);
     if (u) {
@@ -1050,6 +1214,7 @@ window.deleteUnit = async function(id) {
 
 window.setUnitFilter = function(filter, el) {
   unitFilter = filter;
+  unitsPage = 1;
   document.querySelectorAll('#unitFilterBar .filter-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active'); renderUnits();
 };
@@ -1062,7 +1227,17 @@ function renderUnits() {
   if (unitFilter === 'vacant') f = f.filter(u => u.status === 'vacant');
   if (unitFilter === 'occupied') f = f.filter(u => u.status === 'occupied');
   if (search) f = f.filter(u => (u.number||'').toLowerCase().includes(search) || (u.type||'').toLowerCase().includes(search));
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">🏢</div><div class="e-title">No units found</div></div>`; return; }
+  
+  const totalFiltered = f.length;
+  const startIdx = (unitsPage - 1) * PAGE_SIZE;
+  f = f.slice(startIdx, startIdx + PAGE_SIZE);
+  
+  if (f.length === 0) { 
+    el.innerHTML = `<div class="empty-state"><div class="e-icon">🏢</div><div class="e-title">No units found</div></div>`; 
+    renderPagination('unitsPagination', 0, 1, 'changeUnitsPage');
+    return; 
+  }
+  
   el.innerHTML = f.map(u => {
     const isOcc = u.status === 'occupied';
     const tenant = allTenants.find(t => t.unitId === u.id && t.active !== false);
@@ -1078,6 +1253,8 @@ function renderUnits() {
       </div>
     </div>`;
   }).join('');
+  
+  renderPagination('unitsPagination', totalFiltered, unitsPage, 'changeUnitsPage');
 }
 
 // TENANTS
@@ -1165,7 +1342,17 @@ function renderTenants() {
   const search = (document.getElementById('searchTenants')?.value || '').toLowerCase();
   let f = allTenants.filter(t => t.active !== false);
   if (search) f = f.filter(t => (t.name||'').toLowerCase().includes(search) || (t.phone||'').toLowerCase().includes(search));
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">No tenants found</div></div>`; return; }
+  
+  const totalFiltered = f.length;
+  const startIdx = (tenantsPage - 1) * PAGE_SIZE;
+  f = f.slice(startIdx, startIdx + PAGE_SIZE);
+  
+  if (f.length === 0) { 
+    el.innerHTML = `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">No tenants found</div></div>`; 
+    renderPagination('tenantsPagination', 0, 1, 'changeTenantsPage');
+    return; 
+  }
+  
   el.innerHTML = f.map(t => {
     const u = allUnits.find(x => x.id === t.unitId);
     const d = daysUntil(t.contractEnd);
@@ -1182,6 +1369,8 @@ function renderTenants() {
       </div>
     </div>`;
   }).join('');
+  
+  renderPagination('tenantsPagination', totalFiltered, tenantsPage, 'changeTenantsPage');
 }
 
 // PAYMENTS
@@ -1198,14 +1387,11 @@ function populateUnitSelects() {
 
 window.openPaymentModal = function() {
   document.getElementById('paymentModal').classList.add('open');
-  
   document.getElementById('payMonth').value = thisMonthStr();
   document.getElementById('payDate').value = todayStr();
   document.getElementById('payAmountPaid').value = '';
   document.getElementById('payAmountDue').value = '';
-  
-  const sel = document.getElementById('payTenant');
-  sel.innerHTML = '<option value="">-- Select --</option>' + allTenants.filter(t => t.active !== false).map(t => `<option value="${t.id}">${esc(t.name)} (${money(t.rent)} ETB)</option>`).join('');
+  populateTenantSelects();
 };
 
 window.updatePaymentAmount = function() {
@@ -1256,6 +1442,7 @@ window.deletePayment = async function(id) {
 
 window.setPaymentFilter = function(f, el) {
   paymentFilter = f;
+  paymentsPage = 1;
   document.querySelectorAll('#panelPayments .filter-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active'); renderPayments();
 };
@@ -1268,7 +1455,17 @@ function renderPayments() {
   if (paymentFilter === 'paid') f = f.filter(p => p.status === 'paid');
   if (paymentFilter === 'unpaid') f = f.filter(p => p.status === 'unpaid');
   if (paymentFilter === 'partial') f = f.filter(p => p.status === 'partial');
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No payments</div></div>`; return; }
+  
+  const totalFiltered = f.length;
+  const startIdx = (paymentsPage - 1) * PAGE_SIZE;
+  f = f.slice(startIdx, startIdx + PAGE_SIZE);
+  
+  if (f.length === 0) { 
+    el.innerHTML = `<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No payments</div></div>`; 
+    renderPagination('paymentsPagination', 0, 1, 'changePaymentsPage');
+    return; 
+  }
+  
   el.innerHTML = f.map(p => {
     const t = allTenants.find(x => x.id === p.tenantDocId);
     const sb = p.status === 'paid' ? '<span class="badge badge-green">✅ Paid</span>' : p.status === 'partial' ? '<span class="badge badge-orange">🟡 Partial</span>' : '<span class="badge badge-red">❌ Unpaid</span>';
@@ -1281,18 +1478,17 @@ function renderPayments() {
       <div class="list-row-actions"><button class="action-btn" onclick="deletePayment('${p.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button></div>
     </div>`;
   }).join('');
+  
+  renderPagination('paymentsPagination', totalFiltered, paymentsPage, 'changePaymentsPage');
 }
 
 // UTILITIES
 window.openUtilityModal = function() {
   document.getElementById('utilityModal').classList.add('open');
-  
   document.getElementById('utilMonth').value = thisMonthStr();
   document.getElementById('utilAmount').value = '';
   document.getElementById('utilStatus').value = 'unpaid';
-  
-  const sel = document.getElementById('utilUnit');
-  sel.innerHTML = '<option value="">-- None --</option>' + allUnits.map(u => `<option value="${u.id}">${esc(u.number)} — ${esc(u.type)}</option>`).join('');
+  populateUnitSelects();
 };
 
 window.saveUtility = async function() {
@@ -1320,9 +1516,19 @@ function renderUtilities() {
   const el = document.getElementById('utilitiesList');
   if (!el) return;
   const month = document.getElementById('utilityMonth')?.value || thisMonthStr();
-  const f = allUtilities.filter(u => u.month === month);
-  if (f.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">💡</div><div class="e-title">No utilities</div></div>`; return; }
-  const icons = { water: '💧', electricity: '⚡', gas: '🔥', internet: '🌐', maintenance: '🔧', other: '📦' };
+  let f = allUtilities.filter(u => u.month === month);
+  
+  const totalFiltered = f.length;
+  const startIdx = (utilitiesPage - 1) * PAGE_SIZE;
+  f = f.slice(startIdx, startIdx + PAGE_SIZE);
+  
+  if (f.length === 0) { 
+    el.innerHTML = `<div class="empty-state"><div class="e-icon">💡</div><div class="e-title">No utilities</div></div>`; 
+    renderPagination('utilitiesPagination', 0, 1, 'changeUtilitiesPage');
+    return; 
+  }
+  
+  const icons = { water: '💧', electricity: '⚡', gas: '🔥', internet: '🌐', maintenance: '🔧', security: '🛡️', cleaning: '🧹', parking: '🅿️', other: '📦' };
   el.innerHTML = f.map(u => {
     const unit = u.unitId ? allUnits.find(x => x.id === u.unitId) : null;
     return `<div class="list-row">
@@ -1334,6 +1540,8 @@ function renderUtilities() {
       <div class="list-row-actions"><button class="action-btn" onclick="deleteUtility('${u.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button></div>
     </div>`;
   }).join('');
+  
+  renderPagination('utilitiesPagination', totalFiltered, utilitiesPage, 'changeUtilitiesPage');
 }
 
 // DASHBOARD & REPORTS
@@ -1445,43 +1653,113 @@ function renderDetailedReport(payments, utilities) {
   let html = '';
   
   if (payments.length > 0) {
-    html += `<h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin: 16px 0 10px;">💰 Rent Payments (${payments.length})</h4>`;
+    html += `<h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin: 16px 0 10px;">💰 Tenant Payment Details (${payments.length})</h4>`;
     html += `<div style="overflow-x:auto;"><table class="report-table"><thead><tr>
-      <th>Tenant</th><th>Month</th><th class="text-right">Amount (ETB)</th><th>Status</th><th>Date</th>
+      <th>#</th><th>Tenant Name</th><th>Unit</th><th class="text-right">Rent Due</th><th class="text-right">Paid</th><th class="text-right">Remaining</th><th>Status</th><th>Date</th>
     </tr></thead><tbody>`;
-    payments.forEach(p => {
+    
+    let totalDue = 0, totalPaid = 0, totalRemaining = 0;
+    
+    payments.forEach((p, idx) => {
       const tn = allTenants.find(x => x.id === p.tenantDocId);
+      const unit = allUnits.find(u => u.id === tn?.unitId);
       const sb = p.status === 'paid' ? 'badge-green' : p.status === 'partial' ? 'badge-orange' : 'badge-red';
+      
+      totalDue += p.amountDue || 0;
+      totalPaid += p.amountPaid || 0;
+      totalRemaining += p.amountRemaining || 0;
+      
       html += `<tr>
-        <td><strong>${esc(tn?.name || '?')}</strong></td>
-        <td>${esc(p.month || '')}</td>
-        <td class="text-right">${money(p.amountPaid)}</td>
+        <td>${idx + 1}</td>
+        <td><strong>${esc(tn?.name || 'Unknown')}</strong></td>
+        <td>${esc(unit?.number || '-')}</td>
+        <td class="text-right">${money(p.amountDue)}</td>
+        <td class="text-right"><strong>${money(p.amountPaid)}</strong></td>
+        <td class="text-right">${money(p.amountRemaining)}</td>
         <td><span class="badge ${sb}">${p.status}</span></td>
         <td>${esc(p.date || '')}</td>
       </tr>`;
     });
+    
+    html += `<tr style="background:var(--bg); font-weight:700;">
+      <td colspan="3">TOTAL</td>
+      <td class="text-right">${money(totalDue)}</td>
+      <td class="text-right">${money(totalPaid)}</td>
+      <td class="text-right">${money(totalRemaining)}</td>
+      <td colspan="2"></td>
+    </tr>`;
+    
     html += `</tbody></table></div>`;
   }
   
   if (utilities.length > 0) {
     html += `<h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin: 16px 0 10px;">💡 Utilities (${utilities.length})</h4>`;
     html += `<div style="overflow-x:auto;"><table class="report-table"><thead><tr>
-      <th>Type</th><th>Month</th><th class="text-right">Amount (ETB)</th><th>Status</th>
+      <th>#</th><th>Type</th><th>Unit</th><th>Month</th><th class="text-right">Amount (ETB)</th><th>Status</th>
     </tr></thead><tbody>`;
-    utilities.forEach(u => {
+    
+    let utilTotal = 0;
+    
+    utilities.forEach((u, idx) => {
+      const unit = u.unitId ? allUnits.find(x => x.id === u.unitId) : null;
       const sb = u.status === 'paid' ? 'badge-green' : 'badge-red';
+      
+      utilTotal += u.amount || 0;
+      
       html += `<tr>
-        <td><strong>${esc(u.type)}</strong>${u.unitId ? ' (' + esc(allUnits.find(x=>x.id===u.unitId)?.number || '') + ')' : ''}</td>
+        <td>${idx + 1}</td>
+        <td><strong>${esc(u.type)}</strong></td>
+        <td>${unit ? esc(unit.number) : 'Property-wide'}</td>
         <td>${esc(u.month || '')}</td>
         <td class="text-right">${money(u.amount)}</td>
         <td><span class="badge ${sb}">${u.status}</span></td>
       </tr>`;
     });
+    
+    html += `<tr style="background:var(--bg); font-weight:700;">
+      <td colspan="4">TOTAL</td>
+      <td class="text-right">${money(utilTotal)}</td>
+      <td></td>
+    </tr>`;
+    
     html += `</tbody></table></div>`;
   }
   
   el.innerHTML = html;
 }
+
+// PRINT REPORT
+window.printReport = function() {
+  const propName = currentPropertyData?.name || 'Property';
+  const reportMonth = document.getElementById('reportMonth')?.value || thisMonthStr();
+  const reportYear = document.getElementById('reportYear')?.value || new Date().getFullYear();
+  const period = currentReportView === 'monthly' ? reportMonth : reportYear;
+  const printDate = new Date().toLocaleString();
+  
+  const headerHtml = `
+    <div id="printHeader" style="display:none;">
+      <div style="text-align:center; border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
+        <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
+        <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
+        <p style="margin: 10px 0 0; font-size: 11px; color: #94a3b8;">Powered by HaniTech Property Manager</p>
+      </div>
+    </div>
+  `;
+  
+  const container = document.querySelector('.panels');
+  if (!document.getElementById('printHeader')) {
+    container.insertAdjacentHTML('afterbegin', headerHtml);
+  }
+  
+  document.getElementById('printHeader').style.display = 'block';
+  window.print();
+  
+  setTimeout(() => {
+    const ph = document.getElementById('printHeader');
+    if (ph) ph.style.display = 'none';
+  }, 500);
+};
 
 // SETTINGS
 window.saveSettings = async function() {
@@ -1604,6 +1882,37 @@ function renderPropertiesList() {
   `).join('');
 }
 
+// DANGER ZONE - DELETE ALL DATA
+window.deleteAllData = async function() {
+  if (!confirm('🚨 WARNING: This will delete ALL Units, Tenants, Payments, Utilities, and Audit Logs for the CURRENT PROPERTY. This cannot be undone!\n\nAre you absolutely sure?')) return;
+  
+  const confirmText = prompt('Type "DELETE" to confirm:');
+  if (confirmText !== 'DELETE') return showToast('Deletion cancelled', 'info');
+  
+  try {
+    showToast('Deleting all data...', 'info');
+    const pid = currentPropertyData.id;
+    
+    const collections = ['units', 'tenants_list', 'payments', 'utilities', 'audit_logs'];
+    const batch = writeBatch(db);
+    
+    for (const colName of collections) {
+      const q = query(collection(db, colName), where('propertyId', '==', pid));
+      const snap = await getDocs(q);
+      snap.forEach(d => batch.delete(d.ref));
+    }
+    
+    await batch.commit();
+    
+    allUnits = []; allTenants = []; allPayments = []; allUtilities = []; allAuditLogs = [];
+    renderUnits(); renderTenants(); renderPayments(); renderUtilities(); renderDashboard(); renderReports(); updateMobileHome(); renderAuditLogs();
+    
+    showToast('✅ All property data has been deleted');
+  } catch (e) {
+    showToast('❌ Error: ' + e.message, 'error');
+  }
+};
+
 window.changePassword = async function() {
   const newPass = document.getElementById('newPassword').value;
   if (newPass.length < 6) return showToast('Password must be at least 6 characters', 'error');
@@ -1617,12 +1926,6 @@ window.changePassword = async function() {
   }
 };
 
-window.changeLanguage = function() {
-  currentLanguage = document.getElementById('appLanguage').value;
-  updateDoc(doc(db, 'users', currentUser.uid), { language: currentLanguage }).catch(()=>{});
-  showToast('✅ Language changed');
-};
-
 window.openEmployeeModal = function() {
   document.getElementById('employeeModal').classList.add('open');
   document.getElementById('empEmail').value = '';
@@ -1632,8 +1935,11 @@ window.openEmployeeModal = function() {
 window.saveEmployee = async function() {
   const email = document.getElementById('empEmail').value.trim();
   const pass = document.getElementById('empPassword').value.trim();
-  const permPayments = document.getElementById('permPayments').checked;
-  const permUtilities = document.getElementById('permUtilities').checked;
+  const perms = {};
+  document.querySelectorAll('.perm-check').forEach(cb => {
+    perms[cb.value] = cb.checked;
+  });
+  
   if (!email || pass.length < 6) return showToast('Valid email and 6+ char password required', 'error');
   try {
     const secondaryApp = initializeApp(firebaseConfig, 'Sec-' + Date.now());
@@ -1641,7 +1947,7 @@ window.saveEmployee = async function() {
     const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
     await setDoc(doc(db, 'users', cred.user.uid), {
       email: email, role: 'employee', propertyId: currentPropertyData.id,
-      isTempPassword: true, permissions: { payments: permPayments, utilities: permUtilities },
+      isTempPassword: true, permissions: perms,
       createdAt: serverTimestamp()
     });
     await deleteApp(secondaryApp);
