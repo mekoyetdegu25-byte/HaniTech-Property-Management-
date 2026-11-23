@@ -99,10 +99,25 @@ header { background: var(--primary); color: #fff; height: 60px; flex-shrink: 0; 
 .panel { display: none; }
 .panel.active { display: block !important; }
 
-/* DESKTOP GRID LAYOUT (Card View) */
+/* DESKTOP GRID LAYOUT */
 .desktop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
 @media (max-width: 1200px) { .desktop-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 768px) { .desktop-grid { grid-template-columns: 1fr; } }
+
+/* COLLAPSIBLE CARDS */
+.collapsible { background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.coll-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; background: var(--card-bg); transition: background 0.2s; }
+.coll-header:hover { background: var(--bg); }
+.coll-header .coll-title { font-size: 15px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.coll-header .coll-arrow { font-size: 12px; color: var(--text-muted); transition: transform 0.3s; }
+.coll-header.open .coll-arrow { transform: rotate(90deg); }
+.coll-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border); }
+.coll-body.open { display: block; }
+
+/* SUPPORT & BACKUP ROW */
+.support-row { display: flex; align-items: center; gap: 8px; padding: 10px; background: var(--bg); border-radius: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text-main); border: 1px solid var(--border); }
+.support-row strong { min-width: 80px; font-size: 12px; color: var(--text-muted); }
+.support-row a { color: var(--info); text-decoration: none; font-weight: 600; }
 
 /* CARDS */
 .card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); }
@@ -225,7 +240,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   .menu-header, .subscription-banner, .action-btn, .filter-bar, 
   .btn, .modal-overlay, .toast-notification, .h-btn, .prop-selector-wrap,
   #employeeManagementCard, #auditTrailCard, #multiPropertyCard,
-  #panelReports .card:first-child, .pagination {
+  #panelReports .card:first-child, .pagination, #printHeader {
     display: none !important;
   }
   #mainApp, .main-content-wrapper, .tabs-wrapper, .panels, .panel.active { 
@@ -233,12 +248,14 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
     margin: 0 !important; overflow: visible !important; height: auto !important;
   }
   .panel.active > .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin-bottom: 20px !important; }
-  .report-table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; }
-  .report-table th, .report-table td { border: 1px solid #ccc !important; padding: 6px 8px !important; }
+  .report-table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; table-layout: fixed; }
+  .report-table th, .report-table td { border: 1px solid #ccc !important; padding: 6px 8px !important; word-wrap: break-word; }
   .report-table th { background: #f0f0f0 !important; color: #000 !important; }
   .stats-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-bottom: 20px !important; }
   .stat-card { border: 1px solid #ddd !important; border-left: 4px solid #1a365d !important; background: #fff !important; }
   .stat-card .s-label, .stat-card .s-value { color: #000 !important; }
+  #unitStatusSummary > div { display: flex !important; flex-direction: column !important; gap: 4px !important; padding: 8px 0 !important; }
+  #unitStatusSummary > div > div:first-child { display: flex !important; justify-content: space-between !important; width: 100% !important; }
   h3, h4, .card-title { color: #000 !important; }
   #printHeader { display: block !important; }
   @page { margin: 15mm; size: A4; }
@@ -333,7 +350,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
       </div>
     </div>
     <div class="h-right">
-      <!-- PROPERTY SELECTOR (Always visible) -->
+      <!-- PROPERTY SELECTOR -->
       <div class="prop-selector-wrap" id="propSelectorWrap">
         <span class="ps-icon">🏢</span>
         <select id="propSelector" onchange="switchProperty(this.value)"></select>
@@ -376,7 +393,6 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
               </div>
             </div>
           </div>
-          
           <h3 style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 16px;">⚡ Quick Actions</h3>
           <div class="qa-grid" id="dynamicQuickActions"></div>
         </div>
@@ -404,56 +420,109 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
           </div>
         </div>
 
-        <!-- UNITS -->
+        <!-- UNITS (Collapsible) -->
         <div class="panel" id="panelUnits">
-          <div class="card">
-            <div class="card-title"><span>🏢 Units</span><button class="btn btn-primary btn-sm" onclick="openUnitModal()">➕ Add Unit</button></div>
-            <div class="filter-bar" id="unitFilterBar">
-              <button class="filter-chip active" onclick="setUnitFilter('all', this)">All</button>
-              <button class="filter-chip" onclick="setUnitFilter('vacant', this)">🟢 Vacant</button>
-              <button class="filter-chip" onclick="setUnitFilter('occupied', this)">🔴 Occupied</button>
+          <div class="collapsible">
+            <div class="coll-header open" onclick="toggleCollapsible(this)">
+              <div class="coll-title">🏢 Units</div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openUnitModal()">➕ Add Unit</button>
+                <span class="coll-arrow">▶</span>
+              </div>
             </div>
-            <input type="text" id="searchUnits" placeholder="🔍 Search unit..." oninput="renderUnits()" style="margin-bottom:16px;">
-            <div id="unitsList"></div>
-            <div id="unitsPagination"></div>
+            <div class="coll-body open">
+              <div class="filter-bar" id="unitFilterBar">
+                <button class="filter-chip active" onclick="setUnitFilter('all', this)">All</button>
+                <button class="filter-chip" onclick="setUnitFilter('vacant', this)">🟢 Vacant</button>
+                <button class="filter-chip" onclick="setUnitFilter('occupied', this)">🔴 Occupied</button>
+              </div>
+              <input type="text" id="searchUnits" placeholder="🔍 Search unit..." oninput="unitsPage=1; renderUnits()" style="margin-bottom:16px;">
+              <div id="unitsList"></div>
+              <div id="unitsPagination"></div>
+            </div>
           </div>
         </div>
 
-        <!-- TENANTS -->
+        <!-- TENANTS (Collapsible + Advanced Search) -->
         <div class="panel" id="panelTenants">
-          <div class="card">
-            <div class="card-title"><span>👥 Tenants</span><button class="btn btn-primary btn-sm" onclick="openTenantModal()">➕ Add Tenant</button></div>
-            <input type="text" id="searchTenants" placeholder="🔍 Search tenant..." oninput="renderTenants()" style="margin-bottom:16px;">
-            <div id="tenantsList"></div>
-            <div id="tenantsPagination"></div>
-          </div>
-        </div>
-
-        <!-- PAYMENTS -->
-        <div class="panel" id="panelPayments">
-          <div class="card">
-            <div class="card-title"><span>💰 Rent Payments</span><button class="btn btn-primary btn-sm" onclick="openPaymentModal()">➕ Record Payment</button></div>
-            <label class="field-label" style="margin-top:0;">📅 Select Month</label>
-            <input type="month" id="paymentMonth" onchange="renderPayments()" style="margin-bottom:16px;">
-            <div class="filter-bar">
-              <button class="filter-chip active" onclick="setPaymentFilter('all', this)">All</button>
-              <button class="filter-chip" onclick="setPaymentFilter('paid', this)">✅ Paid</button>
-              <button class="filter-chip" onclick="setPaymentFilter('unpaid', this)">❌ Unpaid</button>
-              <button class="filter-chip" onclick="setPaymentFilter('partial', this)">🟡 Partial</button>
+          <div class="collapsible">
+            <div class="coll-header open" onclick="toggleCollapsible(this)">
+              <div class="coll-title">👥 Tenants</div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openTenantModal()">➕ Add Tenant</button>
+                <span class="coll-arrow">▶</span>
+              </div>
             </div>
-            <div id="paymentsList"></div>
-            <div id="paymentsPagination"></div>
+            <div class="coll-body open">
+              <input type="text" id="searchTenants" placeholder="🔍 Search by name, phone, or unit..." oninput="tenantsPage = 1; renderTenants();" style="margin-bottom:16px;">
+              <div id="tenantsList"></div>
+              <div id="tenantsPagination"></div>
+            </div>
           </div>
         </div>
 
-        <!-- UTILITIES -->
+        <!-- PAYMENTS (Collapsible + Advanced Search) -->
+        <div class="panel" id="panelPayments">
+          <div class="collapsible">
+            <div class="coll-header open" onclick="toggleCollapsible(this)">
+              <div class="coll-title">💰 Rent Payments</div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openPaymentModal()">➕ Record Payment</button>
+                <span class="coll-arrow">▶</span>
+              </div>
+            </div>
+            <div class="coll-body open">
+              <div class="filter-bar">
+                <input type="month" id="paymentMonth" onchange="paymentsPage=1; renderPayments()" style="width:auto; margin-bottom:0;">
+                <input type="text" id="searchPayments" placeholder="🔍 Search tenant..." oninput="paymentsPage = 1; renderPayments();" style="flex:1; min-width:150px; margin-bottom:0;">
+                <select id="paymentMethodFilter" onchange="paymentsPage = 1; renderPayments()" style="width:auto; margin-bottom:0; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:600; background:var(--card-bg);">
+                  <option value="all">💳 All Methods</option>
+                  <option value="cash">💵 Cash</option>
+                  <option value="bank">🏦 Bank</option>
+                  <option value="telebirr">📱 Telebirr</option>
+                </select>
+              </div>
+              <div class="filter-bar">
+                <button class="filter-chip active" onclick="setPaymentFilter('all', this)">All</button>
+                <button class="filter-chip" onclick="setPaymentFilter('paid', this)">✅ Paid</button>
+                <button class="filter-chip" onclick="setPaymentFilter('unpaid', this)">❌ Unpaid</button>
+                <button class="filter-chip" onclick="setPaymentFilter('partial', this)">🟡 Partial</button>
+              </div>
+              <div id="paymentsList"></div>
+              <div id="paymentsPagination"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UTILITIES (Collapsible + Advanced Search) -->
         <div class="panel" id="panelUtilities">
-          <div class="card">
-            <div class="card-title"><span>💡 Utilities</span><button class="btn btn-primary btn-sm" onclick="openUtilityModal()">➕ Add Utility</button></div>
-            <label class="field-label" style="margin-top:0;">📅 Select Month</label>
-            <input type="month" id="utilityMonth" onchange="renderUtilities()" style="margin-bottom:16px;">
-            <div id="utilitiesList"></div>
-            <div id="utilitiesPagination"></div>
+          <div class="collapsible">
+            <div class="coll-header open" onclick="toggleCollapsible(this)">
+              <div class="coll-title">💡 Utilities</div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openUtilityModal()">➕ Add Utility</button>
+                <span class="coll-arrow">▶</span>
+              </div>
+            </div>
+            <div class="coll-body open">
+              <div class="filter-bar">
+                <input type="month" id="utilityMonth" onchange="utilitiesPage=1; renderUtilities()" style="width:auto; margin-bottom:0;">
+                <select id="utilityTypeFilter" onchange="utilitiesPage = 1; renderUtilities()" style="width:auto; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:600; background:var(--card-bg);">
+                  <option value="all">📁 All Types</option>
+                  <option value="water">💧 Water</option>
+                  <option value="electricity">⚡ Electricity</option>
+                  <option value="gas">🔥 Gas</option>
+                  <option value="internet">🌐 Internet</option>
+                  <option value="maintenance">🔧 Maintenance</option>
+                  <option value="security">🛡️ Security</option>
+                  <option value="cleaning">🧹 Cleaning</option>
+                  <option value="parking">🅿️ Parking</option>
+                  <option value="other">📦 Other</option>
+                </select>
+              </div>
+              <div id="utilitiesList"></div>
+              <div id="utilitiesPagination"></div>
+            </div>
           </div>
         </div>
 
@@ -466,47 +535,40 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
                 <button class="btn btn-outline btn-sm" onclick="printReport()" style="margin-top:0;">🖨️ Print</button>
               </div>
               <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-  <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
-  <button class="filter-chip" id="btnQuarterlyReport" onclick="switchReportView('quarterly')">📆 Quarterly</button>
-  <button class="filter-chip" id="btnSemiAnnualReport" onclick="switchReportView('semiannual')">📅 Semi-Annual</button>
-  <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📅 Yearly</button>
-</div>
-
-<!-- Monthly Section -->
-<div id="monthlyReportSection">
-  <label class="field-label" style="margin-top:0;">📅 Month</label>
-  <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
-</div>
-
-<!-- Quarterly Section -->
-<div id="quarterlyReportSection" style="display:none;">
-  <label class="field-label" style="margin-top:0;">📅 Year</label>
-  <input type="number" id="reportQuarterYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
-  <label class="field-label">📅 Quarter</label>
-  <select id="reportQuarter" onchange="renderReports()" style="margin-bottom:16px;">
-    <option value="Q1">Q1 (Jan - Mar)</option>
-    <option value="Q2">Q2 (Apr - Jun)</option>
-    <option value="Q3">Q3 (Jul - Sep)</option>
-    <option value="Q4">Q4 (Oct - Dec)</option>
-  </select>
-</div>
-
-<!-- Semi-Annual Section -->
-<div id="semiAnnualReportSection" style="display:none;">
-  <label class="field-label" style="margin-top:0;">📅 Year</label>
-  <input type="number" id="reportSemiYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
-  <label class="field-label">📅 Half</label>
-  <select id="reportSemi" onchange="renderReports()" style="margin-bottom:16px;">
-    <option value="H1">H1 (Jan - Jun)</option>
-    <option value="H2">H2 (Jul - Dec)</option>
-  </select>
-</div>
-
-<!-- Yearly Section -->
-<div id="yearlyReportSection" style="display:none;">
-  <label class="field-label" style="margin-top:0;">📅 Year</label>
-  <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
-</div>
+                <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
+                <button class="filter-chip" id="btnQuarterlyReport" onclick="switchReportView('quarterly')">📆 Quarterly</button>
+                <button class="filter-chip" id="btnSemiAnnualReport" onclick="switchReportView('semiannual')">📅 Semi-Annual</button>
+                <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📅 Yearly</button>
+              </div>
+              
+              <div id="monthlyReportSection">
+                <label class="field-label" style="margin-top:0;">📅 Month</label>
+                <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
+              </div>
+              <div id="quarterlyReportSection" style="display:none;">
+                <label class="field-label" style="margin-top:0;">📅 Year</label>
+                <input type="number" id="reportQuarterYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
+                <label class="field-label">📅 Quarter</label>
+                <select id="reportQuarter" onchange="renderReports()" style="margin-bottom:16px;">
+                  <option value="Q1">Q1 (Jan - Mar)</option>
+                  <option value="Q2">Q2 (Apr - Jun)</option>
+                  <option value="Q3">Q3 (Jul - Sep)</option>
+                  <option value="Q4">Q4 (Oct - Dec)</option>
+                </select>
+              </div>
+              <div id="semiAnnualReportSection" style="display:none;">
+                <label class="field-label" style="margin-top:0;">📅 Year</label>
+                <input type="number" id="reportSemiYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
+                <label class="field-label">📅 Half</label>
+                <select id="reportSemi" onchange="renderReports()" style="margin-bottom:16px;">
+                  <option value="H1">H1 (Jan - Jun)</option>
+                  <option value="H2">H2 (Jul - Dec)</option>
+                </select>
+              </div>
+              <div id="yearlyReportSection" style="display:none;">
+                <label class="field-label" style="margin-top:0;">📅 Year</label>
+                <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
+              </div>
 
               <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
@@ -560,9 +622,27 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
               </div>
             </div>
 
+            <!-- SUPPORT INFO -->
+            <div class="card">
+              <div class="card-title"><span>📞 Support Info</span></div>
+              <div class="support-row"><strong>Phone:</strong> <span id="supPhoneDisplay">Loading...</span></div>
+              <div class="support-row"><strong>Email:</strong> <span id="supEmailDisplay">Loading...</span></div>
+              <div class="support-row"><strong>Telegram:</strong> <span id="supTgDisplay">Loading...</span></div>
+            </div>
+
+            <!-- BACKUP & RESTORE -->
+            <div class="card">
+              <div class="card-title"><span>💾 Backup & Restore</span></div>
+              <button class="btn btn-info" onclick="exportBackup()" style="margin-bottom:8px;">📥 Download Backup (JSON)</button>
+              <button class="btn btn-warning" onclick="document.getElementById('restoreFile').click()">📤 Restore from Backup</button>
+              <input type="file" id="restoreFile" accept=".json" style="display:none;" onchange="importBackup(event)">
+              <div id="backupStatus" style="margin-top:10px; font-size:13px; font-weight:600;"></div>
+            </div>
+
             <div class="card" id="employeeManagementCard" style="display:none;">
               <div class="card-title"><span>👥 Employee Management</span><button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">➕ Add Employee</button></div>
               <div id="employeesList"></div>
+              <div id="employeesPagination"></div>
             </div>
             
             <div class="card" id="auditTrailCard" style="display:none;">
@@ -571,6 +651,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
                 <button class="btn btn-danger btn-sm" onclick="clearAuditTrail()">🗑️ Clear All</button>
               </div>
               <div id="auditTrailList" style="max-height: 300px; overflow-y: auto;"></div>
+              <div id="auditPagination"></div>
             </div>
 
             <div class="card">
@@ -708,7 +789,6 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
     </div>
   </div>
 </div>
-
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
@@ -742,10 +822,10 @@ let unitFilter = 'all', paymentFilter = 'all';
 let unsubUnits, unsubTenants, unsubPayments, unsubUtilities, unsubEmployees, unsubAudit;
 
 // PAGINATION STATE
-let unitsPage = 1, tenantsPage = 1, paymentsPage = 1, utilitiesPage = 1;
+let unitsPage = 1, tenantsPage = 1, paymentsPage = 1, utilitiesPage = 1, employeesPage = 1, auditPage = 1;
 const PAGE_SIZE = 10;
 
-// TRANSLATIONS (Simplified for demonstration)
+// TRANSLATIONS (Simplified)
 const TRANSLATIONS = {
   en: { dashboard: "Dashboard", units: "Units", tenants: "Tenants", payments: "Payments", utilities: "Utilities", reports: "Reports", settings: "Settings", home: "Home", save_settings: "Save Settings", add_property: "Add Property" },
   am: { dashboard: "ዳሽቦርድ", units: "ክፍሎች", tenants: "ተከራዮች", payments: "ክፍያዎች", utilities: "መገልገያዎች", reports: "ሪፖርቶች", settings: "ቅንብሮች", home: "መነሻ", save_settings: "ቅንብሮችን አስቀምጥ", add_property: "ፕሮፐርቲ ጨምር" }
@@ -797,18 +877,14 @@ function checkSubscription() {
   if (!currentPropertyData) return;
   const expiry = currentPropertyData.expiryDate;
   if (!expiry) return;
-  
   const expiryDate = new Date(expiry);
   const today = new Date();
   const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
-  
   let isHidden = false;
   try { isHidden = sessionStorage.getItem('bannerHidden') === 'true'; } catch (e) { isHidden = false; }
   if (isHidden) return;
-  
   const banner = document.getElementById('subscriptionBanner');
   const text = document.getElementById('subscriptionBannerText');
-  
   if (daysLeft < 0) {
     text.textContent = `🚫 Subscription expired ${Math.abs(daysLeft)} days ago. Please renew immediately.`;
     banner.classList.add('show');
@@ -936,6 +1012,8 @@ async function loadUserData(user) {
     document.getElementById('utilityMonth').value = thisMonthStr();
     document.getElementById('reportMonth').value = thisMonthStr();
     document.getElementById('reportYear').value = new Date().getFullYear();
+    document.getElementById('reportQuarterYear').value = new Date().getFullYear();
+    document.getElementById('reportSemiYear').value = new Date().getFullYear();
 
     document.getElementById('settingPropertyName').value = currentPropertyData.name || '';
     document.getElementById('settingPropertyPhone').value = currentPropertyData.phone || '';
@@ -946,7 +1024,7 @@ async function loadUserData(user) {
       document.getElementById('auditTrailCard').style.display = 'block';
     }
     
-    applyTranslations();
+    loadSupportInfo();
     renderSidebar();
     renderMobileNav();
     renderQuickActions();
@@ -1013,33 +1091,12 @@ window.forceFirstLoginPasswordChange = async function() {
   }
 };
 
-// LANGUAGE TRANSLATIONS
-function applyTranslations() {
-  const elements = document.querySelectorAll('[data-i18n]');
-  elements.forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const translated = t(key);
-    if (translated) {
-      // Only change text if not containing HTML
-      if (!el.innerHTML.includes('<')) el.textContent = translated;
-    }
-  });
-}
-
-window.changeLanguage = function(lang) {
-  currentLanguage = lang;
-  updateDoc(doc(db, 'users', currentUser.uid), { language: lang }).catch(()=>{});
-  applyTranslations();
-  renderSidebar();
-  renderMobileNav();
-  renderQuickActions();
-  renderDashboard();
-  renderUnits();
-  renderTenants();
-  renderPayments();
-  renderUtilities();
-  renderReports();
-  showToast(lang === 'am' ? '✅ ቋንቋ ወደ አማርኛ ተቀይሯል' : '✅ Language changed to English');
+// COLLAPSIBLE FUNCTION
+window.toggleCollapsible = function(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
 };
 
 // SINGLE UNIFIED REALTIME DATA LOADER
@@ -1195,6 +1252,8 @@ window.changeUnitsPage = function(page) { unitsPage = page; renderUnits(); };
 window.changeTenantsPage = function(page) { tenantsPage = page; renderTenants(); };
 window.changePaymentsPage = function(page) { paymentsPage = page; renderPayments(); };
 window.changeUtilitiesPage = function(page) { utilitiesPage = page; renderUtilities(); };
+window.changeEmployeesPage = function(page) { employeesPage = page; renderEmployees(); };
+window.changeAuditPage = function(page) { auditPage = page; renderAuditLogs(); };
 
 // UNITS
 window.openUnitModal = function(id = null) {
@@ -1290,7 +1349,6 @@ function renderUnits() {
 window.openTenantModal = function(id = null) {
   editingTenantId = id;
   document.getElementById('tenantModalTitle').textContent = id ? '✏️ Edit Tenant' : '➕ Add Tenant';
-  
   const curUnit = id ? allTenants.find(t => t.id === id)?.unitId : null;
   const avail = allUnits.filter(u => (u.status === 'vacant' || u.id === curUnit));
   document.getElementById('tenantUnit').innerHTML = '<option value="">-- Select --</option>' + avail.map(u => `<option value="${u.id}">${esc(u.number)} (${money(u.rent)} ETB)</option>`).join('');
@@ -1368,9 +1426,18 @@ window.deleteTenant = async function(id) {
 function renderTenants() {
   const el = document.getElementById('tenantsList');
   if (!el) return;
-  const search = (document.getElementById('searchTenants')?.value || '').toLowerCase();
+  const search = (document.getElementById('searchTenants')?.value || '').toLowerCase().trim();
   let f = allTenants.filter(t => t.active !== false);
-  if (search) f = f.filter(t => (t.name||'').toLowerCase().includes(search) || (t.phone||'').toLowerCase().includes(search));
+  
+  if (search) {
+    f = f.filter(t => {
+      const unit = allUnits.find(u => u.id === t.unitId);
+      const unitNum = (unit?.number || '').toLowerCase();
+      const tName = (t.name || '').toLowerCase();
+      const tPhone = (t.phone || '').toLowerCase();
+      return tName.includes(search) || tPhone.includes(search) || unitNum.includes(search);
+    });
+  }
   
   const totalFiltered = f.length;
   const startIdx = (tenantsPage - 1) * PAGE_SIZE;
@@ -1479,21 +1546,36 @@ window.setPaymentFilter = function(f, el) {
 function renderPayments() {
   const el = document.getElementById('paymentsList');
   if (!el) return;
+  
   const month = document.getElementById('paymentMonth')?.value || thisMonthStr();
+  const search = (document.getElementById('searchPayments')?.value || '').toLowerCase().trim();
+  const methodFilter = document.getElementById('paymentMethodFilter')?.value || 'all';
+  
   let f = allPayments.filter(p => p.month === month);
+  
   if (paymentFilter === 'paid') f = f.filter(p => p.status === 'paid');
   if (paymentFilter === 'unpaid') f = f.filter(p => p.status === 'unpaid');
   if (paymentFilter === 'partial') f = f.filter(p => p.status === 'partial');
+  if (methodFilter !== 'all') f = f.filter(p => p.method === methodFilter);
+  
+  if (search) {
+    f = f.filter(p => {
+      const tn = allTenants.find(x => x.id === p.tenantDocId);
+      return (tn?.name || '').toLowerCase().includes(search);
+    });
+  }
   
   const totalFiltered = f.length;
   const startIdx = (paymentsPage - 1) * PAGE_SIZE;
   f = f.slice(startIdx, startIdx + PAGE_SIZE);
   
   if (f.length === 0) { 
-    el.innerHTML = `<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No payments</div></div>`; 
+    el.innerHTML = `<div class="empty-state"><div class="e-icon">💰</div><div class="e-title">No payments found</div></div>`; 
     renderPagination('paymentsPagination', 0, 1, 'changePaymentsPage');
     return; 
   }
+  
+  const methodIcons = { cash: '💵', bank: '🏦', telebirr: '📱' };
   
   el.innerHTML = f.map(p => {
     const t = allTenants.find(x => x.id === p.tenantDocId);
@@ -1502,7 +1584,7 @@ function renderPayments() {
       <div class="list-row-icon" style="background:rgba(16,185,129,.15);">💰</div>
       <div class="list-row-info">
         <div class="list-row-title">${esc(t?.name || 'Unknown')} ${sb}</div>
-        <div class="list-row-sub">💵 Paid: <strong>${money(p.amountPaid)}</strong> / Due: ${money(p.amountDue)}<br>📅 ${esc(p.date)}</div>
+        <div class="list-row-sub">💵 Paid: <strong>${money(p.amountPaid)}</strong> / Due: ${money(p.amountDue)}<br>📅 ${esc(p.date)} • ${methodIcons[p.method] || ''} ${esc(p.method || '')}</div>
       </div>
       <div class="list-row-actions"><button class="action-btn" onclick="deletePayment('${p.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button></div>
     </div>`;
@@ -1544,15 +1626,22 @@ window.deleteUtility = async function(id) {
 function renderUtilities() {
   const el = document.getElementById('utilitiesList');
   if (!el) return;
+  
   const month = document.getElementById('utilityMonth')?.value || thisMonthStr();
+  const typeFilter = document.getElementById('utilityTypeFilter')?.value || 'all';
+  
   let f = allUtilities.filter(u => u.month === month);
+  
+  if (typeFilter !== 'all') {
+    f = f.filter(u => u.type === typeFilter);
+  }
   
   const totalFiltered = f.length;
   const startIdx = (utilitiesPage - 1) * PAGE_SIZE;
   f = f.slice(startIdx, startIdx + PAGE_SIZE);
   
   if (f.length === 0) { 
-    el.innerHTML = `<div class="empty-state"><div class="e-icon">💡</div><div class="e-title">No utilities</div></div>`; 
+    el.innerHTML = `<div class="empty-state"><div class="e-icon">💡</div><div class="e-title">No utilities found</div></div>`; 
     renderPagination('utilitiesPagination', 0, 1, 'changeUtilitiesPage');
     return; 
   }
@@ -1686,7 +1775,6 @@ function renderReports() {
   document.getElementById('repNet').textContent = money(revenue - expenses);
   document.getElementById('repUnpaid').textContent = money(unpaid);
   
-  // Store current period label globally for print
   window.currentReportPeriodLabel = periodLabel;
 
   const types = {};
@@ -1788,7 +1876,7 @@ function renderDetailedReport(payments, utilities) {
     html += `</tbody></table></div>`;
   }
   
-  // ========== TENANT LIST SUMMARY (Added as requested) ==========
+  // TENANT LIST SUMMARY
   html += `<h4 style="font-size:13px; font-weight:700; color:var(--text-main); margin: 24px 0 10px;">👥 Tenant List Summary</h4>`;
   html += `<div style="overflow-x:auto;"><table class="report-table"><thead><tr>
     <th>#</th><th>Tenant Name</th><th>Phone</th><th>Unit</th><th class="text-right">Monthly Rent</th><th>Contract End</th>
@@ -1827,7 +1915,6 @@ window.printReport = function() {
         <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
         <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
         <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
-        <!-- "Powered by HaniTech" has been removed as requested -->
       </div>
     </div>
   `;
@@ -1836,7 +1923,6 @@ window.printReport = function() {
   if (!document.getElementById('printHeader')) {
     container.insertAdjacentHTML('afterbegin', headerHtml);
   } else {
-    // Update existing header
     document.getElementById('printHeader').innerHTML = `
       <div style="text-align:center; border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 20px;">
         <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
@@ -2055,8 +2141,13 @@ function renderEmployees() {
   const el = document.getElementById('employeesList');
   if (!el) return;
   const emps = allEmployees.filter(e => e.role === 'employee');
-  if (emps.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">No employees</div></div>`; return; }
-  el.innerHTML = emps.map(e => `
+  const totalFiltered = emps.length;
+  const startIdx = (employeesPage - 1) * PAGE_SIZE;
+  const pageEmps = emps.slice(startIdx, startIdx + PAGE_SIZE);
+  
+  if (pageEmps.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">No employees</div></div>`; renderPagination('employeesPagination', 0, 1, 'changeEmployeesPage'); return; }
+  
+  el.innerHTML = pageEmps.map(e => `
     <div class="list-row">
       <div class="list-row-icon">👷</div>
       <div class="list-row-info">
@@ -2065,14 +2156,20 @@ function renderEmployees() {
       </div>
     </div>
   `).join('');
+  renderPagination('employeesPagination', totalFiltered, employeesPage, 'changeEmployeesPage');
 }
 
 // AUDIT TRAIL
 function renderAuditLogs() {
   const el = document.getElementById('auditTrailList');
   if (!el) return;
-  if (allAuditLogs.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">📝</div><div class="e-title">No activity yet</div></div>`; return; }
-  el.innerHTML = allAuditLogs.map(log => {
+  const totalFiltered = allAuditLogs.length;
+  const startIdx = (auditPage - 1) * PAGE_SIZE;
+  const pageLogs = allAuditLogs.slice(startIdx, startIdx + PAGE_SIZE);
+  
+  if (pageLogs.length === 0) { el.innerHTML = `<div class="empty-state"><div class="e-icon">📝</div><div class="e-title">No activity yet</div></div>`; renderPagination('auditPagination', 0, 1, 'changeAuditPage'); return; }
+  
+  el.innerHTML = pageLogs.map(log => {
     const date = log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleString() : 'N/A';
     return `<div style="padding:10px 0; border-bottom:1px solid var(--border);">
       <div style="font-size:12px; font-weight:700; color:var(--primary);">${esc(log.action)}</div>
@@ -2080,6 +2177,7 @@ function renderAuditLogs() {
       <div style="font-size:11px; color:var(--text-muted);">👤 ${esc(log.userName)} • 📅 ${date}</div>
     </div>`;
   }).join('');
+  renderPagination('auditPagination', totalFiltered, auditPage, 'changeAuditPage');
 }
 
 window.clearAuditTrail = async function() {
@@ -2095,6 +2193,69 @@ window.clearAuditTrail = async function() {
     renderAuditLogs();
     showToast('✅ All logs cleared');
   } catch (e) { showToast('❌ ' + e.message, 'error'); }
+};
+
+// SUPPORT INFO & BACKUP
+async function loadSupportInfo() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'support'));
+    if (snap.exists()) {
+      const d = snap.data();
+      document.getElementById('supPhoneDisplay').textContent = d.phone || 'Not set';
+      document.getElementById('supEmailDisplay').textContent = d.email || 'Not set';
+      document.getElementById('supTgDisplay').textContent = d.telegram || 'Not set';
+    } else {
+      document.getElementById('supPhoneDisplay').textContent = 'Not set';
+      document.getElementById('supEmailDisplay').textContent = 'Not set';
+      document.getElementById('supTgDisplay').textContent = 'Not set';
+    }
+  } catch (e) { console.error(e); }
+}
+
+window.exportBackup = async function() {
+  try {
+    const pid = currentPropertyData.id;
+    let data = { property: currentPropertyData, units: allUnits, tenants: allTenants, payments: allPayments, utilities: allUtilities };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup-${pid}-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✅ Backup downloaded');
+  } catch (e) { showToast('❌ ' + e.message, 'error'); }
+};
+
+window.importBackup = async function(event) {
+  const file = event.target.files[0]; if (!file) return;
+  if (!confirm('⚠️ This will replace your current data. Are you sure?')) { event.target.value = ''; return; }
+  const status = document.getElementById('backupStatus');
+  status.textContent = '⏳ Restoring...'; status.style.color = 'var(--warning)';
+  
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.property || data.property.id !== currentPropertyData.id) {
+        throw new Error('Backup does not match current property');
+      }
+      const batch = writeBatch(db);
+      (data.units || []).forEach(u => batch.set(doc(db, 'units', u.id), u));
+      (data.tenants || []).forEach(t => batch.set(doc(db, 'tenants_list', t.id), t));
+      (data.payments || []).forEach(p => batch.set(doc(db, 'payments', p.id), p));
+      (data.utilities || []).forEach(ut => batch.set(doc(db, 'utilities', ut.id), ut));
+      
+      await batch.commit();
+      status.textContent = '✅ Restored successfully'; status.style.color = 'var(--success)';
+      showToast('✅ Data restored');
+      refreshData();
+    } catch (err) {
+      status.textContent = '❌ ' + err.message; status.style.color = 'var(--danger)';
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 };
 
 // INITIALIZATION
