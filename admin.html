@@ -70,24 +70,32 @@
   .coll-body { display: none; padding: 0 16px 16px; border-top: 1px solid #edf2f7; padding-top: 14px; }
   .coll-body.open { display: block; }
 
-  .tenant-card { background: #fff; border: 1px solid #edf2f7; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-  .tenant-card.expired { border-color: #fed7d7; background: #fffafa; }
-  .tenant-card.suspended { border-color: #fed7d7; background: #fff5f5; opacity: 0.85; }
-  .tenant-header { display: flex; justify-content: space-between; border-bottom: 1px dashed #edf2f7; padding-bottom: 10px; margin-bottom: 10px; gap: 8px; }
-  .tenant-title { font-size: 15px; font-weight: 800; color: #2c5282; }
-  .tenant-website { font-size: 11px; color: #3182ce; text-decoration: none; word-break: break-all; }
+  .tenant-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .tenant-card.expired { border-color: #fbd38d; background: #fffaf0; }
+  .tenant-card.suspended { border-color: #feb2b2; background: #fff5f5; opacity: 0.92; }
+  .tenant-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; margin-bottom: 10px; gap: 8px; }
+  .tenant-title { font-size: 15px; font-weight: 800; color: #1a365d; }
+  .tenant-sub { font-size: 11px; color: #4a5568; margin-top: 3px; word-break: break-all; }
+
+  .sub-prop-list { background: #f8fafc; border: 1px solid #edf2f7; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+  .sub-prop-item { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
+  .sub-prop-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .sub-prop-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sub-prop-name { font-size: 13px; font-weight: 700; color: #2c5282; }
+  .sub-prop-addr { font-size: 11px; color: #718096; }
+  .sub-prop-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
   .tenant-emails { display: grid; gap: 5px; margin-bottom: 10px; background: #f7fafc; padding: 10px; border-radius: 8px; }
   .tenant-email-item { font-size: 11px; color: #4a5568; display: flex; gap: 6px; word-break: break-all; }
   .tenant-email-item strong { color: #2d3748; min-width: 75px; }
   .tenant-info { font-size: 12px; margin-bottom: 5px; color: #4a5568; }
   .tenant-info strong { color: #2d3748; }
-  .badge-status { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; margin-top: 6px; }
+  .badge-status { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; margin-top: 4px; }
   .status-active { background: #c6f6d5; color: #22543d; }
   .status-expired { background: #feebc8; color: #7b341e; }
   .status-suspended { background: #fed7d7; color: #822727; }
   .tenant-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
   .tenant-actions .btn { margin-bottom: 0; }
-  .tenant-actions .btn-full { grid-column: span 2; }
 
   .empty { text-align: center; padding: 30px 16px; color: #a0aec0; }
   .empty .emoji { font-size: 36px; margin-bottom: 8px; }
@@ -101,10 +109,10 @@
 
   #modalOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2500; align-items: center; justify-content: center; padding: 20px; }
   #modalOverlay.show { display: flex; }
-  .modal-box { background: #fff; border-radius: 16px; padding: 24px; max-width: 400px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .modal-box { background: #fff; border-radius: 16px; padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; }
   .modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #1a365d; }
-  .modal-box p { font-size: 14px; color: #4a5568; margin-bottom: 18px; line-height: 1.5; }
-  .modal-actions { display: flex; gap: 8px; }
+  .modal-box p { font-size: 14px; color: #4a5568; margin-bottom: 18px; line-height: 1.5; white-space: pre-line; }
+  .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
   #bottomNav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; z-index: 100; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
   .bn-inner { display: flex; justify-content: space-around; padding: 6px 0; }
@@ -119,8 +127,7 @@
     .hamburger { display: none; }
     #bottomNav { display: none !important; }
     .stats-grid { grid-template-columns: repeat(4, 1fr); }
-    .tenant-actions { grid-template-columns: repeat(3, 1fr); }
-    .tenant-actions .btn-full { grid-column: span 1; }
+    .tenant-actions { grid-template-columns: repeat(4, 1fr); }
   }
   @media (max-width: 767px) {
     #bottomNav { display: block; }
@@ -160,7 +167,7 @@
         <span class="icon">📊</span><span>Dashboard</span>
       </div>
       <div class="sb-item" data-section="properties" onclick="switchSection('properties')">
-        <span class="icon">🏢</span><span>Properties</span>
+        <span class="icon">🏢</span><span>Properties & Owners</span>
       </div>
       <div class="sb-item" data-section="users" onclick="switchSection('users')">
         <span class="icon">👥</span><span>Users</span>
@@ -198,14 +205,14 @@
     <section class="section active" id="section-dashboard">
       <div class="alert-banner" id="paymentBanner">⚠️ <span id="paymentBannerText"></span></div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="value val-blue" id="statTotalTenants">0</div><div class="label">📊 ህንፃዎች</div></div>
-        <div class="stat-card"><div class="value val-green" id="statActive">0</div><div class="label">✅ ንቁ</div></div>
-        <div class="stat-card"><div class="value val-orange" id="statExpired">0</div><div class="label">⏳ ጊዜው አልፏል</div></div>
+        <div class="stat-card"><div class="value val-blue" id="statTotalTenants">0</div><div class="label">🏢 ጠቅላላ ህንፃዎች</div></div>
+        <div class="stat-card"><div class="value val-green" id="statActive">0</div><div class="label">✅ ንቁ ህንፃዎች</div></div>
+        <div class="stat-card"><div class="value val-orange" id="statExpired">0</div><div class="label">⏳ ጊዜው ያለፈ</div></div>
         <div class="stat-card"><div class="value val-red" id="statSuspended">0</div><div class="label">❌ የታገዱ</div></div>
       </div>
       <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
-        <div class="stat-card"><div class="value val-green" id="statPaid">0.00</div><div class="label">💰 የተከፈለ</div></div>
-        <div class="stat-card"><div class="value val-orange" id="statUnpaid">0.00</div><div class="label">⏳ ያልተከፈለ</div></div>
+        <div class="stat-card"><div class="value val-green" id="statPaid">0.00</div><div class="label">💰 የተከፈለ (ወርሃዊ ግምት)</div></div>
+        <div class="stat-card"><div class="value val-orange" id="statUnpaid">0.00</div><div class="label">⏳ ያልተከፈለ / የታገደ</div></div>
       </div>
       <div class="card">
         <div class="card-title">🆕 አዳዲስ ህንፃዎች</div>
@@ -217,7 +224,7 @@
     <section class="section" id="section-properties">
       <div class="collapsible">
         <div class="coll-header" onclick="toggleColl(this)">
-          <div class="coll-title">➕ አዲስ ህንፃ ጨምር</div>
+          <div class="coll-title">➕ አዲስ ህንፃ / ደንበኛ ጨምር</div>
           <span class="coll-arrow">▶</span>
         </div>
         <div class="coll-body">
@@ -241,7 +248,7 @@
 
       <div class="card">
         <div style="display:flex; gap:8px; margin-bottom:12px; flex-direction:column;">
-          <input type="text" id="searchTenant" placeholder="🔍 ፈልግ..." oninput="renderTenantList()">
+          <input type="text" id="searchTenant" placeholder="🔍 በህንፃ ስም፣ በ Owner Email ወይም በአድራሻ ፈልግ..." oninput="renderTenantList()">
           <select id="filterStatus" onchange="renderTenantList()">
             <option value="all">ሁሉም ሁኔታ</option>
             <option value="active">✅ ንቁ</option>
@@ -347,7 +354,6 @@
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, getDocs, query, doc, updateDoc, getDoc, setDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-  // ⚠️ የእርስዎ Firebase Config (ከ index.html ጋር አንድ መሆን አለበት)
   const firebaseConfig = {
     apiKey: "AIzaSyBIrLhJyv2OY6QfTHPg_MRWMRX38qOFUPA",
     authDomain: "hanitech--property-management.firebaseapp.com",
@@ -360,10 +366,62 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const SUPER_ADMIN_EMAIL = "admin@hanitech.com"; // ⚠️ የአድሚን ኢሜል
+  const SUPER_ADMIN_EMAIL = "admin@hanitech.com";
 
   let allTenants = [], allUsers = [], allPasswordRequests = [];
   let allSupportInfo = { phone: '', email: '', telegram: '' };
+
+  function esc(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function getGroupKey(t) {
+    const email = (t.ownerEmail || '').trim().toLowerCase();
+    return email ? `owner:${email}` : `doc:${t.id}`;
+  }
+
+  function groupPropertiesByOwner(list) {
+    const map = new Map();
+    for (const prop of list) {
+      const key = getGroupKey(prop);
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          ownerEmail: (prop.ownerEmail || '').trim(),
+          properties: []
+        });
+      }
+      map.get(key).properties.push(prop);
+    }
+    return Array.from(map.values()).map(group => {
+      const props = group.properties;
+      const primary = props[0];
+      const plan = props.some(p => (p.plan || 'basic') === 'pro') ? 'pro' : (primary.plan || 'basic');
+      const isSuspended = props.every(p => !!p.isSuspended);
+      const anySuspended = props.some(p => !!p.isSuspended);
+      const expiryDates = props.map(p => p.expiryDate).filter(Boolean).sort();
+      const latestExpiry = expiryDates[expiryDates.length - 1] || '';
+      const totalAmount = props.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+      const totalHistoryCount = props.reduce((sum, p) => sum + ((p.paymentHistory || []).length), 0);
+      return {
+        ...group,
+        primary,
+        plan,
+        isSuspended,
+        anySuspended,
+        expiryDate: latestExpiry,
+        totalAmount,
+        totalHistoryCount,
+        managerEmail: props.map(p => p.managerEmail).find(Boolean) || '',
+        accountantEmail: props.map(p => p.accountantEmail).find(Boolean) || ''
+      };
+    });
+  }
 
   // ===== TOAST =====
   window.toast = function(msg, type = 'info') {
@@ -408,9 +466,9 @@
     if (sec) sec.classList.add('active');
     document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.section === name));
     document.querySelectorAll('.bn-item').forEach(i => i.classList.toggle('active', i.dataset.section === name));
-    const titles = { dashboard: '📊 Dashboard', properties: '🏢 Properties', users: '👥 Users', billing: '💰 Billing', passwords: '🔔 Password Requests', support: '📞 Support Info', data: '💾 Data Management' };
+    const titles = { dashboard: '📊 Dashboard', properties: '🏢 Properties & Owners', users: '👥 Users', billing: '💰 Billing', passwords: '🔔 Password Requests', support: '📞 Support Info', data: '💾 Data Management' };
     document.getElementById('pageTitle').textContent = titles[name] || 'Admin';
-    if (window.innerWidth < 768) toggleSidebar();
+    if (window.innerWidth < 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
   };
 
   window.openMoreMenu = async function() {
@@ -435,7 +493,7 @@
     const password = document.getElementById('loginPassword').value;
     const errEl = document.getElementById('loginError');
     errEl.style.display = 'none';
-    if (email !== SUPER_ADMIN_EMAIL) {
+    if (email.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase()) {
       errEl.textContent = '⚠️ እርስዎ Super Admin አይደሉም!';
       errEl.style.display = 'block';
       return;
@@ -451,7 +509,7 @@
   window.adminLogout = function() { signOut(auth); };
 
   onAuthStateChanged(auth, (user) => {
-    if (user && user.email === SUPER_ADMIN_EMAIL) {
+    if (user && user.email && user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       document.getElementById('userChip').textContent = user.email.split('@')[0];
@@ -507,7 +565,7 @@
     allTenants.forEach(t => {
       const amt = parseFloat(t.amount) || 0;
       if (t.isSuspended) { suspended++; unpaid += amt; }
-      else if (t.expiryDate && t.expiryDate < today) { expired++; unpaid += amt; expiredNames.push(t.name); }
+      else if (t.expiryDate && t.expiryDate < today) { expired++; unpaid += amt; expiredNames.push(t.name || t.id); }
       else { active++; paid += amt; }
     });
     document.getElementById('statTotalTenants').textContent = allTenants.length;
@@ -527,10 +585,13 @@
     const el = document.getElementById('recentProperties');
     if (allTenants.length === 0) { el.innerHTML = '<div class="empty"><div class="emoji">📭</div><p>ምንም ህንፃ የለም</p></div>'; return; }
     const sorted = [...allTenants].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 5);
-    el.innerHTML = sorted.map(t => `<div style="padding:10px 0; border-bottom:1px solid #edf2f7;"><strong style="color:#2c5282;">${t.name}</strong><div style="font-size:11px; color:#718096;">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}</div></div>`).join('');
+    el.innerHTML = sorted.map(t => `<div style="padding:10px 0; border-bottom:1px solid #edf2f7;">
+      <strong style="color:#2c5282;">${esc(t.name)}</strong>
+      <div style="font-size:11px; color:#718096;">${esc(t.ownerEmail || '—')} • ${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}</div>
+    </div>`).join('');
   }
 
-  // ===== PROPERTIES =====
+  // ===== PROPERTIES (GROUPED BY OWNER FOR PRO MULTI-PROPERTY) =====
   window.renderTenantList = function() {
     const el = document.getElementById('tenantList');
     const search = (document.getElementById('searchTenant')?.value || '').toLowerCase();
@@ -538,63 +599,113 @@
     const filterPlan = document.getElementById('filterPlan')?.value || 'all';
     const today = new Date().toISOString().split('T')[0];
 
-    let filtered = allTenants.filter(t => {
-      const matchSearch = (t.name || '').toLowerCase().includes(search) ||
-                          (t.ownerEmail || '').toLowerCase().includes(search) ||
-                          (t.address || '').toLowerCase().includes(search);
+    const groups = groupPropertiesByOwner(allTenants);
+
+    const filtered = groups.filter(g => {
+      const matchSearch =
+        (g.ownerEmail || '').toLowerCase().includes(search) ||
+        (g.managerEmail || '').toLowerCase().includes(search) ||
+        (g.accountantEmail || '').toLowerCase().includes(search) ||
+        g.properties.some(p =>
+          (p.name || '').toLowerCase().includes(search) ||
+          (p.address || '').toLowerCase().includes(search)
+        );
+
+      const isExpired = !g.isSuspended && g.expiryDate && g.expiryDate < today;
+      const isActive = !g.isSuspended && (!g.expiryDate || g.expiryDate >= today);
+
       let matchStatus = true;
-      if (filter === 'active') matchStatus = !t.isSuspended && t.expiryDate && t.expiryDate >= today;
-      if (filter === 'expired') matchStatus = !t.isSuspended && t.expiryDate && t.expiryDate < today;
-      if (filter === 'suspended') matchStatus = t.isSuspended;
-      
+      if (filter === 'active') matchStatus = isActive;
+      if (filter === 'expired') matchStatus = isExpired;
+      if (filter === 'suspended') matchStatus = g.isSuspended;
+
       let matchPlan = true;
-      if (filterPlan !== 'all') matchPlan = (t.plan || 'basic') === filterPlan;
-      
+      if (filterPlan !== 'all') matchPlan = g.plan === filterPlan;
+
       return matchSearch && matchStatus && matchPlan;
     });
 
     if (filtered.length === 0) {
-      el.innerHTML = '<div class="empty"><div class="emoji">🔍</div><p>ምንም ህንፃ አልተገኘም</p></div>';
+      el.innerHTML = '<div class="empty"><div class="emoji">🔍</div><p>ምንም ህንፃ ወይም ደንበኛ አልተገኘም</p></div>';
       return;
     }
 
-    el.innerHTML = filtered.map(t => {
+    el.innerHTML = filtered.map(g => {
+      const isExpired = !g.isSuspended && g.expiryDate && g.expiryDate < today;
       let badge, cls;
-      if (t.isSuspended) { badge = '❌ የታገደ'; cls = 'status-suspended'; }
-      else if (t.expiryDate && t.expiryDate < today) { badge = '⏳ ጊዜው አልፏል'; cls = 'status-expired'; }
+      if (g.isSuspended) { badge = '❌ የታገደ'; cls = 'status-suspended'; }
+      else if (isExpired) { badge = '⏳ ጊዜው አልፏል'; cls = 'status-expired'; }
       else { badge = '✅ ንቁ'; cls = 'status-active'; }
-      const cardCls = t.isSuspended ? 'suspended' : (t.expiryDate && t.expiryDate < today ? 'expired' : '');
-      const plan = t.plan || 'basic';
-      const planBadge = plan === 'pro' ? '<span style="background:#bee3f8; color:#2b6cb0; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🔵 PRO</span>' : '<span style="background:#c6f6d5; color:#22543d; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🟢 BASIC</span>';
+
+      const cardCls = g.isSuspended ? 'suspended' : (isExpired ? 'expired' : '');
+      const planBadge = g.plan === 'pro'
+        ? '<span style="background:#bee3f8; color:#2b6cb0; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🔵 PRO</span>'
+        : '<span style="background:#c6f6d5; color:#22543d; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🟢 BASIC</span>';
+
+      const headerTitle = g.properties.length > 1
+        ? `👑 ${esc(g.ownerEmail || 'Owner')} (${g.properties.length} ህንፃዎች)`
+        : `🏢 ${esc(g.primary.name || 'ስም የለም')}`;
+
+      const propsHtml = g.properties.map(p => {
+        const pExpired = !p.isSuspended && p.expiryDate && p.expiryDate < today;
+        const pStatusText = p.isSuspended ? '❌ የታገደ' : (pExpired ? '⏳ ጊዜው አልፏል' : '✅ ንቁ');
+        return `
+          <div class="sub-prop-item">
+            <div class="sub-prop-top">
+              <div>
+                <div class="sub-prop-name">🏢 ${esc(p.name || 'ስም የለም')} <span style="font-size:10px; color:#718096;">(${pStatusText})</span></div>
+                <div class="sub-prop-addr">📍 ${esc(p.address || '—')} • 💰 ${esc(p.amount || 0)} ብር/ወር ${p.expiryDate ? '• 📅 ' + esc(p.expiryDate) : ''}</div>
+              </div>
+            </div>
+            <div class="sub-prop-actions">
+              <button class="btn btn-info btn-sm" onclick="editTenant('${esc(p.id)}')">✏️ አሻሽል</button>
+              <button class="btn btn-primary btn-sm" onclick="addEmployeeToTenant('${esc(p.id)}')">👷 Employee</button>
+              <button class="btn ${p.isSuspended ? 'btn-success' : 'btn-warning'} btn-sm" onclick="toggleSingleSuspend('${esc(p.id)}', ${!!p.isSuspended})">${p.isSuspended ? '✅ አንቃ' : '⏸️ አቁም'}</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteTenant('${esc(p.id)}')">🗑️ አጥፋ</button>
+            </div>
+          </div>
+        `;
+      }).join('');
 
       return `
       <div class="tenant-card ${cardCls}">
         <div class="tenant-header">
-          <div class="tenant-title" style="display:flex; align-items:center; gap:8px;">
-            🏢 ${t.name || 'ስም የለም'} ${planBadge}
+          <div>
+            <div class="tenant-title" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              ${headerTitle} ${planBadge}
+            </div>
+            <div class="tenant-sub">📍 ${esc(g.properties.map(p => p.address).filter(Boolean).join(' | ') || '—')}</div>
           </div>
-          <span class="tenant-website">📍 ${t.address || '—'}</span>
+          <span class="badge-status ${cls}">${badge} ${g.expiryDate ? `(${esc(g.expiryDate)})` : ''}</span>
         </div>
+
         <div class="tenant-emails">
-          <div class="tenant-email-item">👑 <strong>Owner:</strong> ${t.ownerEmail || '—'}</div>
-          <div class="tenant-email-item">🎯 <strong>Manager:</strong> ${t.managerEmail || '—'}</div>
-          <div class="tenant-email-item">🧰 <strong>Accountant:</strong> ${t.accountantEmail || '—'}</div>
+          <div class="tenant-email-item">👑 <strong>Owner:</strong> ${esc(g.ownerEmail || '—')}</div>
+          <div class="tenant-email-item">🎯 <strong>Manager:</strong> ${esc(g.managerEmail || '—')}</div>
+          <div class="tenant-email-item">🧰 <strong>Accountant:</strong> ${esc(g.accountantEmail || '—')}</div>
         </div>
-        <div class="tenant-info">💰 <strong>ክፍያ:</strong> ${t.amount || 0} ብር/ወር</div>
-        <div class="badge-status ${cls}">${badge} ${t.expiryDate ? `(${t.expiryDate})` : ''}</div>
+
+        <div class="tenant-info">💰 <strong>ጠቅላላ ወርሃዊ ክፍያ:</strong> ${g.totalAmount} ብር/ወር</div>
+
+        <div class="sub-prop-list">
+          <div style="font-size:11px; font-weight:800; color:#4a5568; margin-bottom:4px;">📋 የተመዘገቡ ህንፃዎች (${g.properties.length})</div>
+          ${propsHtml}
+        </div>
+
         <div class="tenant-actions">
-          <button class="btn btn-success btn-sm" onclick="markPaid('${t.id}')">💰 ክፍያ</button>
-          <button class="btn btn-info btn-sm" onclick="editTenant('${t.id}')">✏️ አሻሽል</button>
-          <button class="btn ${t.isSuspended ? 'btn-success' : 'btn-warning'} btn-sm" onclick="toggleSuspend('${t.id}', ${t.isSuspended})">${t.isSuspended ? '✅ ፍቃድ' : '⏸️ አቁም'}</button>
-          <button class="btn btn-primary btn-sm" onclick="viewHistory('${t.id}')">📜 ታሪክ (${(t.paymentHistory || []).length})</button>
-          <button class="btn btn-info btn-sm" onclick="sendBannerToProperty('${t.id}')">📢 Banner</button>
-          <button class="btn btn-warning btn-sm" onclick="changeTenantPlan('${t.id}', '${plan}')">🔄 Plan ቀይር</button>
-          <button class="btn btn-primary btn-sm" onclick="addEmployeeToTenant('${t.id}', '${t.name}')">👷 Employee ጨምር</button>
-          <button class="btn btn-danger btn-sm btn-full" onclick="deleteTenant('${t.id}')">🗑️ አጥፋ</button>
+          <button class="btn btn-success btn-sm" onclick="markPaidGroup('${esc(g.key)}')">💰 ክፍያ</button>
+          <button class="btn ${g.isSuspended ? 'btn-success' : 'btn-warning'} btn-sm" onclick="toggleGroupSuspend('${esc(g.key)}', ${g.isSuspended})">${g.isSuspended ? '✅ ፍቃድ ስጥ' : '⏸️ ሁሉንም አቁም'}</button>
+          <button class="btn btn-primary btn-sm" onclick="viewGroupHistory('${esc(g.key)}')">📜 ታሪክ (${g.totalHistoryCount})</button>
+          <button class="btn btn-info btn-sm" onclick="sendBannerToGroup('${esc(g.key)}')">📢 Banner</button>
+          <button class="btn btn-warning btn-sm" onclick="changeGroupPlan('${esc(g.key)}', '${esc(g.plan)}')">🔄 Plan ቀይር</button>
         </div>
       </div>`;
     }).join('');
   };
+
+  function getGroupByKey(key) {
+    return groupPropertiesByOwner(allTenants).find(g => g.key === key);
+  }
 
   window.addTenant = async function() {
     const name = document.getElementById('newName').value.trim();
@@ -650,42 +761,77 @@
     } catch (e) { toast('ስህተት: ' + e.message, 'error'); }
   };
 
-  window.markPaid = async function(id) {
-    const t = allTenants.find(x => x.id === id);
-    if (!t) return;
-    const months = prompt('ለስንት ወር ክፍያ?', '1');
-    if (!months || isNaN(months)) return;
+  window.markPaidGroup = async function(groupKey) {
+    const g = getGroupByKey(groupKey);
+    if (!g || !g.properties.length) return;
+    const monthsInput = prompt('ለስንት ወር ክፍያ?', '1');
+    if (monthsInput === null) return;
+    const months = parseInt(monthsInput, 10);
+    if (!months || months < 1) { toast('ትክክለኛ የወር ቁጥር ያስገቡ', 'error'); return; }
     const method = prompt('የክፍያ ዘዴ? (Cash/Transfer/Telebirr)', 'Cash') || 'Cash';
-    const today = new Date();
-    let cur = t.expiryDate ? new Date(t.expiryDate) : new Date();
-    if (cur < today) cur = today;
-    cur.setMonth(cur.getMonth() + parseInt(months));
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    let cur = g.expiryDate ? new Date(g.expiryDate) : new Date();
+    if (isNaN(cur.getTime()) || cur < now) cur = now;
+    cur.setMonth(cur.getMonth() + months);
     const newExpiry = cur.toISOString().split('T')[0];
-    const amt = (parseFloat(t.amount) || 0) * parseInt(months);
-    const history = t.paymentHistory || [];
-    history.push({ date: today.toISOString().split('T')[0], amount: amt, months: parseInt(months), method });
+
     try {
-      await updateDoc(doc(db, 'properties', id), { expiryDate: newExpiry, isSuspended: false, paymentHistory: history });
+      const targetProp = g.primary;
+      const amt = g.totalAmount * months;
+      const history = [...(targetProp.paymentHistory || [])];
+      history.push({
+        date: todayStr,
+        amount: amt,
+        months,
+        method,
+        propertiesCount: g.properties.length
+      });
+
+      for (const p of g.properties) {
+        const updatePayload = { expiryDate: newExpiry, isSuspended: false };
+        if (p.id === targetProp.id) updatePayload.paymentHistory = history;
+        await updateDoc(doc(db, 'properties', p.id), updatePayload);
+      }
+
       toast(`✅ ክፍያ ተመዝግቧል። አዲስ ማብቂያ: ${newExpiry}`, 'success');
       loadAllData();
     } catch (e) { toast(e.message, 'error'); }
   };
 
-  window.toggleSuspend = async function(id, cur) {
-    const ok = await showModal('⚠️ ማረጋገጫ', cur ? 'ህንፃውን ማንቃት ትፈልጋለህ?' : 'ህንፃውን ማቆም ትፈልጋለህ?', [
+  window.toggleGroupSuspend = async function(groupKey, curSuspended) {
+    const g = getGroupByKey(groupKey);
+    if (!g || !g.properties.length) return;
+    const ok = await showModal('⚠️ ማረጋገጫ', curSuspended ? 'የዚህን ደንበኛ ህንፃዎች ማንቃት ትፈልጋለህ?' : 'የዚህን ደንበኛ ህንፃዎች ማቆም ትፈልጋለህ?', [
       { text: 'አዎ', class: 'btn-danger', value: true },
       { text: 'አይ', class: 'btn-outline', value: false }
     ]);
     if (!ok) return;
     try {
-      await updateDoc(doc(db, 'properties', id), { isSuspended: !cur });
-      toast(cur ? '✅ ንቁ ሆኗል' : '⏸️ ተቆልፏል', 'success');
+      for (const p of g.properties) {
+        await updateDoc(doc(db, 'properties', p.id), { isSuspended: !curSuspended });
+      }
+      toast(!curSuspended ? '⏸️ ተቆልፏል' : '✅ ንቁ ሆኗል', 'success');
+      loadAllData();
+    } catch (e) { toast(e.message, 'error'); }
+  };
+
+  window.toggleSingleSuspend = async function(propId, curSuspended) {
+    const ok = await showModal('⚠️ ማረጋገጫ', curSuspended ? 'ይህን ህንፃ ማንቃት ትፈልጋለህ?' : 'ይህን ህንፃ ማቆም ትፈልጋለህ?', [
+      { text: 'አዎ', class: 'btn-danger', value: true },
+      { text: 'አይ', class: 'btn-outline', value: false }
+    ]);
+    if (!ok) return;
+    try {
+      await updateDoc(doc(db, 'properties', propId), { isSuspended: !curSuspended });
+      toast(!curSuspended ? '⏸️ ተቆልፏል' : '✅ ንቁ ሆኗል', 'success');
       loadAllData();
     } catch (e) { toast(e.message, 'error'); }
   };
 
   window.deleteTenant = async function(id) {
-    const ok = await showModal('🚨 አደጋ!', 'ህንፃውን እና ተጠቃሚዎቹን ማጥፋት? አይመለስም!', [
+    const ok = await showModal('🚨 አደጋ!', 'ህንፃውን ማጥፋት? አይመለስም!', [
       { text: 'አጥፋ', class: 'btn-danger', value: true },
       { text: 'ተወው', class: 'btn-outline', value: false }
     ]);
@@ -702,42 +848,62 @@
   window.editTenant = async function(id) {
     const t = allTenants.find(x => x.id === id);
     if (!t) return;
-    const name = prompt('ስም:', t.name) ?? null;
-    if (name === null) return;
-    const address = prompt('አድራሻ:', t.address || '') ?? t.address;
-    const amount = prompt('ክፍያ (ብር):', t.amount || 0) ?? t.amount;
+    const name = prompt('የህንፃው ስም:', t.name || '');
+    if (name === null || !name.trim()) return;
+    const address = prompt('አድራሻ:', t.address || '');
+    if (address === null) return;
+    const amountStr = prompt('ክፍያ (ብር/ወር):', String(t.amount || 0));
+    if (amountStr === null) return;
     try {
-      await updateDoc(doc(db, 'properties', id), { name, address, amount: parseFloat(amount) || 0 });
+      await updateDoc(doc(db, 'properties', id), {
+        name: name.trim(),
+        address: address.trim(),
+        amount: parseFloat(amountStr) || 0
+      });
       toast('✅ ተስተካክሏል', 'success');
       loadAllData();
     } catch (e) { toast(e.message, 'error'); }
   };
 
-  window.viewHistory = function(id) {
-    const t = allTenants.find(x => x.id === id);
-    const h = t?.paymentHistory || [];
-    if (!h.length) { toast('ምንም ታሪክ የለም', 'info'); return; }
-    const txt = h.map(x => `${x.date} — ${x.amount} ብር (${x.months} ወር, ${x.method || '—'})`).join('\n');
+  window.viewGroupHistory = function(groupKey) {
+    const g = getGroupByKey(groupKey);
+    if (!g) return;
+    const items = [];
+    g.properties.forEach(p => {
+      (p.paymentHistory || []).forEach(h => {
+        items.push({ ...h, propName: p.name || p.id });
+      });
+    });
+    if (!items.length) { toast('ምንም ታሪክ የለም', 'info'); return; }
+    items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const txt = items.map(x => `${x.date} — ${x.amount} ብር (${x.months} ወር, ${x.method || '—'}) [${x.propName}]`).join('\n');
     showModal('📜 የክፍያ ታሪክ', txt, [{ text: 'ዝጋ', class: 'btn-primary' }]);
   };
 
-  window.sendBannerToProperty = async function(id) {
-    const t = allTenants.find(x => x.id === id);
-    if (!t) return;
-    const msg = prompt('ለህንፃው የሚላክ መልእክት (ባዶ ብትለው ይወገዳል):', t.subscriptionMessage || '');
+  window.sendBannerToGroup = async function(groupKey) {
+    const g = getGroupByKey(groupKey);
+    if (!g || !g.properties.length) return;
+    const currentMsg = g.primary.subscriptionMessage || '';
+    const currentStatus = g.primary.subscriptionStatus || 'warning';
+    const msg = prompt('ለህንፃዎቹ የሚላክ መልእክት (ባዶ ብትለው ይወገዳል):', currentMsg);
     if (msg === null) return;
-    const status = prompt('ሁኔታ (warning / expired / success):', t.subscriptionStatus || 'warning');
+    const status = prompt('ሁኔታ (warning / expired / success):', currentStatus);
+    if (status === null) return;
     try {
-      await updateDoc(doc(db, 'properties', id), {
-        subscriptionMessage: msg.trim(),
-        subscriptionStatus: status || 'warning'
-      });
+      for (const p of g.properties) {
+        await updateDoc(doc(db, 'properties', p.id), {
+          subscriptionMessage: msg.trim(),
+          subscriptionStatus: status.trim() || 'warning'
+        });
+      }
       toast('✅ ማሳወቂያ ተልኳል', 'success');
       loadAllData();
     } catch (e) { toast(e.message, 'error'); }
   };
 
-  window.changeTenantPlan = async function(id, currentPlan) {
+  window.changeGroupPlan = async function(groupKey, currentPlan) {
+    const g = getGroupByKey(groupKey);
+    if (!g || !g.properties.length) return;
     const newPlan = currentPlan === 'basic' ? 'pro' : 'basic';
     const msg = `ፕላኑን ከ ${currentPlan.toUpperCase()} ወደ ${newPlan.toUpperCase()} መቀየር ትፈልጋለህ?`;
     const ok = await showModal('🔄 ፕላን ቀይር', msg, [
@@ -746,13 +912,17 @@
     ]);
     if (!ok) return;
     try {
-      await updateDoc(doc(db, 'properties', id), { plan: newPlan });
+      for (const p of g.properties) {
+        await updateDoc(doc(db, 'properties', p.id), { plan: newPlan });
+      }
       toast(`✅ ፕላኑ ወደ ${newPlan.toUpperCase()} ተቀይሯል`, 'success');
       loadAllData();
     } catch (e) { toast(e.message, 'error'); }
   };
 
-  window.addEmployeeToTenant = async function(propertyId, propertyName) {
+  window.addEmployeeToTenant = async function(propertyId) {
+    const prop = allTenants.find(x => x.id === propertyId);
+    const propertyName = prop?.name || propertyId;
     const email = prompt(`ለ "${propertyName}" አዲስ Employee ኢሜይል አስገባ:`);
     if (!email || !email.includes('@')) return;
     const pass = prompt('ጊዜያዊ ፓስወርድ (ቢያንስ 6 ፊደል):', '123456');
@@ -762,24 +932,24 @@
       const secondaryApp = initializeApp(firebaseConfig, 'Sec-' + Date.now());
       const secAuth = getAuth(secondaryApp);
       const cred = await createUserWithEmailAndPassword(secAuth, email.trim(), pass);
-      
+
       await setDoc(doc(db, 'users', cred.user.uid), {
         email: email.trim(), role: 'employee', propertyId: propertyId,
         isTempPassword: true, createdAt: new Date().toISOString()
       });
-      
+
       await deleteApp(secondaryApp);
-      toast(`✅ Employee ተጨምሯል!`, 'success');
+      toast('✅ Employee ተጨምሯል!', 'success');
       loadAllData();
     } catch (e) { toast('ስህተት: ' + e.message, 'error'); }
   };
- 
+
   // ===== USERS =====
   window.renderUserList = function() {
     const el = document.getElementById('userList');
     const search = (document.getElementById('searchUser')?.value || '').toLowerCase();
     const role = document.getElementById('filterUserRole')?.value || 'all';
-    let filtered = allUsers.filter(u => {
+    const filtered = allUsers.filter(u => {
       const ms = (u.email || '').toLowerCase().includes(search);
       const mr = role === 'all' || u.role === role;
       return ms && mr;
@@ -789,12 +959,12 @@
       const ph = allTenants.find(t => t.id === u.propertyId);
       const roleIcon = u.role === 'owner' ? '👑' : u.role === 'manager' ? '🎯' : u.role === 'accountant' ? '🧰' : '👷';
       return `<div style="padding:12px; border-bottom:1px solid #edf2f7;">
-        <div style="font-weight:700; color:#2c5282; font-size:13px;">${roleIcon} ${u.email}</div>
-        <div style="font-size:11px; color:#718096; margin-top:4px;">🏢 ${ph?.name || u.propertyId || '—'} • ${u.role}</div>
+        <div style="font-weight:700; color:#2c5282; font-size:13px;">${roleIcon} ${esc(u.email)}</div>
+        <div style="font-size:11px; color:#718096; margin-top:4px;">🏢 ${esc(ph?.name || u.propertyId || '—')} • ${esc(u.role)}</div>
         <div style="display:flex; gap:6px; margin-top:8px;">
-          <button class="btn btn-info btn-sm" onclick="sendResetLink('${u.email}')">📧 Reset</button>
-          <button class="btn btn-warning btn-sm" onclick="changeRole('${u.id}','${u.role}')">🔄 Role</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">🗑️</button>
+          <button class="btn btn-info btn-sm" onclick="sendResetLink('${esc(u.email)}')">📧 Reset</button>
+          <button class="btn btn-warning btn-sm" onclick="changeRole('${esc(u.id)}','${esc(u.role)}')">🔄 Role</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(u.id)}')">🗑️</button>
         </div>
       </div>`;
     }).join('');
@@ -826,19 +996,19 @@
     const sumEl = document.getElementById('billingSummary');
     const histEl = document.getElementById('billingHistory');
     let total = 0, count = 0;
-    allTenants.forEach(t => (t.paymentHistory || []).forEach(p => { total += p.amount || 0; count++; }));
+    allTenants.forEach(t => (t.paymentHistory || []).forEach(p => { total += parseFloat(p.amount) || 0; count++; }));
     sumEl.innerHTML = `<div class="stats-grid" style="grid-template-columns:1fr 1fr;">
       <div class="stat-card"><div class="value val-green">${total.toLocaleString()}</div><div class="label">💰 ጠቅላላ ገቢ (ብር)</div></div>
       <div class="stat-card"><div class="value val-blue">${count}</div><div class="label">📜 ክፍያዎች</div></div>
     </div>`;
 
-    let all = [];
+    const all = [];
     allTenants.forEach(t => (t.paymentHistory || []).forEach(p => all.push({ ...p, tenant: t.name })));
     all.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     if (!all.length) { histEl.innerHTML = '<div class="empty"><div class="emoji">💰</div><p>ምንም ክፍያ የለም</p></div>'; return; }
     histEl.innerHTML = all.slice(0, 50).map(p => `<div style="padding:10px 0; border-bottom:1px solid #edf2f7; display:flex; justify-content:space-between;">
-      <div><strong style="color:#2c5282; font-size:13px;">${p.tenant}</strong><div style="font-size:11px; color:#718096;">${p.date} • ${p.method || '—'}</div></div>
-      <div style="color:#276749; font-weight:800;">${p.amount} ብር</div>
+      <div><strong style="color:#2c5282; font-size:13px;">${esc(p.tenant)}</strong><div style="font-size:11px; color:#718096;">${esc(p.date)} • ${esc(p.method || '—')}</div></div>
+      <div style="color:#276749; font-weight:800;">${esc(p.amount)} ብር</div>
     </div>`).join('');
   }
 
@@ -850,10 +1020,10 @@
     else badge.style.display = 'none';
     if (!allPasswordRequests.length) { el.innerHTML = '<div class="empty"><div class="emoji">✅</div><p>ምንም ጥያቄ የለም</p></div>'; return; }
     el.innerHTML = allPasswordRequests.map(r => `<div style="padding:12px; border-bottom:1px solid #edf2f7; display:flex; justify-content:space-between; gap:8px;">
-      <div><div style="font-weight:700; font-size:13px;">${r.email}</div><div style="font-size:11px; color:#718096;">${r.date || '—'}</div></div>
+      <div><div style="font-weight:700; font-size:13px;">${esc(r.email)}</div><div style="font-size:11px; color:#718096;">${esc(r.date || '—')}</div></div>
       <div style="display:flex; gap:6px;">
-        <button class="btn btn-info btn-sm" onclick="sendResetLink('${r.email}')">📧</button>
-        <button class="btn btn-success btn-sm" onclick="resolveReq('${r.id}')">✅</button>
+        <button class="btn btn-info btn-sm" onclick="sendResetLink('${esc(r.email)}')">📧</button>
+        <button class="btn btn-success btn-sm" onclick="resolveReq('${esc(r.id)}')">✅</button>
       </div>
     </div>`).join('');
   }
@@ -875,10 +1045,21 @@
   // ===== DATA =====
   window.exportCSV = function() {
     if (!allTenants.length) { toast('ዳታ የለም', 'error'); return; }
+    const csvCell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
     let csv = '\uFEFFስም,አድራሻ,ፕላን,ባለቤት,ማናጀር,አካውንታንት,ክፍያ,ማብቂያ,ሁኔታ\n';
     allTenants.forEach(t => {
       const st = t.isSuspended ? 'የታገደ' : 'ንቁ';
-      csv += `"${t.name}","${t.address || ''}","${t.plan || ''}","${t.ownerEmail || ''}","${t.managerEmail || ''}","${t.accountantEmail || ''}",${t.amount || 0},"${t.expiryDate || ''}","${st}"\n`;
+      csv += [
+        csvCell(t.name),
+        csvCell(t.address || ''),
+        csvCell(t.plan || ''),
+        csvCell(t.ownerEmail || ''),
+        csvCell(t.managerEmail || ''),
+        csvCell(t.accountantEmail || ''),
+        csvCell(t.amount || 0),
+        csvCell(t.expiryDate || ''),
+        csvCell(st)
+      ].join(',') + '\n';
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -908,7 +1089,17 @@
     reader.onload = async (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        for (const t of (data.tenants || [])) { const { id, ...rest } = t; await setDoc(doc(db, 'properties', id), rest); }
+        for (const t of (data.tenants || [])) {
+          const { id, ...rest } = t;
+          if (id) await setDoc(doc(db, 'properties', id), rest);
+        }
+        for (const u of (data.users || [])) {
+          const { id, ...rest } = u;
+          if (id) await setDoc(doc(db, 'users', id), rest);
+        }
+        if (data.support && typeof data.support === 'object') {
+          await setDoc(doc(db, 'settings', 'support'), data.support, { merge: true });
+        }
         status.textContent = '✅ ተመልሷል'; status.style.color = '#276749';
         toast('✅ ዳታ ተመልሷል', 'success');
         loadAllData();
