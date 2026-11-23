@@ -500,7 +500,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             </div>
             <div class="coll-body open">
               <div class="filter-bar">
-                <input type="month" id="paymentMonth" onchange="paymentsPage=1; renderPayments()" style="width:auto; margin-bottom:0;">
+                <input type="month" id="paymentMonth" style="width:auto; margin-bottom:0;">
                 <input type="text" id="searchPayments" placeholder="🔍 Search tenant..." oninput="paymentsPage = 1; renderPayments();" style="flex:1; min-width:150px; margin-bottom:0;">
                 <select id="paymentMethodFilter" onchange="paymentsPage = 1; renderPayments()" style="width:auto; margin-bottom:0; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:600; background:var(--card-bg);">
                   <option value="all">💳 All Methods</option>
@@ -533,7 +533,7 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
             </div>
             <div class="coll-body open">
               <div class="filter-bar">
-                <input type="month" id="utilityMonth" onchange="utilitiesPage=1; renderUtilities()" style="width:auto; margin-bottom:0;">
+                <input type="month" id="utilityMonth" style="width:auto; margin-bottom:0;">
                 <select id="utilityTypeFilter" onchange="utilitiesPage = 1; renderUtilities()" style="width:auto; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:600; background:var(--card-bg);">
                   <option value="all">📁 All Types</option>
                   <option value="water">💧 Water</option>
@@ -558,9 +558,13 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
           <div class="desktop-grid">
             <div class="card">
               <div class="card-title">
-                <span>📊 Reports</span>
-                <button class="btn btn-outline btn-sm" onclick="printReport()" style="margin-top:0;">🖨️ Print</button>
-              </div>
+  <span>📊 Reports</span>
+  <div style="display:flex; gap:6px;">
+    <button class="btn btn-outline btn-sm" onclick="printReport()" style="margin-top:0;">🖨️ Print</button>
+    <button class="btn btn-success btn-sm" onclick="exportReportToExcel()" style="margin-top:0;">📊 Excel</button>
+    <button class="btn btn-danger btn-sm" onclick="exportReportToPDF()" style="margin-top:0;">📄 PDF</button>
+  </div>
+</div>
               <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
                 <button class="filter-chip active" id="btnMonthlyReport" onclick="switchReportView('monthly')">📅 Monthly</button>
                 <button class="filter-chip" id="btnQuarterlyReport" onclick="switchReportView('quarterly')">📆 Quarterly</button>
@@ -568,35 +572,38 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
                 <button class="filter-chip" id="btnYearlyReport" onclick="switchReportView('yearly')">📅 Yearly</button>
               </div>
               
-              <div id="monthlyReportSection">
-                <label class="field-label" style="margin-top:0;">📅 Month</label>
-                <input type="month" id="reportMonth" onchange="renderReports()" style="margin-bottom:16px;">
-              </div>
-              <div id="quarterlyReportSection" style="display:none;">
-                <label class="field-label" style="margin-top:0;">📅 Year</label>
-                <input type="number" id="reportQuarterYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
-                <label class="field-label">📅 Quarter</label>
-                <select id="reportQuarter" onchange="renderReports()" style="margin-bottom:16px;">
-                  <option value="Q1">Q1 (Jan - Mar)</option>
-                  <option value="Q2">Q2 (Apr - Jun)</option>
-                  <option value="Q3">Q3 (Jul - Sep)</option>
-                  <option value="Q4">Q4 (Oct - Dec)</option>
-                </select>
-              </div>
-              <div id="semiAnnualReportSection" style="display:none;">
-                <label class="field-label" style="margin-top:0;">📅 Year</label>
-                <input type="number" id="reportSemiYear" onchange="renderReports()" style="margin-bottom:12px;" value="2024">
-                <label class="field-label">📅 Half</label>
-                <select id="reportSemi" onchange="renderReports()" style="margin-bottom:16px;">
-                  <option value="H1">H1 (Jan - Jun)</option>
-                  <option value="H2">H2 (Jul - Dec)</option>
-                </select>
-              </div>
-              <div id="yearlyReportSection" style="display:none;">
-                <label class="field-label" style="margin-top:0;">📅 Year</label>
-                <input type="number" id="reportYear" onchange="renderReports()" style="margin-bottom:16px;" value="2024">
-              </div>
+              <!-- Monthly Section -->
+<div id="monthlyReportSection">
+  <label class="field-label" style="margin-top:0;">📅 Month</label>
+  <input type="month" id="reportMonth" style="margin-bottom:16px;">
+</div>
 
+<div id="quarterlyReportSection" style="display:none;">
+  <label class="field-label" style="margin-top:0;">📅 Year</label>
+  <input type="number" id="reportQuarterYear" style="margin-bottom:12px;" value="2024">
+  <label class="field-label">📅 Quarter</label>
+  <select id="reportQuarter" style="margin-bottom:16px;">
+    <option value="Q1">Q1 (Jan - Mar)</option>
+    <option value="Q2">Q2 (Apr - Jun)</option>
+    <option value="Q3">Q3 (Jul - Sep)</option>
+    <option value="Q4">Q4 (Oct - Dec)</option>
+  </select>
+</div>
+
+<div id="semiAnnualReportSection" style="display:none;">
+  <label class="field-label" style="margin-top:0;">📅 Year</label>
+  <input type="number" id="reportSemiYear" style="margin-bottom:12px;" value="2024">
+  <label class="field-label">📅 Half</label>
+  <select id="reportSemi" style="margin-bottom:16px;">
+    <option value="H1">H1 (Jan - Jun)</option>
+    <option value="H2">H2 (Jul - Dec)</option>
+  </select>
+</div>
+
+<div id="yearlyReportSection" style="display:none;">
+  <label class="field-label" style="margin-top:0;">📅 Year</label>
+  <input type="number" id="reportYear" style="margin-bottom:16px;" value="2024">
+</div>
               <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="stat-card green"><div class="s-label">Revenue</div><div class="s-value" id="repRevenue">0</div></div>
                 <div class="stat-card red"><div class="s-label">Expenses</div><div class="s-value" id="repExpenses">0</div></div>
@@ -872,6 +879,17 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
     </div>
   </div>
 </div>
+  <div class="modal-overlay" id="tenantProfileModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="profileTenantName">Tenant Profile</h3>
+      <button class="modal-close" onclick="closeModal('tenantProfileModal')">×</button>
+    </div>
+    <div class="modal-body" id="tenantProfileBody">
+      <!-- Content will be injected here -->
+    </div>
+  </div>
+</div>
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
@@ -1112,6 +1130,7 @@ async function loadUserData(user) {
     renderMobileNav();
     renderQuickActions();
     loadRealtimeData();
+    attachReportListeners();
     checkSubscription();
 
     if (window.innerWidth <= 768) switchPage('panelMobileHome', null);
@@ -1533,24 +1552,109 @@ function renderTenants() {
   }
   
   el.innerHTML = f.map(t => {
-    const u = allUnits.find(x => x.id === t.unitId);
-    const d = daysUntil(t.contractEnd);
-    const cb = d === null ? '' : d < 0 ? '<span class="badge badge-red">❌ Expired</span>' : d <= 30 ? `<span class="badge badge-orange">⚠️ ${d}d left</span>` : '<span class="badge badge-green">✅ Active</span>';
-    return `<div class="list-row">
-      <div class="list-row-icon" style="background:rgba(212,175,55,.15);">👤</div>
-      <div class="list-row-info">
-        <div class="list-row-title">${esc(t.name)} ${cb}</div>
-        <div class="list-row-sub">📞 ${esc(t.phone)}<br>🏢 Unit ${esc(u?.number || 'N/A')} • 💰 ${money(t.rent)} ETB</div>
+  const u = allUnits.find(x => x.id === t.unitId);
+  const d = daysUntil(t.contractEnd);
+  const cb = d === null ? '' : d < 0 ? '<span class="badge badge-red">❌ Expired</span>' : d <= 30 ? `<span class="badge badge-orange">⚠️ ${d}d left</span>` : '<span class="badge badge-green">✅ Active</span>';
+  
+  return `<div class="list-row">
+    <div class="list-row-icon" style="background:rgba(212,175,55,.15);">👤</div>
+    <div class="list-row-info">
+      <!-- ስሙን ሲነኩ ፕሮፋይሉ እንዲከፈት ይህን ተጠቀም -->
+      <div class="list-row-title" onclick="openTenantProfile('${t.id}')" style="cursor:pointer; color:var(--primary); text-decoration:underline;">
+        ${esc(t.name)} ${cb}
       </div>
-      <div class="list-row-actions">
-        <button class="action-btn" onclick="openTenantModal('${t.id}')" style="background:rgba(59,130,246,.15);color:var(--info);">✏️</button>
-        <button class="action-btn" onclick="deleteTenant('${t.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button>
-      </div>
-    </div>`;
-  }).join('');
+      <div class="list-row-sub">📞 ${esc(t.phone)}<br>🏢 Unit ${esc(u?.number || 'N/A')} • 💰 ${money(t.rent)} ETB</div>
+    </div>
+    <div class="list-row-actions">
+      <button class="action-btn" onclick="openTenantModal('${t.id}')" style="background:rgba(59,130,246,.15);color:var(--info);">✏️</button>
+      <button class="action-btn" onclick="deleteTenant('${t.id}')" style="background:rgba(239,68,68,.15);color:var(--danger);">🗑️</button>
+    </div>
+  </div>`;
+}).join('');
   
   renderPagination('tenantsPagination', totalFiltered, tenantsPage, 'changeTenantsPage');
 }
+  window.openTenantProfile = function(id) {
+  const t = allTenants.find(x => x.id === id);
+  if (!t) return;
+  
+  const u = allUnits.find(x => x.id === t.unitId);
+  const d = daysUntil(t.contractEnd);
+  const contractStatus = d === null ? 'Unknown' : d < 0 ? '❌ Expired' : d <= 30 ? `⚠️ ${d} days left` : '✅ Active';
+  
+  // የዚህ ተከራይ የክፍያ ታሪክ
+  const tenantPayments = allPayments.filter(p => p.tenantDocId === id).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  
+  document.getElementById('profileTenantName').textContent = `👤 ${t.name}`;
+  
+  let html = `
+    <div style="margin-bottom: 20px; padding: 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-weight:700;">📞 Phone</span>
+        <span>${esc(t.phone)}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-weight:700;">📧 Email</span>
+        <span>${esc(t.email || 'N/A')}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-weight:700;">🏢 Unit</span>
+        <span>${esc(u?.number || 'N/A')} (${esc(u?.type || '')})</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-weight:700;">💰 Rent Amount</span>
+        <span style="color:var(--success); font-weight:800;">${money(t.rent)} ETB</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-weight:700;">💳 Payment Cycle</span>
+        <span style="text-transform:capitalize;">${t.paymentCycle}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-weight:700;">📅 Contract</span>
+        <span>${esc(t.contractStart || '-')} to ${esc(t.contractEnd || '-')}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span style="font-weight:700;">📊 Status</span>
+        <span style="font-weight:700;">${contractStatus}</span>
+      </div>
+    </div>
+
+    <h4 style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:10px;">💰 Payment History (${tenantPayments.length})</h4>
+  `;
+  
+  if (tenantPayments.length === 0) {
+    html += `<div style="text-align:center; padding:20px; color:var(--text-muted);">No payment history yet.</div>`;
+  } else {
+    html += `<div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">`;
+    tenantPayments.forEach(p => {
+      const sb = p.status === 'paid' ? 'badge-green' : p.status === 'partial' ? 'badge-orange' : 'badge-red';
+      html += `
+        <div style="padding:12px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:13px; font-weight:700;">${esc(p.month)}</div>
+            <div style="font-size:11px; color:var(--text-muted);">📅 ${esc(p.date)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:800; color:var(--success);">${money(p.amountPaid)} ETB</div>
+            <span class="badge ${sb}" style="margin-top:4px;">${p.status}</span>
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+  
+  // የ Tenants ፕሮፋይል ላይ የ Edit እና Delete አዝራሮች
+  html += `
+    <div style="display:flex; gap:8px; margin-top:20px;">
+      <button class="btn btn-primary" onclick="closeModal('tenantProfileModal'); openTenantModal('${t.id}')" style="margin-top:0;">✏️ Edit Tenant</button>
+      <button class="btn btn-danger" onclick="closeModal('tenantProfileModal'); deleteTenant('${t.id}')" style="margin-top:0;">🗑️ Delete</button>
+    </div>
+  `;
+  
+  document.getElementById('tenantProfileBody').innerHTML = html;
+  document.getElementById('tenantProfileModal').classList.add('open');
+};
 
 // PAYMENTS
 function populateTenantSelects() {
@@ -1886,6 +1990,41 @@ function renderReports() {
   
   renderDetailedReport(filteredPayments, filteredUtilities);
 }
+  // REALTIME FILTER LISTENERS
+function attachReportListeners() {
+  const monthInput = document.getElementById('reportMonth');
+  if (monthInput) {
+    monthInput.addEventListener('input', () => renderReports());
+    monthInput.addEventListener('change', () => renderReports());
+  }
+
+  const qYear = document.getElementById('reportQuarterYear');
+  const qSelect = document.getElementById('reportQuarter');
+  if (qYear) qYear.addEventListener('input', () => renderReports());
+  if (qSelect) qSelect.addEventListener('change', () => renderReports());
+
+  const sYear = document.getElementById('reportSemiYear');
+  const sSelect = document.getElementById('reportSemi');
+  if (sYear) sYear.addEventListener('input', () => renderReports());
+  if (sSelect) sSelect.addEventListener('change', () => renderReports());
+
+  const yInput = document.getElementById('reportYear');
+  if (yInput) yInput.addEventListener('input', () => renderReports());
+
+  // Payments
+  const payMonth = document.getElementById('paymentMonth');
+  if (payMonth) {
+    payMonth.addEventListener('input', () => { paymentsPage = 1; renderPayments(); });
+    payMonth.addEventListener('change', () => { paymentsPage = 1; renderPayments(); });
+  }
+
+  // Utilities
+  const utilMonth = document.getElementById('utilityMonth');
+  if (utilMonth) {
+    utilMonth.addEventListener('input', () => { utilitiesPage = 1; renderUtilities(); });
+    utilMonth.addEventListener('change', () => { utilitiesPage = 1; renderUtilities(); });
+  }
+}
 
 function renderDetailedReport(payments, utilities) {
   const el = document.getElementById('detailedReport');
@@ -2010,7 +2149,6 @@ window.printReport = function() {
         <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
         <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
         <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
-        <!-- Powered by HaniTech ተወግዷል -->
       </div>
     </div>
   `;
@@ -2035,6 +2173,131 @@ window.printReport = function() {
     const ph = document.getElementById('printHeader');
     if (ph) ph.style.display = 'none';
   }, 500);
+};
+
+window.exportReportToExcel = function() {
+  const propName = currentPropertyData?.name || 'Property';
+  const period = window.currentReportPeriodLabel || "Selected Period";
+  
+  let filteredPayments = [], filteredUtilities = [];
+  
+  if (currentReportView === 'monthly') {
+    const month = document.getElementById('reportMonth')?.value || thisMonthStr();
+    filteredPayments = allPayments.filter(p => p.month === month);
+    filteredUtilities = allUtilities.filter(u => u.month === month);
+  } else if (currentReportView === 'quarterly') {
+    const year = document.getElementById('reportQuarterYear')?.value;
+    const q = document.getElementById('reportQuarter')?.value;
+    const months = q === 'Q1' ? ['01','02','03'] : q === 'Q2' ? ['04','05','06'] : q === 'Q3' ? ['07','08','09'] : ['10','11','12'];
+    const prefixes = months.map(m => `${year}-${m}`);
+    filteredPayments = allPayments.filter(p => p.month && prefixes.includes(p.month));
+    filteredUtilities = allUtilities.filter(u => u.month && prefixes.includes(u.month));
+  } else if (currentReportView === 'semiannual') {
+    const year = document.getElementById('reportSemiYear')?.value;
+    const h = document.getElementById('reportSemi')?.value;
+    const months = h === 'H1' ? ['01','02','03','04','05','06'] : ['07','08','09','10','11','12'];
+    const prefixes = months.map(m => `${year}-${m}`);
+    filteredPayments = allPayments.filter(p => p.month && prefixes.includes(p.month));
+    filteredUtilities = allUtilities.filter(u => u.month && prefixes.includes(u.month));
+  } else {
+    const year = document.getElementById('reportYear')?.value;
+    filteredPayments = allPayments.filter(p => p.month && p.month.startsWith(year.toString()));
+    filteredUtilities = allUtilities.filter(u => u.month && u.month.startsWith(year.toString()));
+  }
+
+  let csv = `\uFEFF"${propName}"\n"Report Period: ${period}"\n"Generated on: ${new Date().toLocaleString()}"\n\n`;
+
+  if (filteredPayments.length > 0) {
+    csv += "TENANT PAYMENT DETAILS\n";
+    csv += "#,Tenant Name,Unit,Rent Due,Paid,Remaining,Status,Date\n";
+    filteredPayments.forEach((p, idx) => {
+      const tn = allTenants.find(x => x.id === p.tenantDocId);
+      const unit = allUnits.find(u => u.id === tn?.unitId);
+      csv += `"${idx + 1}","${tn?.name || 'Unknown'}","${unit?.number || '-'}",${p.amountDue || 0},${p.amountPaid || 0},${p.amountRemaining || 0},"${p.status}","${p.date || ''}"\n`;
+    });
+    csv += "\n";
+  }
+
+  if (filteredUtilities.length > 0) {
+    csv += "UTILITIES\n";
+    csv += "#,Type,Unit,Month,Amount,Status\n";
+    filteredUtilities.forEach((u, idx) => {
+      const unit = u.unitId ? allUnits.find(x => x.id === u.unitId) : null;
+      csv += `"${idx + 1}","${u.type}","${unit ? unit.number : 'Property-wide'}","${u.month}",${u.amount || 0},"${u.status}"\n`;
+    });
+    csv += "\n";
+  }
+
+  csv += "TENANT LIST SUMMARY\n";
+  csv += "#,Tenant Name,Phone,Unit,Monthly Rent,Contract End\n";
+  const activeTenants = allTenants.filter(t => t.active !== false);
+  activeTenants.forEach((tn, idx) => {
+    const unit = allUnits.find(u => u.id === tn.unitId);
+    csv += `"${idx + 1}","${tn.name}","${tn.phone || '-'}","${unit?.number || '-'}",${tn.rent || 0},"${tn.contractEnd || '-'}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Report_${propName.replace(/\s+/g, '_')}_${period.replace(/\s+/g, '_')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Excel file downloaded');
+};
+
+window.exportReportToPDF = function() {
+  showToast('💡 Tip: Select "Save as PDF" in the print dialog', 'info');
+  setTimeout(() => {
+    window.printReport();
+  }, 1000);
+};
+  
+// INITIALIZATION
+setTimeout(() => {
+  document.getElementById('splashScreen').classList.add('fade-out');
+  setTimeout(() => { document.getElementById('splashScreen').style.display = 'none'; }, 500);
+}, 1500);
+  
+  const propName = currentPropertyData?.name || 'Property';
+  const period = window.currentReportPeriodLabel || "Selected Period";
+  const printDate = new Date().toLocaleString();
+  
+  const headerHtml = `
+    <div id="printHeader" style="display:none;">
+      <div style="text-align:center; border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
+        <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
+        <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
+      </div>
+    </div>
+  `;
+  
+  const container = document.querySelector('.panels');
+  if (!document.getElementById('printHeader')) {
+    container.insertAdjacentHTML('afterbegin', headerHtml);
+  } else {
+    document.getElementById('printHeader').innerHTML = `
+      <div style="text-align:center; border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 22px; color: #1a365d;">🏢 ${esc(propName)}</h1>
+        <p style="margin: 5px 0; font-size: 14px; color: #64748b;">Report Period: ${esc(period)}</p>
+        <p style="margin: 5px 0; font-size: 12px; color: #64748b;">Printed on: ${printDate}</p>
+      </div>
+    `;
+  }
+  
+  document.getElementById('printHeader').style.display = 'block';
+  
+  // ለተጠቃሚው ማሳወቂያ
+  showToast('💡 Tip: Select "Save as PDF" in the print dialog', 'info');
+  
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => {
+      const ph = document.getElementById('printHeader');
+      if (ph) ph.style.display = 'none';
+    }, 500);
+  }, 1000);
 };
 
 // SETTINGS
