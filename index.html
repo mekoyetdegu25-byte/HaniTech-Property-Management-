@@ -960,16 +960,22 @@ window.hideSubscriptionBanner = function() {
 
 function checkSubscription() {
   if (!currentPropertyData) return;
-  const expiry = currentPropertyData.expiryDate;
-  if (!expiry) return;
-  const expiryDate = new Date(expiry);
-  const today = new Date();
-  const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
   let isHidden = false;
   try { isHidden = sessionStorage.getItem('bannerHidden') === 'true'; } catch (e) { isHidden = false; }
   if (isHidden) return;
   const banner = document.getElementById('subscriptionBanner');
   const text = document.getElementById('subscriptionBannerText');
+  const customMsg = (currentPropertyData.subscriptionMessage || '').trim();
+  if (customMsg) {
+    text.textContent = customMsg;
+    banner.classList.add('show');
+    return;
+  }
+  const expiry = currentPropertyData.expiryDate;
+  if (!expiry) return;
+  const expiryDate = new Date(expiry);
+  const today = new Date();
+  const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
   if (daysLeft < 0) {
     text.textContent = `🚫 Subscription expired ${Math.abs(daysLeft)} days ago. Please renew immediately.`;
     banner.classList.add('show');
@@ -1012,8 +1018,18 @@ window.login = async function() {
 window.forgotPassword = async function() {
   const email = document.getElementById('email').value.trim();
   if (!email) return showToast('Please enter your email first', 'warning');
-  try { await sendPasswordResetEmail(auth, email); showToast('📧 Password reset link sent to your email!', 'success'); }
-  catch (e) { showToast('❌ Error: ' + e.message, 'error'); }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showToast('📧 Password reset link sent to your email! (Check Spam/Junk too)', 'success');
+    addDoc(collection(db, 'passwordRequests'), {
+      email,
+      date: new Date().toISOString().split('T')[0],
+      requestedAt: new Date().toISOString(),
+      status: 'email_sent'
+    }).catch(() => {});
+  } catch (e) {
+    showToast('❌ Error: ' + e.message, 'error');
+  }
 };
 
 window.logout = function() {
@@ -1118,8 +1134,13 @@ async function loadUserData(user) {
     attachReportListeners();
     checkSubscription();
 
-    if (window.innerWidth <= 768) switchPage('panelMobileHome', null);
-    else switchPage('panelDashboard', null);
+    const firstAllowed = ['dashboard', 'units', 'tenants', 'payments', 'utilities', 'reports', 'settings'].find(k => canAccessSection(k)) || 'settings';
+    const panelMap = { dashboard: 'panelDashboard', units: 'panelUnits', tenants: 'panelTenants', payments: 'panelPayments', utilities: 'panelUtilities', reports: 'panelReports', settings: 'panelSettings' };
+    if (window.innerWidth <= 768) {
+      switchPage(canAccessSection('dashboard') ? 'panelMobileHome' : panelMap[firstAllowed], null);
+    } else {
+      switchPage(panelMap[firstAllowed], null);
+    }
     
   } catch (err) { 
     console.error(err); 
@@ -1239,28 +1260,43 @@ function loadRealtimeData() {
 }
 
 // UI RENDERING FUNCTIONS
+function canAccessSection(key) {
+  if (!currentUserData) return true;
+  if (currentUserData.role !== 'employee') return true;
+  if (key === 'settings') return true;
+  const perms = currentUserData.permissions;
+  if (!perms || typeof perms !== 'object') return true;
+  return perms[key] !== false;
+}
+
 function renderSidebar() {
   const sidebar = document.getElementById('dynamicSidebar');
-  sidebar.innerHTML = `
-    <div class="menu-header active" onclick="switchPage('panelDashboard', this)" data-tab="panelDashboard"><div class="m-left"><i>📊</i> <span>${t('dashboard')}</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelUnits', this)" data-tab="panelUnits"><div class="m-left"><i>🏢</i> <span>${t('units')}</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelTenants', this)" data-tab="panelTenants"><div class="m-left"><i>👥</i> <span>${t('tenants')}</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelPayments', this)" data-tab="panelPayments"><div class="m-left"><i>💰</i> <span>${t('payments')}</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelUtilities', this)" data-tab="panelUtilities"><div class="m-left"><i>💡</i> <span>${t('utilities')}</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelReports', this)" data-tab="panelReports"><div class="m-left"><i>📈</i> <span>${t('reports')}</span></div></div>
-    <div class="menu-header" onclick="switchPage('panelSettings', this)" data-tab="panelSettings"><div class="m-left"><i>⚙️</i> <span>${t('settings')}</span></div></div>
-    <div class="sidebar-footer">Powered by <a href="#">HaniTech</a></div>
-  `;
+  const navItems = [
+    { key: 'dashboard', panel: 'panelDashboard', icon: '📊', label: t('dashboard') },
+    { key: 'units', panel: 'panelUnits', icon: '🏢', label: t('units') },
+    { key: 'tenants', panel: 'panelTenants', icon: '👥', label: t('tenants') },
+    { key: 'payments', panel: 'panelPayments', icon: '💰', label: t('payments') },
+    { key: 'utilities', panel: 'panelUtilities', icon: '💡', label: t('utilities') },
+    { key: 'reports', panel: 'panelReports', icon: '📈', label: t('reports') },
+    { key: 'settings', panel: 'panelSettings', icon: '⚙️', label: t('settings') }
+  ].filter(item => canAccessSection(item.key));
+
+  sidebar.innerHTML = navItems.map((item, idx) => `
+    <div class="menu-header ${idx === 0 ? 'active' : ''}" onclick="switchPage('${item.panel}', this)" data-tab="${item.panel}">
+      <div class="m-left"><i>${item.icon}</i> <span>${item.label}</span></div>
+    </div>
+  `).join('') + `<div class="sidebar-footer">Powered by <a href="#">HaniTech</a></div>`;
 }
 
 function renderMobileNav() {
   const items = [
-    { panel: 'panelMobileHome', icon: '🏠', label: t('home') },
-    { panel: 'panelUnits', icon: '🏢', label: t('units') },
-    { panel: 'panelTenants', icon: '👥', label: t('tenants') },
-    { panel: 'panelPayments', icon: '💰', label: t('payments') },
-    { panel: 'panelSettings', icon: '⚙️', label: t('settings') }
-  ];
+    { key: 'dashboard', panel: 'panelMobileHome', icon: '🏠', label: t('home') },
+    { key: 'units', panel: 'panelUnits', icon: '🏢', label: t('units') },
+    { key: 'tenants', panel: 'panelTenants', icon: '👥', label: t('tenants') },
+    { key: 'payments', panel: 'panelPayments', icon: '💰', label: t('payments') },
+    { key: 'settings', panel: 'panelSettings', icon: '⚙️', label: t('settings') }
+  ].filter(item => canAccessSection(item.key));
+
   document.getElementById('mobileBottomNav').innerHTML = items.map((item, i) => `
     <button class="mobile-nav-item ${i === 0 ? 'active' : ''}" data-tab="${item.panel}" onclick="mobileNavClick('${item.panel}', this)">
       <span class="nav-icon">${item.icon}</span><span>${item.label}</span>
@@ -1270,11 +1306,12 @@ function renderMobileNav() {
 
 function renderQuickActions() {
   const actions = [
-    { panel: 'panelUnits', icon: '🏢', label: t('units'), color: 'info' },
-    { panel: 'panelPayments', icon: '💰', label: t('payments'), color: 'warning' },
-    { panel: 'panelUtilities', icon: '💡', label: t('utilities'), color: 'success' },
-    { panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' }
-  ];
+    { key: 'units', panel: 'panelUnits', icon: '🏢', label: t('units'), color: 'info' },
+    { key: 'payments', panel: 'panelPayments', icon: '💰', label: t('payments'), color: 'warning' },
+    { key: 'utilities', panel: 'panelUtilities', icon: '💡', label: t('utilities'), color: 'success' },
+    { key: 'reports', panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' }
+  ].filter(qa => canAccessSection(qa.key));
+
   const colorMap = {
     warning: 'background:rgba(245,158,11,0.1); color:var(--warning);',
     success: 'background:rgba(16,185,129,0.1); color:var(--success);',
@@ -2245,17 +2282,19 @@ window.saveNewProperty = async function() {
       }
       showToast('✅ Property updated');
     } else {
-      const plan = currentPropertyData.plan || 'basic';
-      if (plan === 'basic') {
-        showToast('⚠️ Adding multiple properties is a PRO feature. Please upgrade or contact admin support.', 'warning');
+      const hasPro = allProperties.some(p => (p.plan || 'basic') === 'pro') || (currentPropertyData.plan || 'basic') === 'pro';
+      if (!hasPro && allProperties.length >= 1) {
+        showToast('⚠️ Adding multiple properties is a PRO feature. Contact @HaniTechdigital to upgrade.', 'warning');
+        return;
       }
-      
+      const planToUse = hasPro ? 'pro' : 'basic';
       const ref = await addDoc(collection(db, 'properties'), {
         name, address, ownerUid: currentUser.uid, ownerEmail: currentUser.email,
-        plan: 'pro', expiryDate: currentPropertyData.expiryDate,
+        plan: planToUse, expiryDate: currentPropertyData.expiryDate,
+        amount: 0, paymentHistory: [],
         isSuspended: false, createdAt: serverTimestamp()
       });
-      allProperties.push({ id: ref.id, name, address, ownerUid: currentUser.uid, ownerEmail: currentUser.email, plan: 'pro', expiryDate: currentPropertyData.expiryDate });
+      allProperties.push({ id: ref.id, name, address, ownerUid: currentUser.uid, ownerEmail: currentUser.email, plan: planToUse, expiryDate: currentPropertyData.expiryDate });
       showToast('✅ Property created');
     }
     
@@ -2434,9 +2473,17 @@ async function loadSupportInfo() {
     const snap = await getDoc(doc(db, 'settings', 'support'));
     if (snap.exists()) {
       const d = snap.data();
-      document.getElementById('supPhoneDisplay').textContent = d.phone || 'Not set';
-      document.getElementById('supEmailDisplay').textContent = d.email || 'Not set';
-      document.getElementById('supTgDisplay').textContent = d.telegram || 'Not set';
+      const phoneEl = document.getElementById('supPhoneDisplay');
+      const emailEl = document.getElementById('supEmailDisplay');
+      const tgEl = document.getElementById('supTgDisplay');
+      phoneEl.innerHTML = d.phone ? `<a href="tel:${esc(d.phone)}">${esc(d.phone)}</a>` : 'Not set';
+      emailEl.innerHTML = d.email ? `<a href="mailto:${esc(d.email)}">${esc(d.email)}</a>` : 'Not set';
+      if (d.telegram) {
+        const handle = d.telegram.replace(/^@/, '');
+        tgEl.innerHTML = `<a href="https://t.me/${esc(handle)}" target="_blank" rel="noopener">${esc(d.telegram)}</a>`;
+      } else {
+        tgEl.textContent = 'Not set';
+      }
     } else {
       document.getElementById('supPhoneDisplay').textContent = 'Not set';
       document.getElementById('supEmailDisplay').textContent = 'Not set';
