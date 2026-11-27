@@ -1242,9 +1242,14 @@ function normalizePricingDoc(data) {
 
 function listenAdminSubscriptionPricing() {
   if (unsubSubscriptionPricing) { unsubSubscriptionPricing(); unsubSubscriptionPricing = null; }
-  const docIds = ['subscription_pricing', 'pricing', 'subscription'];
-  docIds.forEach(docId => {
-    onSnapshot(doc(db, 'settings', docId), (snap) => {
+  const targets = [
+    ['appSettings', 'pricing'],
+    ['settings', 'subscription_pricing'],
+    ['settings', 'pricing'],
+    ['settings', 'subscription']
+  ];
+  targets.forEach(([colName, docId]) => {
+    onSnapshot(doc(db, colName, docId), (snap) => {
       if (snap.exists()) {
         normalizePricingDoc(snap.data());
         updateSubReqAmountFromAdmin();
@@ -1316,8 +1321,14 @@ window.openSubscriptionRequestModal = async function() {
     document.getElementById('subReqPlan').value = (currentPropertyData.plan || 'basic').toLowerCase() === 'pro' ? 'pro' : 'basic';
   }
   try {
-    for (const id of ['subscription_pricing', 'pricing', 'subscription']) {
-      const s = await getDoc(doc(db, 'settings', id));
+    const fetchTargets = [
+      ['appSettings', 'pricing'],
+      ['settings', 'subscription_pricing'],
+      ['settings', 'pricing'],
+      ['settings', 'subscription']
+    ];
+    for (const [colName, docId] of fetchTargets) {
+      const s = await getDoc(doc(db, colName, docId));
       if (s.exists()) normalizePricingDoc(s.data());
     }
   } catch (e) {}
