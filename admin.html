@@ -242,16 +242,24 @@
           <div class="form-group"><label>የህንፃው ስም</label><input type="text" id="newName" placeholder="Sunshine Building"></div>
           <div class="form-group"><label>አድራሻ</label><input type="text" id="newAddress" placeholder="Bole, Addis Ababa"></div>
           <div class="form-group"><label>📦 የአገልግሎት ፕላን (Plan)</label>
-            <select id="newPlan">
+            <select id="newPlan" onchange="autoFillTenantPriceAndExpiry()">
               <option value="basic">🟢 Basic (Single Property)</option>
               <option value="pro">🔵 Pro (Multi-Property & Features)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>⏳ የክፍያ ጊዜ / Type (Billing Cycle)</label>
+            <select id="newBillingCycle" onchange="autoFillTenantPriceAndExpiry()">
+              <option value="monthly">1 Month (Monthly - 30d)</option>
+              <option value="quarterly">3 Months (Quarterly - 90d)</option>
+              <option value="semiannual">6 Months (Semi-Annual - 180d)</option>
+              <option value="annual">1 Year (Annual - 365d)</option>
             </select>
           </div>
           <div class="form-group"><label>👑 Owner Email</label><input type="email" id="newOwner" placeholder="owner@example.com"></div>
           <div class="form-group"><label>🎯 Manager Email (Optional)</label><input type="email" id="newManager" placeholder="manager@example.com"></div>
           <div class="form-group"><label>🧰 Accountant Email (Optional)</label><input type="email" id="newAccountant" placeholder="accountant@example.com"></div>
           <div class="form-group"><label>🔑 ጊዜያዊ ፓስወርድ</label><input type="text" id="newTempPass" value="123456"></div>
-          <div class="form-group"><label>💰 ክፍያ (ብር/ወር)</label><input type="number" id="newAmount" placeholder="0"></div>
+          <div class="form-group"><label>💰 የክፍያ መጠን (ብር - በራሱ ይሞላል)</label><input type="number" id="newAmount" placeholder="0"></div>
           <div class="form-group"><label>📅 ማብቂያ ቀን</label><input type="date" id="newExpiry"></div>
           <button class="btn btn-primary" onclick="addTenant()">💾 ፍጠር</button>
         </div>
@@ -623,6 +631,7 @@
         document.getElementById('priceProAnnual').value = allPricing.pro.annual;
       }
     } catch (e) { console.error(e); }
+    autoFillTenantPriceAndExpiry();
   }
 
   // ===== DASHBOARD STATS =====
@@ -773,10 +782,42 @@
     return groupPropertiesByOwner(allTenants).find(g => g.key === key);
   }
 
+  const CYCLE_DAYS = {
+    monthly: 30,
+    quarterly: 90,
+    semiannual: 180,
+    annual: 365
+  };
+
+  window.autoFillTenantPriceAndExpiry = function() {
+    const planEl = document.getElementById('newPlan');
+    const cycleEl = document.getElementById('newBillingCycle');
+    const amountEl = document.getElementById('newAmount');
+    const expiryEl = document.getElementById('newExpiry');
+    if (!planEl || !cycleEl) return;
+
+    const plan = planEl.value || 'basic';
+    const cycle = cycleEl.value || 'monthly';
+    const planPrices = (allPricing && allPricing[plan]) ? allPricing[plan] : { monthly: 500, quarterly: 1400, semiannual: 2700, annual: 5000 };
+    const price = planPrices[cycle];
+    if (amountEl && price !== undefined) {
+      amountEl.value = price;
+    }
+
+    const days = CYCLE_DAYS[cycle] || 30;
+    if (expiryEl) {
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      expiryEl.value = d.toISOString().split('T')[0];
+    }
+  };
+
   window.addTenant = async function() {
     const name = document.getElementById('newName').value.trim();
     const address = document.getElementById('newAddress').value.trim();
     const plan = document.getElementById('newPlan').value;
+    const billingCycle = document.getElementById('newBillingCycle')?.value || 'monthly';
+    const billingDays = CYCLE_DAYS[billingCycle] || 30;
     const ownerEmail = document.getElementById('newOwner').value.trim();
     const managerEmail = document.getElementById('newManager').value.trim();
     const accountantEmail = document.getElementById('newAccountant').value.trim();
@@ -791,7 +832,7 @@
 
     try {
       const ref = await addDoc(collection(db, 'properties'), {
-        name, address, plan, ownerEmail, managerEmail, accountantEmail,
+        name, address, plan, billingCycle, billingDays, ownerEmail, managerEmail, accountantEmail,
         amount, expiryDate: expiry, isSuspended: false, paymentHistory: [],
         createdAt: new Date().toISOString()
       });
@@ -821,8 +862,10 @@
       if (errors.length) toast(`ህንፃ ተፈጥሯል፣ ${created} ተጠቃሚ፣ ስህተቶች: ${errors.length}`, 'error');
       else toast(`✅ ህንፃ + ${created} ተጠቃሚ ተፈጥረዋል`, 'success');
 
-      ['newName','newAddress','newOwner','newManager','newAccountant','newAmount','newExpiry'].forEach(id => document.getElementById(id).value = '');
+      ['newName','newAddress','newOwner','newManager','newAccountant'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('newTempPass').value = '123456';
+      if (document.getElementById('newBillingCycle')) document.getElementById('newBillingCycle').value = 'monthly';
+      autoFillTenantPriceAndExpiry();
       loadAllData();
     } catch (e) { toast('ስህተት: ' + e.message, 'error'); }
   };
@@ -1269,6 +1312,7 @@
     try {
       await setDoc(doc(db, 'appSettings', 'pricing'), pricingPayload, { merge: true });
       allPricing = pricingPayload;
+      autoFillTenantPriceAndExpiry();
       toast('✅ የፕላን ዋጋዎች ተቀምጠዋል', 'success');
     } catch (e) {
       toast(e.message, 'error');
