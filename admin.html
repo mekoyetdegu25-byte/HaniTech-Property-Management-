@@ -1241,6 +1241,7 @@
           note: reqItem.note || 'Approved Billing Request'
         });
 
+        const requestedPlan = (reqItem.plan || '').toLowerCase().trim();
         for (const p of groupProps) {
           const payload = {
             expiryDate: newExpiry,
@@ -1250,6 +1251,9 @@
             subscriptionMessage: `✅ ክፍያዎ ተረጋግጧል! አዲስ የማብቂያ ቀን: ${newExpiry}`,
             subscriptionStatus: 'success'
           };
+          if (requestedPlan === 'pro' || requestedPlan === 'basic') {
+            payload.plan = requestedPlan;
+          }
           if (p.id === primary.id) payload.paymentHistory = history;
           await updateDoc(doc(db, 'properties', p.id), payload);
         }
