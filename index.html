@@ -967,13 +967,13 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
       </select>
 
       <label class="field-label">📦 Selected Plan *</label>
-      <select id="subReqPlan">
+      <select id="subReqPlan" onchange="updateSubReqAmountFromAdmin()">
         <option value="basic">Basic Plan</option>
         <option value="pro">Pro Plan (Multi-Property & Full Access)</option>
       </select>
 
       <label class="field-label">⏳ Billing Period *</label>
-      <select id="subReqDuration">
+      <select id="subReqDuration" onchange="updateSubReqAmountFromAdmin()">
         <option value="1_month">1 Month</option>
         <option value="3_months">3 Months (Quarterly)</option>
         <option value="6_months">6 Months (Semi-Annual)</option>
@@ -982,8 +982,8 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 
       <div class="form-row">
         <div>
-          <label class="field-label">💰 Paid / Requested Amount (ETB) *</label>
-          <input type="number" id="subReqAmount" placeholder="0.00" step="any">
+          <label class="field-label">💰 Amount (ETB - Admin Set) *</label>
+          <input type="number" id="subReqAmount" placeholder="0.00" step="any" readonly style="background:var(--bg); font-weight:700;">
         </div>
         <div>
           <label class="field-label">💳 Payment Method *</label>
@@ -997,8 +997,12 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
         </div>
       </div>
 
-      <label class="field-label">🔢 Transaction Reference / Receipt ID</label>
-      <input type="text" id="subReqRef" placeholder="e.g. FT26331XXXX or Telebirr Ref">
+      <label class="field-label">📸 Payment Screenshot / Receipt Photo</label>
+      <input type="file" id="subReqScreenshot" accept="image/*" onchange="handleSubReqScreenshot(event)" style="padding:10px;">
+      <div id="subReqScreenshotPreviewWrap" style="display:none; margin-top:8px; position:relative;">
+        <img id="subReqScreenshotPreview" src="" alt="Screenshot Preview" style="max-width:100%; max-height:180px; border-radius:8px; border:1px solid var(--border); object-fit:contain; display:block;">
+        <button type="button" onclick="clearSubReqScreenshot()" class="btn btn-danger btn-sm" style="margin-top:6px;">🗑️ Remove Screenshot</button>
+      </div>
 
       <label class="field-label">📝 Note / Billing Details (Optional)</label>
       <textarea id="subReqNote" rows="2" placeholder="TIN number, company billing info, or message..."></textarea>
@@ -1151,6 +1155,7 @@ window.hideAnnouncementBanner = function() {
 
 function listenAnnouncementBanner() {
   if (unsubAnnouncements) { unsubAnnouncements(); unsubAnnouncements = null; }
+  if (unsubSubscriptionPricing) { unsubSubscriptionPricing(); unsubSubscriptionPricing = null; }
   const applyBanner = (msg, type = 'info', icon = '📢', bannerId = 'global') => {
     const banner = document.getElementById('announcementBanner');
     const textEl = document.getElementById('announcementBannerText');
@@ -1204,12 +1209,120 @@ function listenAnnouncementBanner() {
 
 // SUBSCRIPTION & BILL REQUEST
 let unsubSubRequests = null;
-window.openSubscriptionRequestModal = function() {
+let unsubSubscriptionPricing = null;
+let adminPlanPrices = {
+  basic: { '1_month': 0, '3_months': 0, '6_months': 0, '12_months': 0 },
+  pro: { '1_month': 0, '3_months': 0, '6_months': 0, '12_months': 0 }
+};
+let subReqScreenshotData = '';
+let subReqScreenshotName = '';
+
+function normalizePricingDoc(data) {
+  if (!data || typeof data !== 'object') return;
+  const src = data.plans || data.pricing || data;
+  ['basic', 'pro'].forEach(pKey => {
+    const pObj = src[pKey] || data[pKey] || {};
+    ['1_month', '3_months', '6_months', '12_months'].forEach(dKey => {
+      const altKey = dKey.replace('_', '');
+      const val = pObj[dKey] ?? pObj[altKey] ?? data[`${pKey}_${dKey}`] ?? data[`${pKey}_${altKey}`];
+      if (val !== undefined && val !== null && !isNaN(parseFloat(val))) {
+        adminPlanPrices[pKey][dKey] = parseFloat(val);
+      }
+    });
+    const monthlyBase = pObj.monthly ?? pObj.month ?? pObj['1_month'];
+    if (monthlyBase !== undefined && !isNaN(parseFloat(monthlyBase))) {
+      const base = parseFloat(monthlyBase);
+      if (!adminPlanPrices[pKey]['1_month']) adminPlanPrices[pKey]['1_month'] = base;
+      if (!adminPlanPrices[pKey]['3_months'] && pObj['3_months'] === undefined) adminPlanPrices[pKey]['3_months'] = base * 3;
+      if (!adminPlanPrices[pKey]['6_months'] && pObj['6_months'] === undefined) adminPlanPrices[pKey]['6_months'] = base * 6;
+      if (!adminPlanPrices[pKey]['12_months'] && pObj['12_months'] === undefined) adminPlanPrices[pKey]['12_months'] = base * 12;
+    }
+  });
+}
+
+function listenAdminSubscriptionPricing() {
+  if (unsubSubscriptionPricing) { unsubSubscriptionPricing(); unsubSubscriptionPricing = null; }
+  const docIds = ['subscription_pricing', 'pricing', 'subscription'];
+  docIds.forEach(docId => {
+    onSnapshot(doc(db, 'settings', docId), (snap) => {
+      if (snap.exists()) {
+        normalizePricingDoc(snap.data());
+        updateSubReqAmountFromAdmin();
+      }
+    }, () => {});
+  });
+}
+
+window.updateSubReqAmountFromAdmin = function() {
+  const planEl = document.getElementById('subReqPlan');
+  const durEl = document.getElementById('subReqDuration');
+  const amtEl = document.getElementById('subReqAmount');
+  if (!planEl || !durEl || !amtEl) return;
+  const plan = (planEl.value || 'basic').toLowerCase();
+  const dur = durEl.value || '1_month';
+  const price = adminPlanPrices[plan]?.[dur] ?? 0;
+  amtEl.value = price > 0 ? price : 0;
+};
+
+window.handleSubReqScreenshot = function(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    showToast('Please select an image file (JPG, PNG, etc.)', 'error');
+    event.target.value = '';
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    showToast('Screenshot size must be under 2MB', 'warning');
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const maxW = 900;
+      const scale = img.width > maxW ? maxW / img.width : 1;
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      subReqScreenshotData = canvas.toDataURL('image/jpeg', 0.75);
+      subReqScreenshotName = file.name;
+      const prevImg = document.getElementById('subReqScreenshotPreview');
+      const prevWrap = document.getElementById('subReqScreenshotPreviewWrap');
+      if (prevImg && prevWrap) {
+        prevImg.src = subReqScreenshotData;
+        prevWrap.style.display = 'block';
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearSubReqScreenshot = function() {
+  subReqScreenshotData = '';
+  subReqScreenshotName = '';
+  const inp = document.getElementById('subReqScreenshot');
+  const prevImg = document.getElementById('subReqScreenshotPreview');
+  const prevWrap = document.getElementById('subReqScreenshotPreviewWrap');
+  if (inp) inp.value = '';
+  if (prevImg) prevImg.src = '';
+  if (prevWrap) prevWrap.style.display = 'none';
+};
+
+window.openSubscriptionRequestModal = async function() {
   if (currentPropertyData) {
     document.getElementById('subReqPlan').value = (currentPropertyData.plan || 'basic').toLowerCase() === 'pro' ? 'pro' : 'basic';
   }
-  document.getElementById('subReqAmount').value = '';
-  document.getElementById('subReqRef').value = '';
+  try {
+    for (const id of ['subscription_pricing', 'pricing', 'subscription']) {
+      const s = await getDoc(doc(db, 'settings', id));
+      if (s.exists()) normalizePricingDoc(s.data());
+    }
+  } catch (e) {}
+  updateSubReqAmountFromAdmin();
+  clearSubReqScreenshot();
   document.getElementById('subReqNote').value = '';
   document.getElementById('subscriptionRequestModal').classList.add('open');
 };
@@ -1221,12 +1334,11 @@ window.submitSubscriptionRequest = async function() {
   const duration = document.getElementById('subReqDuration').value;
   const amount = parseFloat(document.getElementById('subReqAmount').value);
   const paymentMethod = document.getElementById('subReqMethod').value;
-  const reference = document.getElementById('subReqRef').value.trim();
   const note = document.getElementById('subReqNote').value.trim();
 
-  if (isNaN(amount) || amount < 0) return showToast('Please enter a valid amount', 'error');
-  if (paymentMethod !== 'other' && !reference && requestType !== 'bill_invoice_request') {
-    return showToast('Please enter transaction reference or select "Other / Invoice First"', 'warning');
+  if (isNaN(amount) || amount < 0) return showToast('Invalid amount', 'error');
+  if (paymentMethod !== 'other' && !subReqScreenshotData && requestType !== 'bill_invoice_request') {
+    return showToast('Please upload a payment screenshot or select "Other / Invoice First"', 'warning');
   }
 
   const btn = document.getElementById('btnSubmitSubReq');
@@ -1244,7 +1356,8 @@ window.submitSubscriptionRequest = async function() {
       duration,
       amount,
       paymentMethod,
-      reference,
+      screenshot: subReqScreenshotData || '',
+      screenshotName: subReqScreenshotName || '',
       note,
       status: 'pending',
       createdAt: serverTimestamp()
@@ -1321,7 +1434,8 @@ window.loadSubscriptionRequests = function() {
           <div class="list-row-title">${typeLabels[r.requestType] || esc(r.requestType)} ${badge}</div>
           <div class="list-row-sub">
             📦 Plan: <strong>${esc((r.plan || '').toUpperCase())}</strong> (${esc((r.duration || '').replace('_', ' '))}) • 💰 <strong>${money(r.amount)} ETB</strong><br>
-            💳 ${esc(r.paymentMethod || '')}${r.reference ? ' • Ref: <strong>' + esc(r.reference) + '</strong>' : ''} • 📅 ${dt}
+            💳 ${esc(r.paymentMethod || '')}${r.screenshot ? ' • 📸 <a href="' + esc(r.screenshot) + '" target="_blank" rel="noopener" style="color:var(--info);font-weight:700;">View Screenshot</a>' : ''} • 📅 ${dt}
+            ${r.screenshot ? '<div style="margin-top:6px;"><a href="' + esc(r.screenshot) + '" target="_blank" rel="noopener"><img src="' + esc(r.screenshot) + '" alt="Payment Screenshot" style="max-height:70px;border-radius:6px;border:1px solid var(--border);object-fit:contain;"></a></div>' : ''}
             ${r.adminNote ? '<br>💬 Admin: <em>' + esc(r.adminNote) + '</em>' : ''}
           </div>
         </div>
@@ -1480,6 +1594,7 @@ async function loadUserData(user) {
     attachReportListeners();
     checkSubscription();
     listenAnnouncementBanner();
+    listenAdminSubscriptionPricing();
     loadSubscriptionRequests();
 
     const firstAllowed = ['dashboard', 'units', 'tenants', 'payments', 'utilities', 'reports', 'settings'].find(k => canAccessSection(k)) || 'settings';
@@ -1660,8 +1775,7 @@ function renderQuickActions() {
     { key: 'units', panel: 'panelUnits', icon: '🏢', label: t('units'), color: 'info' },
     { key: 'payments', panel: 'panelPayments', icon: '💰', label: t('payments'), color: 'warning' },
     { key: 'utilities', panel: 'panelUtilities', icon: '💡', label: t('utilities'), color: 'success' },
-    { key: 'reports', panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' },
-    { key: 'subscription', panel: 'panelSubscription', icon: '💳', label: t('subscription'), color: 'warning' }
+    { key: 'reports', panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' }
   ].filter(qa => canAccessSection(qa.key));
 
   const colorMap = {
