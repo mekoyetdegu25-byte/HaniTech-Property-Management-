@@ -234,6 +234,22 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
 .lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 .lang-btn:hover:not(.active) { background: var(--bg); }
 
+/* ANNOUNCEMENT & BILLING REQUEST ADDITIONS */
+.announcement-banner { display: none; background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #fff; padding: 11px 20px; font-size: 13px; font-weight: 600; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; z-index: 104; position: relative; border-bottom: 1px solid rgba(255,255,255,0.18); }
+.announcement-banner.show { display: flex; }
+.announcement-banner.type-warning { background: linear-gradient(135deg, #d97706, #b45309); }
+.announcement-banner.type-danger { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+.announcement-banner.type-success { background: linear-gradient(135deg, #059669, #047857); }
+.announcement-banner .banner-text { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.announcement-banner .banner-close { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 0 4px; opacity: 0.85; flex-shrink: 0; }
+.sub-plan-box { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; border-radius: 12px; padding: 18px; margin-bottom: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.sub-plan-box .sp-title { font-size: 16px; font-weight: 800; color: var(--accent); }
+.sub-plan-box .sp-meta { font-size: 12.5px; opacity: 0.92; margin-top: 4px; line-height: 1.5; }
+.sub-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.18); color: #fff; }
+.bank-card-mini { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+@media print { .announcement-banner { display: none !important; } }
+@media (max-width: 768px) { .announcement-banner { font-size: 11.5px !important; padding: 10px 12px !important; } }
+
 /* PRINT STYLES */
 @media print {
   body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
@@ -344,9 +360,18 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
       <span id="subscriptionBannerText">Your subscription expires soon. Please renew to continue using all features.</span>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
-      <button class="banner-btn" onclick="showToast('✈️ Contact HaniTech on Telegram: @HaniTechdigital', 'info')">Renew Now</button>
+      <button class="banner-btn" onclick="openSubscriptionRequestModal()">Renew Now</button>
       <button class="banner-close" onclick="hideSubscriptionBanner()">×</button>
     </div>
+  </div>
+
+  <!-- ANNOUNCEMENT BANNER -->
+  <div class="announcement-banner" id="announcementBanner">
+    <div class="banner-text">
+      <span id="announcementBannerIcon">📢</span>
+      <span id="announcementBannerText"></span>
+    </div>
+    <button class="banner-close" onclick="hideAnnouncementBanner()" title="Dismiss">×</button>
   </div>
 
   <header>
@@ -598,6 +623,57 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
           </div>
         </div>
 
+        <!-- SUBSCRIPTION & BILL REQUEST -->
+        <div class="panel" id="panelSubscription">
+          <div class="desktop-grid" style="grid-template-columns: 1fr; gap: 16px;">
+            <div class="card">
+              <div class="card-title">
+                <span>💳 Subscription & Bill Request</span>
+                <button class="btn btn-primary btn-sm" onclick="openSubscriptionRequestModal()" style="margin-top:0;">➕ New Renewal / Bill Request</button>
+              </div>
+              <div class="sub-plan-box">
+                <div>
+                  <div class="sp-title" id="subCurrentPlanTitle">📦 Current Plan: BASIC</div>
+                  <div class="sp-meta">
+                    🏢 Property: <strong id="subCurrentPropName">-</strong><br>
+                    📅 Expiry Date: <strong id="subCurrentExpiry">-</strong> &nbsp;•&nbsp;
+                    <span class="sub-badge" id="subStatusBadge">Checking...</span>
+                  </div>
+                </div>
+                <button class="btn btn-warning btn-sm" onclick="openSubscriptionRequestModal()" style="margin-top:0; width:auto;">📤 Submit Payment / Request Bill</button>
+              </div>
+
+              <div class="collapsible" style="margin-bottom:0;">
+                <div class="coll-header open" onclick="toggleCollapsible(this)">
+                  <div class="coll-title">🏦 Payment Accounts & Instructions</div>
+                  <span class="coll-arrow">▶</span>
+                </div>
+                <div class="coll-body open">
+                  <div id="paymentAccountsContainer" style="margin-top:12px;">
+                    <div class="bank-card-mini">
+                      <div>
+                        <div style="font-weight:700; font-size:13.5px;">🏦 Commercial Bank of Ethiopia (CBE) / Telebirr</div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Contact HaniTech Support or check details below before submitting receipt.</div>
+                      </div>
+                      <button class="btn btn-outline btn-sm" onclick="openSubscriptionRequestModal()">Request Bill</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                <span>🧾 My Subscription & Bill Requests</span>
+                <button class="btn btn-outline btn-sm" onclick="loadSubscriptionRequests()" style="margin-top:0;">🔄 Refresh</button>
+              </div>
+              <div id="subscriptionRequestsList">
+                <div class="empty-state"><div class="e-icon">🧾</div><div class="e-title">No requests yet</div><div class="e-sub">Click "New Renewal / Bill Request" to submit a subscription or bill request.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- SETTINGS -->
         <div class="panel" id="panelSettings">
           <div class="desktop-grid" style="grid-template-columns: 1fr; gap: 16px;">
@@ -627,6 +703,27 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
               </div>
               <div class="coll-body">
                 <div id="propertiesList"></div>
+              </div>
+            </div>
+
+            <div class="collapsible" id="settingsSubscriptionCard">
+              <div class="coll-header" onclick="toggleCollapsible(this)">
+                <div class="coll-title">💳 Subscription & Billing</div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); openSubscriptionRequestModal()" style="margin-top:0;">🔄 Renew / Bill</button>
+                  <span class="coll-arrow">▶</span>
+                </div>
+              </div>
+              <div class="coll-body">
+                <div style="padding-top:12px;">
+                  <div class="support-row"><strong>Plan:</strong> <span id="setSubPlan">-</span></div>
+                  <div class="support-row"><strong>Expiry:</strong> <span id="setSubExpiry">-</span></div>
+                  <div class="support-row"><strong>Status:</strong> <span id="setSubStatus">-</span></div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+                    <button class="btn btn-primary btn-sm" onclick="openSubscriptionRequestModal()">📤 Request Renewal / Bill</button>
+                    <button class="btn btn-outline btn-sm" onclick="switchPage('panelSubscription', null)">📋 View Requests & Accounts</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -855,6 +952,62 @@ body.dark-mode .mobile-nav-item.active { color: var(--accent); }
   </div>
 </div>
 
+<div class="modal-overlay" id="subscriptionRequestModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>💳 Subscription & Bill Request</h3>
+      <button class="modal-close" onclick="closeModal('subscriptionRequestModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <label class="field-label" style="margin-top:0;">📋 Request Type *</label>
+      <select id="subReqType">
+        <option value="subscription_renewal">🔄 Subscription Renewal</option>
+        <option value="plan_upgrade">🚀 Plan Upgrade (Basic → Pro)</option>
+        <option value="bill_invoice_request">🧾 Bill / Invoice Request</option>
+      </select>
+
+      <label class="field-label">📦 Selected Plan *</label>
+      <select id="subReqPlan">
+        <option value="basic">Basic Plan</option>
+        <option value="pro">Pro Plan (Multi-Property & Full Access)</option>
+      </select>
+
+      <label class="field-label">⏳ Billing Period *</label>
+      <select id="subReqDuration">
+        <option value="1_month">1 Month</option>
+        <option value="3_months">3 Months (Quarterly)</option>
+        <option value="6_months">6 Months (Semi-Annual)</option>
+        <option value="12_months">12 Months (Annual)</option>
+      </select>
+
+      <div class="form-row">
+        <div>
+          <label class="field-label">💰 Paid / Requested Amount (ETB) *</label>
+          <input type="number" id="subReqAmount" placeholder="0.00" step="any">
+        </div>
+        <div>
+          <label class="field-label">💳 Payment Method *</label>
+          <select id="subReqMethod">
+            <option value="telebirr">📱 Telebirr</option>
+            <option value="cbe">🏦 CBE Bank Transfer</option>
+            <option value="awash">🏦 Awash Bank</option>
+            <option value="abyssinia">🏦 Bank of Abyssinia</option>
+            <option value="other">💵 Other / Invoice First</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field-label">🔢 Transaction Reference / Receipt ID</label>
+      <input type="text" id="subReqRef" placeholder="e.g. FT26331XXXX or Telebirr Ref">
+
+      <label class="field-label">📝 Note / Billing Details (Optional)</label>
+      <textarea id="subReqNote" rows="2" placeholder="TIN number, company billing info, or message..."></textarea>
+
+      <button class="btn btn-success" id="btnSubmitSubReq" onclick="submitSubscriptionRequest()" style="margin-top:16px;">📤 Submit Request</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
@@ -893,8 +1046,8 @@ const PAGE_SIZE = 10;
 
 // TRANSLATIONS
 const TRANSLATIONS = {
-  en: { dashboard: "Dashboard", units: "Units", tenants: "Tenants", payments: "Payments", utilities: "Utilities", reports: "Reports", settings: "Settings", home: "Home" },
-  am: { dashboard: "ዳሽቦርድ", units: "ክፍሎች", tenants: "ተከራዮች", payments: "ክፍያዎች", utilities: "መገልገያዎች", reports: "ሪፖርቶች", settings: "ቅንብሮች", home: "መነሻ" }
+  en: { dashboard: "Dashboard", units: "Units", tenants: "Tenants", payments: "Payments", utilities: "Utilities", reports: "Reports", subscription: "Subscription & Bill", settings: "Settings", home: "Home" },
+  am: { dashboard: "ዳሽቦርድ", units: "ክፍሎች", tenants: "ተከራዮች", payments: "ክፍያዎች", utilities: "መገልገያዎች", reports: "ሪፖርቶች", subscription: "ሰብስክሪፕሽን እና ቢል", settings: "ቅንብሮች", home: "መነሻ" }
 };
 function t(key) { return TRANSLATIONS[currentLanguage]?.[key] || TRANSLATIONS.en[key] || key; }
 
@@ -985,6 +1138,198 @@ function checkSubscription() {
   }
 }
 
+// ANNOUNCEMENT BANNER (GLOBAL & PROPERTY-SPECIFIC)
+let unsubAnnouncements = null;
+window.hideAnnouncementBanner = function() {
+  const banner = document.getElementById('announcementBanner');
+  if (banner) {
+    const dismissId = banner.dataset.bannerId || 'default';
+    banner.classList.remove('show');
+    try { sessionStorage.setItem('annBannerHidden_' + dismissId, 'true'); } catch (e) {}
+  }
+};
+
+function listenAnnouncementBanner() {
+  if (unsubAnnouncements) { unsubAnnouncements(); unsubAnnouncements = null; }
+  const applyBanner = (msg, type = 'info', icon = '📢', bannerId = 'global') => {
+    const banner = document.getElementById('announcementBanner');
+    const textEl = document.getElementById('announcementBannerText');
+    const iconEl = document.getElementById('announcementBannerIcon');
+    if (!banner || !textEl) return;
+    if (!msg || !msg.trim()) {
+      banner.classList.remove('show');
+      return;
+    }
+    let hidden = false;
+    try { hidden = sessionStorage.getItem('annBannerHidden_' + bannerId) === 'true'; } catch (e) {}
+    if (hidden) return;
+    banner.dataset.bannerId = bannerId;
+    banner.classList.remove('type-warning', 'type-danger', 'type-success');
+    if (type === 'warning') banner.classList.add('type-warning');
+    else if (type === 'danger' || type === 'error') banner.classList.add('type-danger');
+    else if (type === 'success') banner.classList.add('type-success');
+    if (iconEl) iconEl.textContent = icon || '📢';
+    textEl.textContent = msg.trim();
+    banner.classList.add('show');
+  };
+
+  // Check property-level announcement first if present
+  if (currentPropertyData && currentPropertyData.announcementMessage) {
+    applyBanner(
+      currentPropertyData.announcementMessage,
+      currentPropertyData.announcementType || 'info',
+      currentPropertyData.announcementIcon || '📢',
+      'prop_' + currentPropertyData.id + '_' + currentPropertyData.announcementMessage.slice(0, 20)
+    );
+  }
+
+  // Listen to global settings/announcement document in Firestore
+  try {
+    unsubAnnouncements = onSnapshot(doc(db, 'settings', 'announcement'), (snap) => {
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.active !== false && d.message) {
+          const idKey = 'global_' + (d.updatedAt?.seconds || d.message.slice(0, 20));
+          applyBanner(d.message, d.type || 'info', d.icon || '📢', idKey);
+          return;
+        }
+      }
+      if (!currentPropertyData?.announcementMessage) {
+        const b = document.getElementById('announcementBanner');
+        if (b) b.classList.remove('show');
+      }
+    }, () => {});
+  } catch (e) { console.error('Announcement banner error:', e); }
+}
+
+// SUBSCRIPTION & BILL REQUEST
+let unsubSubRequests = null;
+window.openSubscriptionRequestModal = function() {
+  if (currentPropertyData) {
+    document.getElementById('subReqPlan').value = (currentPropertyData.plan || 'basic').toLowerCase() === 'pro' ? 'pro' : 'basic';
+  }
+  document.getElementById('subReqAmount').value = '';
+  document.getElementById('subReqRef').value = '';
+  document.getElementById('subReqNote').value = '';
+  document.getElementById('subscriptionRequestModal').classList.add('open');
+};
+
+window.submitSubscriptionRequest = async function() {
+  if (!currentUser || !currentPropertyData) return;
+  const requestType = document.getElementById('subReqType').value;
+  const plan = document.getElementById('subReqPlan').value;
+  const duration = document.getElementById('subReqDuration').value;
+  const amount = parseFloat(document.getElementById('subReqAmount').value);
+  const paymentMethod = document.getElementById('subReqMethod').value;
+  const reference = document.getElementById('subReqRef').value.trim();
+  const note = document.getElementById('subReqNote').value.trim();
+
+  if (isNaN(amount) || amount < 0) return showToast('Please enter a valid amount', 'error');
+  if (paymentMethod !== 'other' && !reference && requestType !== 'bill_invoice_request') {
+    return showToast('Please enter transaction reference or select "Other / Invoice First"', 'warning');
+  }
+
+  const btn = document.getElementById('btnSubmitSubReq');
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting...';
+
+  try {
+    await addDoc(collection(db, 'subscription_requests'), {
+      propertyId: currentPropertyData.id,
+      propertyName: currentPropertyData.name || 'Property',
+      ownerUid: currentUser.uid,
+      ownerEmail: currentUser.email,
+      requestType,
+      plan,
+      duration,
+      amount,
+      paymentMethod,
+      reference,
+      note,
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+    logAction('Subscription/Bill Request', `Submitted ${requestType} (${plan}, ${duration}) - ${amount} ETB`);
+    showToast('✅ Request submitted! Admin will review & approve shortly.');
+    closeModal('subscriptionRequestModal');
+  } catch (e) {
+    showToast('❌ Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📤 Submit Request';
+  }
+};
+
+function renderSubscriptionPanelHeader() {
+  if (!currentPropertyData) return;
+  const plan = (currentPropertyData.plan || 'basic').toUpperCase();
+  const expiry = currentPropertyData.expiryDate || 'Not set';
+  const titleEl = document.getElementById('subCurrentPlanTitle');
+  const propEl = document.getElementById('subCurrentPropName');
+  const expEl = document.getElementById('subCurrentExpiry');
+  const badgeEl = document.getElementById('subStatusBadge');
+  if (titleEl) titleEl.textContent = `📦 Current Plan: ${plan}`;
+  if (propEl) propEl.textContent = currentPropertyData.name || '-';
+  if (expEl) expEl.textContent = expiry;
+  let statusText = '✅ Active';
+  if (currentPropertyData.expiryDate) {
+    const d = daysUntil(currentPropertyData.expiryDate);
+    if (d < 0) statusText = `❌ Expired (${Math.abs(d)}d ago)`;
+    else if (d <= 7) statusText = `⚠️ Expires in ${d}d`;
+    else statusText = `✅ Active (${d}d left)`;
+  }
+  if (badgeEl) badgeEl.textContent = statusText;
+  const setPlanEl = document.getElementById('setSubPlan');
+  const setExpEl = document.getElementById('setSubExpiry');
+  const setStEl = document.getElementById('setSubStatus');
+  if (setPlanEl) setPlanEl.textContent = plan;
+  if (setExpEl) setExpEl.textContent = expiry;
+  if (setStEl) setStEl.textContent = statusText;
+}
+
+window.loadSubscriptionRequests = function() {
+  if (!currentPropertyData) return;
+  renderSubscriptionPanelHeader();
+  if (unsubSubRequests) { unsubSubRequests(); unsubSubRequests = null; }
+  const q = query(collection(db, 'subscription_requests'), where('propertyId', '==', currentPropertyData.id));
+  unsubSubRequests = onSnapshot(q, (snap) => {
+    const list = [];
+    snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+    list.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    const el = document.getElementById('subscriptionRequestsList');
+    if (!el) return;
+    if (list.length === 0) {
+      el.innerHTML = `<div class="empty-state"><div class="e-icon">🧾</div><div class="e-title">No requests yet</div><div class="e-sub">Click "New Renewal / Bill Request" to submit a subscription or bill request.</div></div>`;
+      return;
+    }
+    const typeLabels = {
+      subscription_renewal: '🔄 Subscription Renewal',
+      plan_upgrade: '🚀 Plan Upgrade',
+      bill_invoice_request: '🧾 Bill / Invoice Request'
+    };
+    el.innerHTML = list.map(r => {
+      const st = (r.status || 'pending').toLowerCase();
+      const badge = st === 'approved'
+        ? '<span class="badge badge-green">✅ Approved</span>'
+        : st === 'rejected'
+        ? '<span class="badge badge-red">❌ Rejected</span>'
+        : '<span class="badge badge-orange">⏳ Pending</span>';
+      const dt = r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
+      return `<div class="list-row">
+        <div class="list-row-icon" style="background:rgba(212,175,55,0.15);">💳</div>
+        <div class="list-row-info">
+          <div class="list-row-title">${typeLabels[r.requestType] || esc(r.requestType)} ${badge}</div>
+          <div class="list-row-sub">
+            📦 Plan: <strong>${esc((r.plan || '').toUpperCase())}</strong> (${esc((r.duration || '').replace('_', ' '))}) • 💰 <strong>${money(r.amount)} ETB</strong><br>
+            💳 ${esc(r.paymentMethod || '')}${r.reference ? ' • Ref: <strong>' + esc(r.reference) + '</strong>' : ''} • 📅 ${dt}
+            ${r.adminNote ? '<br>💬 Admin: <em>' + esc(r.adminNote) + '</em>' : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }, (err) => console.error('Subscription requests error:', err));
+};
+
 // REFRESH FUNCTION
 window.refreshData = function() {
   showToast('Refreshing data...', 'info');
@@ -1035,6 +1380,7 @@ window.forgotPassword = async function() {
 window.logout = function() {
   if (unsubUnits) unsubUnits(); if (unsubTenants) unsubTenants(); if (unsubPayments) unsubPayments();
   if (unsubUtilities) unsubUtilities(); if (unsubEmployees) unsubEmployees(); if (unsubAudit) unsubAudit();
+  if (unsubAnnouncements) unsubAnnouncements(); if (unsubSubRequests) unsubSubRequests();
   signOut(auth);
 };
 
@@ -1133,6 +1479,8 @@ async function loadUserData(user) {
     loadRealtimeData();
     attachReportListeners();
     checkSubscription();
+    listenAnnouncementBanner();
+    loadSubscriptionRequests();
 
     const firstAllowed = ['dashboard', 'units', 'tenants', 'payments', 'utilities', 'reports', 'settings'].find(k => canAccessSection(k)) || 'settings';
     const panelMap = { dashboard: 'panelDashboard', units: 'panelUnits', tenants: 'panelTenants', payments: 'panelPayments', utilities: 'panelUtilities', reports: 'panelReports', settings: 'panelSettings' };
@@ -1175,6 +1523,8 @@ window.switchProperty = async function(propId) {
 
     loadRealtimeData();
     checkSubscription();
+    listenAnnouncementBanner();
+    loadSubscriptionRequests();
     showToast('✅ Property switched successfully');
 
   } catch (error) {
@@ -1278,6 +1628,7 @@ function renderSidebar() {
     { key: 'payments', panel: 'panelPayments', icon: '💰', label: t('payments') },
     { key: 'utilities', panel: 'panelUtilities', icon: '💡', label: t('utilities') },
     { key: 'reports', panel: 'panelReports', icon: '📈', label: t('reports') },
+    { key: 'subscription', panel: 'panelSubscription', icon: '💳', label: t('subscription') },
     { key: 'settings', panel: 'panelSettings', icon: '⚙️', label: t('settings') }
   ].filter(item => canAccessSection(item.key));
 
@@ -1309,7 +1660,8 @@ function renderQuickActions() {
     { key: 'units', panel: 'panelUnits', icon: '🏢', label: t('units'), color: 'info' },
     { key: 'payments', panel: 'panelPayments', icon: '💰', label: t('payments'), color: 'warning' },
     { key: 'utilities', panel: 'panelUtilities', icon: '💡', label: t('utilities'), color: 'success' },
-    { key: 'reports', panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' }
+    { key: 'reports', panel: 'panelReports', icon: '📊', label: t('reports'), color: 'purple' },
+    { key: 'subscription', panel: 'panelSubscription', icon: '💳', label: t('subscription'), color: 'warning' }
   ].filter(qa => canAccessSection(qa.key));
 
   const colorMap = {
@@ -1342,6 +1694,7 @@ window.switchPage = function(panelId, el) {
   if (panelId === 'panelPayments') { paymentsPage = 1; renderPayments(); }
   if (panelId === 'panelUtilities') { utilitiesPage = 1; renderUtilities(); }
   if (panelId === 'panelReports') renderReports();
+  if (panelId === 'panelSubscription') loadSubscriptionRequests();
 };
 window.mobileNavClick = function(panelId, el) {
   if (el) { document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
@@ -2483,6 +2836,15 @@ async function loadSupportInfo() {
         tgEl.innerHTML = `<a href="https://t.me/${esc(handle)}" target="_blank" rel="noopener">${esc(d.telegram)}</a>`;
       } else {
         tgEl.textContent = 'Not set';
+      }
+      const accContainer = document.getElementById('paymentAccountsContainer');
+      if (accContainer && (d.cbeAccount || d.telebirr || d.bankDetails || d.phone)) {
+        let accHtml = '';
+        if (d.cbeAccount) accHtml += `<div class="bank-card-mini"><div><div style="font-weight:700;">🏦 CBE Account</div><div style="font-size:12.5px;color:var(--text-muted);">${esc(d.cbeAccount)}</div></div></div>`;
+        if (d.telebirr) accHtml += `<div class="bank-card-mini"><div><div style="font-weight:700;">📱 Telebirr</div><div style="font-size:12.5px;color:var(--text-muted);">${esc(d.telebirr)}</div></div></div>`;
+        if (d.bankDetails) accHtml += `<div class="bank-card-mini"><div><div style="font-weight:700;">💳 Payment Info</div><div style="font-size:12.5px;color:var(--text-muted);">${esc(d.bankDetails)}</div></div></div>`;
+        if (!accHtml && d.phone) accHtml += `<div class="bank-card-mini"><div><div style="font-weight:700;">📞 Support / Telebirr</div><div style="font-size:12.5px;color:var(--text-muted);">${esc(d.phone)}</div></div></div>`;
+        if (accHtml) accContainer.innerHTML = accHtml;
       }
     } else {
       document.getElementById('supPhoneDisplay').textContent = 'Not set';
