@@ -1169,9 +1169,15 @@
     el.innerHTML = sorted.map(r => {
       const st = r.status || 'pending';
       const stLabel = st === 'approved' ? '✅ የተረጋገጠ' : (st === 'rejected' ? '❌ ውድቅ የተደረገ' : '⏳ በመጠባበቅ ላይ');
-      const targetName = r.propertyName || r.shopName || r.tenantName || r.requesterEmail || r.propertyId || '—';
-      const cycleDaysMap = { monthly: 30, quarterly: 90, semiannual: 180, annual: 365 };
-      const days = r.days || cycleDaysMap[r.cycle] || 30;
+      const targetName = r.propertyName || r.shopName || r.tenantName || r.ownerEmail || r.requesterEmail || r.propertyId || '—';
+      const durMap = { '1_month': 30, '3_months': 90, '6_months': 180, '12_months': 365, monthly: 30, quarterly: 90, semiannual: 180, annual: 365 };
+      const rawPeriod = r.duration || r.cycle || 'monthly';
+      const days = r.days || durMap[rawPeriod] || 30;
+      const payMethod = r.paymentMethod || r.method || '—';
+      const senderEmail = r.ownerEmail || r.requesterEmail || r.email || '—';
+      const reqTypeLabel = r.requestType || r.type || '';
+      const planLabel = r.plan ? String(r.plan).toUpperCase() : '';
+      const shotSrc = r.screenshot || r.screenshotUrl || r.receiptUrl || r.image || '';
       return `
         <div class="req-card ${esc(st)}">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
@@ -1179,11 +1185,12 @@
             <span class="badge-status ${st === 'approved' ? 'status-active' : (st === 'rejected' ? 'status-suspended' : 'status-expired')}">${stLabel}</span>
           </div>
           <div style="font-size:12px; color:#475569; line-height:1.55;">
-            💰 <b>መጠን:</b> ${esc(r.amount || 0)} ብር • <b>ዘዴ:</b> ${esc(r.method || '—')} • <b>ጊዜ:</b> ${esc(r.cycle || 'monthly')} (${days} ቀናት)<br>
-            📧 <b>ላኪ:</b> ${esc(r.requesterEmail || '—')} ${r.note ? '• 📝 ' + esc(r.note) : ''}<br>
+            ${reqTypeLabel ? '📋 <b>ዓይነት:</b> ' + esc(reqTypeLabel) + (planLabel ? ' • 📦 <b>ፕላን:</b> ' + esc(planLabel) : '') + '<br>' : ''}
+            💰 <b>መጠን:</b> ${esc(r.amount || 0)} ብር • <b>ዘዴ:</b> ${esc(payMethod)} • <b>ጊዜ:</b> ${esc(String(rawPeriod).replace('_', ' '))} (${days} ቀናት)<br>
+            📧 <b>ላኪ:</b> ${esc(senderEmail)} ${r.note ? '<br>📝 <b>ማስታወሻ:</b> ' + esc(r.note) : ''}<br>
             ${r.requestedExpiryDate ? '📅 <b>የታሰበ ማብቂያ:</b> ' + esc(r.requestedExpiryDate) : ''}
           </div>
-          ${r.screenshotUrl ? `<img src="${esc(r.screenshotUrl)}" class="req-thumb" onclick="previewScreenshot('${esc(r.screenshotUrl)}')" alt="Screenshot">` : ''}
+          ${shotSrc ? `<img src="${esc(shotSrc)}" class="req-thumb" onclick="previewScreenshot('${esc(shotSrc)}')" alt="Screenshot">` : ''}
           ${st === 'pending' ? `
             <div style="display:flex; gap:8px; margin-top:10px;">
               <button class="btn btn-success btn-sm" onclick="approveBillingRequest('${esc(r.id)}')">✅ አጽድቅና አድስ</button>
