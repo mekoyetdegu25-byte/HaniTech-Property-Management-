@@ -597,9 +597,24 @@
     } catch (e) { console.error(e); }
 
     try {
-      const snap = await getDocs(collection(db, 'billingRequests'));
+      const [snapSub, snapBill] = await Promise.all([
+        getDocs(collection(db, 'subscription_requests')).catch(() => ({ forEach: () => {} })),
+        getDocs(collection(db, 'billingRequests')).catch(() => ({ forEach: () => {} }))
+      ]);
       allBillingRequests = [];
-      snap.forEach(d => allBillingRequests.push({ id: d.id, ...d.data() }));
+      const seenIds = new Set();
+      snapSub.forEach(d => {
+        if (!seenIds.has(d.id)) {
+          seenIds.add(d.id);
+          allBillingRequests.push({ id: d.id, _col: 'subscription_requests', ...d.data() });
+        }
+      });
+      snapBill.forEach(d => {
+        if (!seenIds.has(d.id)) {
+          seenIds.add(d.id);
+          allBillingRequests.push({ id: d.id, _col: 'billingRequests', ...d.data() });
+        }
+      });
       renderBillingRequests();
     } catch (e) { console.error(e); }
 
@@ -1233,7 +1248,7 @@
         }
       }
 
-      await updateDoc(doc(db, 'billingRequests', reqId), {
+      await updateDoc(doc(db, reqItem._col || 'subscription_requests', reqId), {
         status: 'approved',
         approvedAt: new Date().toISOString(),
         appliedExpiryDate: newExpiry
@@ -1253,7 +1268,7 @@
     ]);
     if (!ok) return;
     try {
-      await updateDoc(doc(db, 'billingRequests', reqId), {
+      await updateDoc(doc(db, (allBillingRequests.find(x => x.id === reqId)?._col) || 'subscription_requests', reqId), {
         status: 'rejected',
         rejectedAt: new Date().toISOString()
       });
