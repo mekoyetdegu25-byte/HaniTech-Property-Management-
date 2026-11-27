@@ -6,128 +6,137 @@
 <title>Super Admin Panel - HaniTech Property</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #f0f4f8; color: #1a202c; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
-  input, select, textarea { width: 100%; padding: 12px 14px; font-size: 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f7fafc; outline: none; transition: border-color 0.2s, background 0.2s; }
-  input:focus, select:focus, textarea:focus { border-color: #3182ce; background: #fff; }
-  label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
+  body { background: #f1f5f9; color: #0f172a; font-size: 15px; min-height: 100vh; overflow-x: hidden; }
+  input, select, textarea { width: 100%; padding: 11px 13px; font-size: 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #f8fafc; color: #0f172a; outline: none; transition: border-color 0.2s, background 0.2s; }
+  input:focus, select:focus, textarea:focus { border-color: #4f46e5; background: #fff; }
+  label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
 
   /* LOGIN */
-  #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #3182ce 100%); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 2000; }
-  .login-box { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 32px 24px; width: 100%; max-width: 400px; }
-  .login-box h1 { text-align: center; color: #1a365d; font-size: 20px; margin-bottom: 20px; font-weight: 800; }
-  .form-group { margin-bottom: 14px; }
-  .btn-login { width: 100%; padding: 15px; font-size: 16px; font-weight: 800; border: none; border-radius: 12px; background: linear-gradient(135deg, #1a365d, #2c5282); color: #fff; cursor: pointer; margin-top: 8px; }
-  #loginError { color: #c53030; text-align: center; margin-bottom: 10px; font-size: 13px; display: none; }
+  #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 2000; }
+  .login-box { background: #fff; border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,0.35); padding: 32px 24px; width: 100%; max-width: 400px; }
+  .login-box h1 { text-align: center; color: #0f172a; font-size: 20px; margin-bottom: 6px; font-weight: 800; }
+  .login-box .sub { text-align: center; color: #64748b; font-size: 12px; margin-bottom: 20px; font-weight: 600; }
+  .form-group { margin-bottom: 13px; }
+  .btn-login { width: 100%; padding: 14px; font-size: 15px; font-weight: 800; border: none; border-radius: 12px; background: linear-gradient(135deg, #0f172a, #4f46e5); color: #fff; cursor: pointer; margin-top: 6px; }
+  #loginError { color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 12px; font-size: 13px; font-weight: 600; display: none; }
 
   /* APP */
   #app { display: none; }
-  #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 250px; background: #1a365d; color: #cbd5e0; z-index: 100; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s ease; }
+  #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 252px; background: #0f172a; color: #cbd5e1; z-index: 100; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.28s ease; }
   #sidebar.open { transform: translateX(0); }
-  .sb-brand { padding: 22px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .sb-brand { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.09); }
   .sb-brand h1 { color: #fff; font-size: 17px; font-weight: 800; }
-  .sb-brand small { display: block; color: #718096; font-size: 11px; margin-top: 4px; font-weight: 600; }
+  .sb-brand small { display: block; color: #94a3b8; font-size: 11px; margin-top: 3px; font-weight: 600; }
   .sb-nav { flex: 1; overflow-y: auto; padding: 10px 0; }
-  .sb-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 600; border-left: 3px solid transparent; transition: background 0.15s; }
-  .sb-item:hover { background: rgba(255,255,255,0.06); }
-  .sb-item.active { background: rgba(49,130,206,0.25); border-left-color: #3182ce; color: #fff; }
-  .sb-item .icon { width: 20px; text-align: center; font-size: 16px; }
-  .sb-item .badge { margin-left: auto; background: #c53030; color: #fff; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 800; }
-  .sb-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-  .btn-logout { width: 100%; padding: 10px; background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
-  .btn-logout:hover { background: rgba(197,48,48,0.6); }
-  .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 90; }
+  .sb-item { display: flex; align-items: center; gap: 11px; padding: 11px 20px; cursor: pointer; font-size: 13.5px; font-weight: 600; border-left: 3px solid transparent; transition: all 0.15s; }
+  .sb-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  .sb-item.active { background: rgba(79,70,229,0.25); border-left-color: #818cf8; color: #fff; }
+  .sb-item .icon { width: 20px; text-align: center; font-size: 15px; }
+  .sb-item .badge { margin-left: auto; background: #dc2626; color: #fff; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 800; }
+  .sb-footer { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.09); }
+  .btn-logout { width: 100%; padding: 10px; background: rgba(255,255,255,0.07); color: #fff; border: 1px solid rgba(255,255,255,0.14); border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .btn-logout:hover { background: rgba(220,38,38,0.75); }
+  .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.45); z-index: 90; }
   .sb-overlay.show { display: block; }
 
-  #main { padding: 16px; padding-bottom: 90px; transition: margin-left 0.3s ease; }
-  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; }
-  .topbar h2 { font-size: 20px; font-weight: 800; color: #1a365d; }
-  .hamburger { display: none; background: #fff; border: 1px solid #e2e8f0; width: 40px; height: 40px; border-radius: 10px; font-size: 18px; cursor: pointer; }
-  .user-chip { background: #fff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #4a5568; }
+  #main { padding: 16px; padding-bottom: 92px; transition: margin-left 0.28s ease; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
+  .topbar h2 { font-size: 19px; font-weight: 800; color: #0f172a; }
+  .hamburger { display: none; background: #fff; border: 1px solid #e2e8f0; width: 40px; height: 40px; border-radius: 10px; font-size: 18px; cursor: pointer; color: #0f172a; }
+  .user-chip { background: #fff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; color: #334155; }
 
-  .section { display: none; animation: fadeIn 0.25s ease; }
+  .section { display: none; animation: fadeIn 0.2s ease; }
   .section.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  .card { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); margin-bottom: 14px; }
-  .card-title { font-size: 15px; font-weight: 800; color: #2d3748; margin-bottom: 12px; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); margin-bottom: 14px; }
+  .card-title { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
 
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .stat-card { background: #fff; border-radius: 14px; padding: 16px 10px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-  .stat-card .value { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
-  .stat-card .label { font-size: 11px; color: #718096; font-weight: 700; }
-  .val-blue { color: #2b6cb0; } .val-green { color: #276749; } .val-red { color: #c53030; } .val-orange { color: #dd6b20; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 15px 10px; text-align: center; box-shadow: 0 1px 3px rgba(15,23,42,0.04); }
+  .stat-card .value { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .stat-card .label { font-size: 11px; color: #64748b; font-weight: 700; }
+  .val-indigo { color: #4f46e5; } .val-green { color: #15803d; } .val-red { color: #b91c1c; } .val-orange { color: #c2410c; }
 
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 14px; font-size: 13px; font-weight: 700; border: none; border-radius: 9px; cursor: pointer; color: #fff; text-decoration: none; margin-bottom: 6px; }
-  .btn:hover { opacity: 0.88; }
-  .btn-sm { padding: 7px 10px; font-size: 11px; border-radius: 7px; width: auto; }
-  .btn-success { background: #276749; } .btn-primary { background: #2c5282; } .btn-danger { background: #c53030; } .btn-warning { background: #dd6b20; } .btn-info { background: #3182ce; } .btn-outline { background: transparent; border: 1.5px solid #cbd5e0; color: #4a5568; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 700; border: none; border-radius: 9px; cursor: pointer; color: #fff; text-decoration: none; margin-bottom: 6px; transition: opacity 0.15s; }
+  .btn:hover { opacity: 0.9; }
+  .btn-sm { padding: 7px 10px; font-size: 11.5px; border-radius: 8px; width: auto; margin-bottom: 0; }
+  .btn-success { background: #15803d; } .btn-primary { background: #4f46e5; } .btn-danger { background: #b91c1c; } .btn-warning { background: #c2410c; } .btn-info { background: #0284c7; } .btn-outline { background: #fff; border: 1.5px solid #cbd5e1; color: #334155; }
 
-  .collapsible { background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); margin-bottom: 12px; overflow: hidden; }
-  .coll-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; }
-  .coll-header .coll-title { font-weight: 700; font-size: 14px; color: #2d3748; }
-  .coll-header .coll-arrow { font-size: 12px; font-weight: 900; color: #4a5568; transition: transform 0.2s; }
+  .filter-bar { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 14px; }
+
+  .collapsible { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); margin-bottom: 14px; overflow: hidden; }
+  .coll-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; background: #f8fafc; }
+  .coll-header .coll-title { font-weight: 800; font-size: 14px; color: #0f172a; }
+  .coll-header .coll-arrow { font-size: 12px; font-weight: 900; color: #475569; transition: transform 0.2s; }
   .coll-header.open .coll-arrow { transform: rotate(90deg); }
-  .coll-body { display: none; padding: 0 16px 16px; border-top: 1px solid #edf2f7; padding-top: 14px; }
+  .coll-body { display: none; padding: 16px; border-top: 1px solid #e2e8f0; }
   .coll-body.open { display: block; }
 
-  .tenant-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-  .tenant-card.expired { border-color: #fbd38d; background: #fffaf0; }
-  .tenant-card.suspended { border-color: #feb2b2; background: #fff5f5; opacity: 0.92; }
+  .tenant-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); }
+  .tenant-card.expired { border-color: #fdba74; background: #fffbeb; }
+  .tenant-card.suspended { border-color: #fca5a5; background: #fef2f2; }
   .tenant-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; margin-bottom: 10px; gap: 8px; }
-  .tenant-title { font-size: 15px; font-weight: 800; color: #1a365d; }
-  .tenant-sub { font-size: 11px; color: #4a5568; margin-top: 3px; word-break: break-all; }
+  .tenant-title { font-size: 15px; font-weight: 800; color: #0f172a; }
+  .tenant-sub { font-size: 11.5px; color: #64748b; margin-top: 3px; word-break: break-all; }
 
-  .sub-prop-list { background: #f8fafc; border: 1px solid #edf2f7; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+  .sub-prop-list { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
   .sub-prop-item { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
   .sub-prop-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .sub-prop-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .sub-prop-name { font-size: 13px; font-weight: 700; color: #2c5282; }
-  .sub-prop-addr { font-size: 11px; color: #718096; }
+  .sub-prop-name { font-size: 13px; font-weight: 700; color: #1e293b; }
+  .sub-prop-addr { font-size: 11px; color: #64748b; }
   .sub-prop-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
-  .tenant-emails { display: grid; gap: 5px; margin-bottom: 10px; background: #f7fafc; padding: 10px; border-radius: 8px; }
-  .tenant-email-item { font-size: 11px; color: #4a5568; display: flex; gap: 6px; word-break: break-all; }
-  .tenant-email-item strong { color: #2d3748; min-width: 75px; }
-  .tenant-info { font-size: 12px; margin-bottom: 5px; color: #4a5568; }
-  .tenant-info strong { color: #2d3748; }
-  .badge-status { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; margin-top: 4px; }
-  .status-active { background: #c6f6d5; color: #22543d; }
-  .status-expired { background: #feebc8; color: #7b341e; }
-  .status-suspended { background: #fed7d7; color: #822727; }
+  .tenant-emails { display: grid; gap: 4px; margin-bottom: 10px; background: #f8fafc; border: 1px solid #f1f5f9; padding: 10px; border-radius: 9px; }
+  .tenant-email-item { font-size: 11.5px; color: #475569; display: flex; gap: 6px; word-break: break-all; }
+  .tenant-email-item strong { color: #1e293b; min-width: 76px; }
+  .tenant-info { font-size: 12px; margin-bottom: 6px; color: #475569; }
+  .tenant-info strong { color: #0f172a; }
+  .badge-status { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; }
+  .status-active { background: #dcfce7; color: #166534; }
+  .status-expired { background: #ffedd5; color: #9a3412; }
+  .status-suspended { background: #fee2e2; color: #991b1b; }
   .tenant-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
   .tenant-actions .btn { margin-bottom: 0; }
 
-  .empty { text-align: center; padding: 30px 16px; color: #a0aec0; }
-  .empty .emoji { font-size: 36px; margin-bottom: 8px; }
+  .req-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #f8fafc; }
+  .req-card.pending { border-color: #fdba74; background: #fffbeb; }
+  .req-card.approved { border-color: #86efac; background: #f0fdf4; }
+  .req-card.rejected { border-color: #fca5a5; background: #fef2f2; }
+  .req-thumb { max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 8px; cursor: pointer; }
+
+  .empty { text-align: center; padding: 28px 16px; color: #94a3b8; }
+  .empty .emoji { font-size: 34px; margin-bottom: 8px; }
   .empty p { font-size: 13px; }
-  .alert-banner { display: none; background: #fff5f5; color: #c53030; padding: 14px; border-radius: 12px; border: 1px solid #fed7d7; margin-bottom: 16px; font-weight: 700; font-size: 13px; text-align: center; }
+  .alert-banner { display: none; background: #fef2f2; color: #b91c1c; padding: 13px; border-radius: 12px; border: 1px solid #fecaca; margin-bottom: 14px; font-weight: 700; font-size: 13px; text-align: center; }
 
   #toastContainer { position: fixed; top: 16px; right: 16px; z-index: 3000; display: flex; flex-direction: column; gap: 8px; }
-  .toast { background: #2d3748; color: #fff; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); min-width: 220px; max-width: 340px; animation: slideIn 0.25s ease; }
-  .toast.success { background: #276749; } .toast.error { background: #c53030; } .toast.info { background: #2c5282; }
+  .toast { background: #0f172a; color: #fff; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); min-width: 220px; max-width: 340px; animation: slideIn 0.2s ease; }
+  .toast.success { background: #15803d; } .toast.error { background: #b91c1c; } .toast.info { background: #4f46e5; }
   @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-  #modalOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2500; align-items: center; justify-content: center; padding: 20px; }
+  #modalOverlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 2500; align-items: center; justify-content: center; padding: 20px; }
   #modalOverlay.show { display: flex; }
-  .modal-box { background: #fff; border-radius: 16px; padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; }
-  .modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #1a365d; }
-  .modal-box p { font-size: 14px; color: #4a5568; margin-bottom: 18px; line-height: 1.5; white-space: pre-line; }
+  .modal-box { background: #fff; border-radius: 16px; padding: 22px; max-width: 420px; width: 100%; box-shadow: 0 24px 60px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; }
+  .modal-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: #0f172a; }
+  .modal-box p { font-size: 13.5px; color: #475569; margin-bottom: 16px; line-height: 1.55; white-space: pre-line; }
   .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-  #bottomNav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; z-index: 100; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
+  #bottomNav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; z-index: 100; box-shadow: 0 -2px 10px rgba(15,23,42,0.05); }
   .bn-inner { display: flex; justify-content: space-around; padding: 6px 0; }
-  .bn-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; cursor: pointer; color: #718096; font-size: 10px; font-weight: 700; position: relative; }
+  .bn-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; cursor: pointer; color: #64748b; font-size: 10px; font-weight: 700; position: relative; }
   .bn-item .icon { font-size: 18px; }
-  .bn-item.active { color: #2c5282; }
-  .bn-item .badge { position: absolute; top: 2px; right: 22%; background: #c53030; color: #fff; padding: 0px 5px; border-radius: 8px; font-size: 9px; font-weight: 800; }
+  .bn-item.active { color: #4f46e5; }
+  .bn-item .badge { position: absolute; top: 2px; right: 20%; background: #dc2626; color: #fff; padding: 0 5px; border-radius: 8px; font-size: 9px; font-weight: 800; }
 
   @media (min-width: 768px) {
     #sidebar { transform: translateX(0); }
-    #main { margin-left: 250px; padding: 24px 32px 32px; }
+    #main { margin-left: 252px; padding: 24px 32px 32px; }
     .hamburger { display: none; }
     #bottomNav { display: none !important; }
     .stats-grid { grid-template-columns: repeat(4, 1fr); }
-    .tenant-actions { grid-template-columns: repeat(4, 1fr); }
+    .filter-bar { grid-template-columns: 2fr 1fr 1fr; }
+    .tenant-actions { grid-template-columns: repeat(5, 1fr); }
   }
   @media (max-width: 767px) {
     #bottomNav { display: block; }
@@ -141,6 +150,7 @@
 <div id="loginScreen">
   <div class="login-box">
     <h1>👑 Super Admin Panel</h1>
+    <div class="sub">HaniTech Property Management</div>
     <div id="loginError"></div>
     <div class="form-group">
       <label>📧 Admin Email</label>
@@ -173,14 +183,15 @@
         <span class="icon">👥</span><span>Users</span>
       </div>
       <div class="sb-item" data-section="billing" onclick="switchSection('billing')">
-        <span class="icon">💰</span><span>Billing</span>
+        <span class="icon">💰</span><span>Billing & Requests</span>
+        <span class="badge" id="sbBillBadge" style="display:none;">0</span>
       </div>
       <div class="sb-item" data-section="passwords" onclick="switchSection('passwords')">
         <span class="icon">🔔</span><span>Password Requests</span>
         <span class="badge" id="sbPassBadge" style="display:none;">0</span>
       </div>
       <div class="sb-item" data-section="support" onclick="switchSection('support')">
-        <span class="icon">📞</span><span>Support Info</span>
+        <span class="icon">📞</span><span>Support & Pricing</span>
       </div>
       <div class="sb-item" data-section="data" onclick="switchSection('data')">
         <span class="icon">💾</span><span>Data Management</span>
@@ -205,7 +216,7 @@
     <section class="section active" id="section-dashboard">
       <div class="alert-banner" id="paymentBanner">⚠️ <span id="paymentBannerText"></span></div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="value val-blue" id="statTotalTenants">0</div><div class="label">🏢 ጠቅላላ ህንፃዎች</div></div>
+        <div class="stat-card"><div class="value val-indigo" id="statTotalTenants">0</div><div class="label">🏢 ጠቅላላ ህንፃዎች</div></div>
         <div class="stat-card"><div class="value val-green" id="statActive">0</div><div class="label">✅ ንቁ ህንፃዎች</div></div>
         <div class="stat-card"><div class="value val-orange" id="statExpired">0</div><div class="label">⏳ ጊዜው ያለፈ</div></div>
         <div class="stat-card"><div class="value val-red" id="statSuspended">0</div><div class="label">❌ የታገዱ</div></div>
@@ -247,7 +258,7 @@
       </div>
 
       <div class="card">
-        <div style="display:flex; gap:8px; margin-bottom:12px; flex-direction:column;">
+        <div class="filter-bar">
           <input type="text" id="searchTenant" placeholder="🔍 በህንፃ ስም፣ በ Owner Email ወይም በአድራሻ ፈልግ..." oninput="renderTenantList()">
           <select id="filterStatus" onchange="renderTenantList()">
             <option value="all">ሁሉም ሁኔታ</option>
@@ -269,7 +280,7 @@
     <section class="section" id="section-users">
       <div class="card">
         <div class="card-title">👥 የተጠቃሚዎች ዝርዝር</div>
-        <div style="display:flex; gap:8px; margin-bottom:12px; flex-direction:column;">
+        <div class="filter-bar" style="grid-template-columns:2fr 1fr;">
           <input type="text" id="searchUser" placeholder="🔍 በኢሜይል ፈልግ..." oninput="renderUserList()">
           <select id="filterUserRole" onchange="renderUserList()">
             <option value="all">ሁሉም ሚና</option>
@@ -290,6 +301,10 @@
         <div id="billingSummary"></div>
       </div>
       <div class="card">
+        <div class="card-title">📩 የደንበኞች የክፍያ ጥያቄዎች (Billing Requests)</div>
+        <div id="billingRequestsList"></div>
+      </div>
+      <div class="card">
         <div class="card-title">📜 የክፍያ ታሪክ</div>
         <div id="billingHistory"></div>
       </div>
@@ -303,7 +318,7 @@
       </div>
     </section>
 
-    <!-- SUPPORT -->
+    <!-- SUPPORT & PRICING -->
     <section class="section" id="section-support">
       <div class="card">
         <div class="card-title">📞 የድጋፍ መረጃ</div>
@@ -311,6 +326,21 @@
         <div class="form-group"><label>ኢሜይል</label><input type="email" id="supportEmail" placeholder="support@hanitech.com"></div>
         <div class="form-group"><label>ቴሌግራም</label><input type="text" id="supportTelegram" placeholder="@hanitech_support"></div>
         <button class="btn btn-primary" onclick="saveSupportInfo()">💾 አስቀምጥ</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💲 የፕላን ዋጋዎች (Subscription Pricing - ETB)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group"><label>🟢 Basic Monthly</label><input type="number" id="priceBasicMonthly" value="500"></div>
+          <div class="form-group"><label>🔵 Pro Monthly</label><input type="number" id="priceProMonthly" value="1000"></div>
+          <div class="form-group"><label>🟢 Basic Quarterly (90d)</label><input type="number" id="priceBasicQuarterly" value="1400"></div>
+          <div class="form-group"><label>🔵 Pro Quarterly (90d)</label><input type="number" id="priceProQuarterly" value="2800"></div>
+          <div class="form-group"><label>🟢 Basic Semi-Annual (180d)</label><input type="number" id="priceBasicSemiannual" value="2700"></div>
+          <div class="form-group"><label>🔵 Pro Semi-Annual (180d)</label><input type="number" id="priceProSemiannual" value="5400"></div>
+          <div class="form-group"><label>🟢 Basic Annual (365d)</label><input type="number" id="priceBasicAnnual" value="5000"></div>
+          <div class="form-group"><label>🔵 Pro Annual (365d)</label><input type="number" id="priceProAnnual" value="10000"></div>
+        </div>
+        <button class="btn btn-success" onclick="savePricingConfig()">💾 ዋጋዎችን አስቀምጥ</button>
       </div>
     </section>
 
@@ -333,7 +363,7 @@
       <div class="bn-item active" data-section="dashboard" onclick="switchSection('dashboard')"><span class="icon">📊</span><span>Dash</span></div>
       <div class="bn-item" data-section="properties" onclick="switchSection('properties')"><span class="icon">🏢</span><span>Props</span></div>
       <div class="bn-item" data-section="users" onclick="switchSection('users')"><span class="icon">👥</span><span>Users</span></div>
-      <div class="bn-item" data-section="billing" onclick="switchSection('billing')"><span class="icon">💰</span><span>Bill</span></div>
+      <div class="bn-item" data-section="billing" onclick="switchSection('billing')"><span class="icon">💰</span><span>Bill</span><span class="badge" id="bnBillBadge" style="display:none;">0</span></div>
       <div class="bn-item" data-section="more" onclick="openMoreMenu()"><span class="icon">☰</span><span>More</span></div>
     </div>
   </nav>
@@ -368,8 +398,12 @@
   const db = getFirestore(app);
   const SUPER_ADMIN_EMAIL = "admin@hanitech.com";
 
-  let allTenants = [], allUsers = [], allPasswordRequests = [];
+  let allTenants = [], allUsers = [], allPasswordRequests = [], allBillingRequests = [];
   let allSupportInfo = { phone: '', email: '', telegram: '' };
+  let allPricing = {
+    basic: { monthly: 500, quarterly: 1400, semiannual: 2700, annual: 5000 },
+    pro: { monthly: 1000, quarterly: 2800, semiannual: 5400, annual: 10000 }
+  };
 
   function esc(str) {
     return String(str ?? '')
@@ -453,6 +487,14 @@
     });
   };
 
+  window.previewScreenshot = function(url) {
+    if (!url) return;
+    document.getElementById('modalTitle').textContent = '📷 የክፍያ Screenshot';
+    document.getElementById('modalMessage').innerHTML = `<img src="${esc(url)}" style="max-width:100%; border-radius:10px; display:block; margin:0 auto;">`;
+    document.getElementById('modalActions').innerHTML = `<button class="btn btn-primary" onclick="document.getElementById('modalOverlay').classList.remove('show')">ዝጋ</button>`;
+    document.getElementById('modalOverlay').classList.add('show');
+  };
+
   // ===== SIDEBAR / NAV =====
   window.toggleSidebar = function() {
     document.getElementById('sidebar').classList.toggle('open');
@@ -466,7 +508,7 @@
     if (sec) sec.classList.add('active');
     document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.section === name));
     document.querySelectorAll('.bn-item').forEach(i => i.classList.toggle('active', i.dataset.section === name));
-    const titles = { dashboard: '📊 Dashboard', properties: '🏢 Properties & Owners', users: '👥 Users', billing: '💰 Billing', passwords: '🔔 Password Requests', support: '📞 Support Info', data: '💾 Data Management' };
+    const titles = { dashboard: '📊 Dashboard', properties: '🏢 Properties & Owners', users: '👥 Users', billing: '💰 Billing & Requests', passwords: '🔔 Password Requests', support: '📞 Support & Pricing', data: '💾 Data Management' };
     document.getElementById('pageTitle').textContent = titles[name] || 'Admin';
     if (window.innerWidth < 768 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
   };
@@ -474,7 +516,7 @@
   window.openMoreMenu = async function() {
     const choice = await showModal('📋 ተጨማሪ', 'የሚፈልጉትን ክፍል ይምረጡ', [
       { text: '🔔 Passwords', class: 'btn-info', value: 'passwords' },
-      { text: '📞 Support', class: 'btn-info', value: 'support' },
+      { text: '📞 Support & Pricing', class: 'btn-info', value: 'support' },
       { text: '💾 Data', class: 'btn-info', value: 'data' },
       { text: '✖ ዝጋ', class: 'btn-outline', value: null }
     ]);
@@ -547,12 +589,38 @@
     } catch (e) { console.error(e); }
 
     try {
+      const snap = await getDocs(collection(db, 'billingRequests'));
+      allBillingRequests = [];
+      snap.forEach(d => allBillingRequests.push({ id: d.id, ...d.data() }));
+      renderBillingRequests();
+    } catch (e) { console.error(e); }
+
+    try {
       const s = await getDoc(doc(db, 'settings', 'support'));
       if (s.exists()) {
         allSupportInfo = s.data();
         document.getElementById('supportPhone').value = allSupportInfo.phone || '';
         document.getElementById('supportEmail').value = allSupportInfo.email || '';
         document.getElementById('supportTelegram').value = allSupportInfo.telegram || '';
+      }
+    } catch (e) { console.error(e); }
+
+    try {
+      const pSnap = await getDoc(doc(db, 'appSettings', 'pricing'));
+      if (pSnap.exists()) {
+        const pd = pSnap.data();
+        allPricing = {
+          basic: { ...allPricing.basic, ...(pd.basic || {}) },
+          pro: { ...allPricing.pro, ...(pd.pro || {}) }
+        };
+        document.getElementById('priceBasicMonthly').value = allPricing.basic.monthly;
+        document.getElementById('priceProMonthly').value = allPricing.pro.monthly;
+        document.getElementById('priceBasicQuarterly').value = allPricing.basic.quarterly;
+        document.getElementById('priceProQuarterly').value = allPricing.pro.quarterly;
+        document.getElementById('priceBasicSemiannual').value = allPricing.basic.semiannual;
+        document.getElementById('priceProSemiannual').value = allPricing.pro.semiannual;
+        document.getElementById('priceBasicAnnual').value = allPricing.basic.annual;
+        document.getElementById('priceProAnnual').value = allPricing.pro.annual;
       }
     } catch (e) { console.error(e); }
   }
@@ -585,9 +653,9 @@
     const el = document.getElementById('recentProperties');
     if (allTenants.length === 0) { el.innerHTML = '<div class="empty"><div class="emoji">📭</div><p>ምንም ህንፃ የለም</p></div>'; return; }
     const sorted = [...allTenants].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 5);
-    el.innerHTML = sorted.map(t => `<div style="padding:10px 0; border-bottom:1px solid #edf2f7;">
-      <strong style="color:#2c5282;">${esc(t.name)}</strong>
-      <div style="font-size:11px; color:#718096;">${esc(t.ownerEmail || '—')} • ${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}</div>
+    el.innerHTML = sorted.map(t => `<div style="padding:10px 0; border-bottom:1px solid #f1f5f9;">
+      <strong style="color:#4f46e5;">${esc(t.name)}</strong>
+      <div style="font-size:11.5px; color:#64748b;">${esc(t.ownerEmail || '—')} • ${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}</div>
     </div>`).join('');
   }
 
@@ -639,8 +707,8 @@
 
       const cardCls = g.isSuspended ? 'suspended' : (isExpired ? 'expired' : '');
       const planBadge = g.plan === 'pro'
-        ? '<span style="background:#bee3f8; color:#2b6cb0; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🔵 PRO</span>'
-        : '<span style="background:#c6f6d5; color:#22543d; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🟢 BASIC</span>';
+        ? '<span style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🔵 PRO</span>'
+        : '<span style="background:#dcfce7; color:#166534; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:800;">🟢 BASIC</span>';
 
       const headerTitle = g.properties.length > 1
         ? `👑 ${esc(g.ownerEmail || 'Owner')} (${g.properties.length} ህንፃዎች)`
@@ -651,11 +719,9 @@
         const pStatusText = p.isSuspended ? '❌ የታገደ' : (pExpired ? '⏳ ጊዜው አልፏል' : '✅ ንቁ');
         return `
           <div class="sub-prop-item">
-            <div class="sub-prop-top">
-              <div>
-                <div class="sub-prop-name">🏢 ${esc(p.name || 'ስም የለም')} <span style="font-size:10px; color:#718096;">(${pStatusText})</span></div>
-                <div class="sub-prop-addr">📍 ${esc(p.address || '—')} • 💰 ${esc(p.amount || 0)} ብር/ወር ${p.expiryDate ? '• 📅 ' + esc(p.expiryDate) : ''}</div>
-              </div>
+            <div>
+              <div class="sub-prop-name">🏢 ${esc(p.name || 'ስም የለም')} <span style="font-size:10px; color:#64748b;">(${pStatusText})</span></div>
+              <div class="sub-prop-addr">📍 ${esc(p.address || '—')} • 💰 ${esc(p.amount || 0)} ብር/ወር ${p.expiryDate ? '• 📅 ' + esc(p.expiryDate) : ''}</div>
             </div>
             <div class="sub-prop-actions">
               <button class="btn btn-info btn-sm" onclick="editTenant('${esc(p.id)}')">✏️ አሻሽል</button>
@@ -688,7 +754,7 @@
         <div class="tenant-info">💰 <strong>ጠቅላላ ወርሃዊ ክፍያ:</strong> ${g.totalAmount} ብር/ወር</div>
 
         <div class="sub-prop-list">
-          <div style="font-size:11px; font-weight:800; color:#4a5568; margin-bottom:4px;">📋 የተመዘገቡ ህንፃዎች (${g.properties.length})</div>
+          <div style="font-size:11px; font-weight:800; color:#475569; margin-bottom:4px;">📋 የተመዘገቡ ህንፃዎች (${g.properties.length})</div>
           ${propsHtml}
         </div>
 
@@ -790,7 +856,12 @@
       });
 
       for (const p of g.properties) {
-        const updatePayload = { expiryDate: newExpiry, isSuspended: false };
+        const updatePayload = {
+          expiryDate: newExpiry,
+          isSuspended: false,
+          lastPaymentAmount: amt,
+          lastPaymentMethod: method
+        };
         if (p.id === targetProp.id) updatePayload.paymentHistory = history;
         await updateDoc(doc(db, 'properties', p.id), updatePayload);
       }
@@ -876,7 +947,7 @@
     });
     if (!items.length) { toast('ምንም ታሪክ የለም', 'info'); return; }
     items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-    const txt = items.map(x => `${x.date} — ${x.amount} ብር (${x.months} ወር, ${x.method || '—'}) [${x.propName}]`).join('\n');
+    const txt = items.map(x => `${x.date} — ${x.amount} ብር (${x.months || 1} ወር, ${x.method || '—'}) [${x.propName}]`).join('\n');
     showModal('📜 የክፍያ ታሪክ', txt, [{ text: 'ዝጋ', class: 'btn-primary' }]);
   };
 
@@ -958,9 +1029,9 @@
     el.innerHTML = filtered.map(u => {
       const ph = allTenants.find(t => t.id === u.propertyId);
       const roleIcon = u.role === 'owner' ? '👑' : u.role === 'manager' ? '🎯' : u.role === 'accountant' ? '🧰' : '👷';
-      return `<div style="padding:12px; border-bottom:1px solid #edf2f7;">
-        <div style="font-weight:700; color:#2c5282; font-size:13px;">${roleIcon} ${esc(u.email)}</div>
-        <div style="font-size:11px; color:#718096; margin-top:4px;">🏢 ${esc(ph?.name || u.propertyId || '—')} • ${esc(u.role)}</div>
+      return `<div style="padding:12px; border-bottom:1px solid #f1f5f9;">
+        <div style="font-weight:700; color:#4f46e5; font-size:13px;">${roleIcon} ${esc(u.email)}</div>
+        <div style="font-size:11.5px; color:#64748b; margin-top:4px;">🏢 ${esc(ph?.name || u.propertyId || '—')} • ${esc(u.role)}</div>
         <div style="display:flex; gap:6px; margin-top:8px;">
           <button class="btn btn-info btn-sm" onclick="sendResetLink('${esc(u.email)}')">📧 Reset</button>
           <button class="btn btn-warning btn-sm" onclick="changeRole('${esc(u.id)}','${esc(u.role)}')">🔄 Role</button>
@@ -991,7 +1062,7 @@
     catch (e) { toast(e.message, 'error'); }
   };
 
-  // ===== BILLING =====
+  // ===== BILLING & BILLING REQUESTS =====
   function renderBilling() {
     const sumEl = document.getElementById('billingSummary');
     const histEl = document.getElementById('billingHistory');
@@ -999,18 +1070,156 @@
     allTenants.forEach(t => (t.paymentHistory || []).forEach(p => { total += parseFloat(p.amount) || 0; count++; }));
     sumEl.innerHTML = `<div class="stats-grid" style="grid-template-columns:1fr 1fr;">
       <div class="stat-card"><div class="value val-green">${total.toLocaleString()}</div><div class="label">💰 ጠቅላላ ገቢ (ብር)</div></div>
-      <div class="stat-card"><div class="value val-blue">${count}</div><div class="label">📜 ክፍያዎች</div></div>
+      <div class="stat-card"><div class="value val-indigo">${count}</div><div class="label">📜 ክፍያዎች</div></div>
     </div>`;
 
     const all = [];
     allTenants.forEach(t => (t.paymentHistory || []).forEach(p => all.push({ ...p, tenant: t.name })));
     all.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     if (!all.length) { histEl.innerHTML = '<div class="empty"><div class="emoji">💰</div><p>ምንም ክፍያ የለም</p></div>'; return; }
-    histEl.innerHTML = all.slice(0, 50).map(p => `<div style="padding:10px 0; border-bottom:1px solid #edf2f7; display:flex; justify-content:space-between;">
-      <div><strong style="color:#2c5282; font-size:13px;">${esc(p.tenant)}</strong><div style="font-size:11px; color:#718096;">${esc(p.date)} • ${esc(p.method || '—')}</div></div>
-      <div style="color:#276749; font-weight:800;">${esc(p.amount)} ብር</div>
+    histEl.innerHTML = all.slice(0, 50).map(p => `<div style="padding:10px 0; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between;">
+      <div><strong style="color:#4f46e5; font-size:13px;">${esc(p.tenant)}</strong><div style="font-size:11.5px; color:#64748b;">${esc(p.date)} • ${esc(p.method || '—')}</div></div>
+      <div style="color:#15803d; font-weight:800;">${esc(p.amount)} ብር</div>
     </div>`).join('');
   }
+
+  function renderBillingRequests() {
+    const el = document.getElementById('billingRequestsList');
+    const pendingCount = allBillingRequests.filter(r => (r.status || 'pending') === 'pending').length;
+    ['sbBillBadge', 'bnBillBadge'].forEach(id => {
+      const badge = document.getElementById(id);
+      if (!badge) return;
+      if (pendingCount > 0) { badge.style.display = 'inline-block'; badge.textContent = pendingCount; }
+      else badge.style.display = 'none';
+    });
+
+    if (!el) return;
+    if (!allBillingRequests.length) {
+      el.innerHTML = '<div class="empty"><div class="emoji">📭</div><p>ምንም የክፍያ ጥያቄ የለም</p></div>';
+      return;
+    }
+
+    const sorted = [...allBillingRequests].sort((a, b) => {
+      const aPend = (a.status || 'pending') === 'pending' ? 0 : 1;
+      const bPend = (b.status || 'pending') === 'pending' ? 0 : 1;
+      if (aPend !== bPend) return aPend - bPend;
+      const aSec = a.createdAt?.seconds || 0;
+      const bSec = b.createdAt?.seconds || 0;
+      return bSec - aSec;
+    });
+
+    el.innerHTML = sorted.map(r => {
+      const st = r.status || 'pending';
+      const stLabel = st === 'approved' ? '✅ የተረጋገጠ' : (st === 'rejected' ? '❌ ውድቅ የተደረገ' : '⏳ በመጠባበቅ ላይ');
+      const targetName = r.propertyName || r.shopName || r.tenantName || r.requesterEmail || r.propertyId || '—';
+      const cycleDaysMap = { monthly: 30, quarterly: 90, semiannual: 180, annual: 365 };
+      const days = r.days || cycleDaysMap[r.cycle] || 30;
+      return `
+        <div class="req-card ${esc(st)}">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+            <strong style="color:#0f172a; font-size:14px;">🏢 ${esc(targetName)}</strong>
+            <span class="badge-status ${st === 'approved' ? 'status-active' : (st === 'rejected' ? 'status-suspended' : 'status-expired')}">${stLabel}</span>
+          </div>
+          <div style="font-size:12px; color:#475569; line-height:1.55;">
+            💰 <b>መጠን:</b> ${esc(r.amount || 0)} ብር • <b>ዘዴ:</b> ${esc(r.method || '—')} • <b>ጊዜ:</b> ${esc(r.cycle || 'monthly')} (${days} ቀናት)<br>
+            📧 <b>ላኪ:</b> ${esc(r.requesterEmail || '—')} ${r.note ? '• 📝 ' + esc(r.note) : ''}<br>
+            ${r.requestedExpiryDate ? '📅 <b>የታሰበ ማብቂያ:</b> ' + esc(r.requestedExpiryDate) : ''}
+          </div>
+          ${r.screenshotUrl ? `<img src="${esc(r.screenshotUrl)}" class="req-thumb" onclick="previewScreenshot('${esc(r.screenshotUrl)}')" alt="Screenshot">` : ''}
+          ${st === 'pending' ? `
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button class="btn btn-success btn-sm" onclick="approveBillingRequest('${esc(r.id)}')">✅ አጽድቅና አድስ</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectBillingRequest('${esc(r.id)}')">❌ ውድቅ አድርግ</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.approveBillingRequest = async function(reqId) {
+    const reqItem = allBillingRequests.find(x => x.id === reqId);
+    if (!reqItem) return;
+    try {
+      const cycleDaysMap = { monthly: 30, quarterly: 90, semiannual: 180, annual: 365 };
+      const addDays = parseInt(reqItem.days, 10) || cycleDaysMap[reqItem.cycle] || 30;
+      const targetPropId = reqItem.propertyId || reqItem.shopId || reqItem.tenantId;
+      const matchedProp = allTenants.find(t =>
+        t.id === targetPropId ||
+        (reqItem.requesterEmail && (t.ownerEmail || '').toLowerCase() === reqItem.requesterEmail.toLowerCase())
+      );
+
+      let newExpiry = reqItem.requestedExpiryDate || '';
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      if (matchedProp) {
+        const groupProps = matchedProp.ownerEmail
+          ? allTenants.filter(t => (t.ownerEmail || '').toLowerCase() === matchedProp.ownerEmail.toLowerCase())
+          : [matchedProp];
+
+        const currentMaxExp = groupProps.map(p => p.expiryDate).filter(Boolean).sort().pop();
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        let base = currentMaxExp ? new Date(currentMaxExp) : new Date();
+        base.setHours(0, 0, 0, 0);
+        if (isNaN(base.getTime()) || base < now) base = now;
+        base.setDate(base.getDate() + addDays);
+        newExpiry = base.toISOString().split('T')[0];
+
+        const primary = groupProps[0];
+        const history = [...(primary.paymentHistory || [])];
+        history.push({
+          date: todayStr,
+          amount: parseFloat(reqItem.amount) || 0,
+          months: Math.max(1, Math.round(addDays / 30)),
+          method: reqItem.method || 'Request',
+          note: reqItem.note || 'Approved Billing Request'
+        });
+
+        for (const p of groupProps) {
+          const payload = {
+            expiryDate: newExpiry,
+            isSuspended: false,
+            lastPaymentAmount: parseFloat(reqItem.amount) || 0,
+            lastPaymentMethod: reqItem.method || 'Request',
+            subscriptionMessage: `✅ ክፍያዎ ተረጋግጧል! አዲስ የማብቂያ ቀን: ${newExpiry}`,
+            subscriptionStatus: 'success'
+          };
+          if (p.id === primary.id) payload.paymentHistory = history;
+          await updateDoc(doc(db, 'properties', p.id), payload);
+        }
+      }
+
+      await updateDoc(doc(db, 'billingRequests', reqId), {
+        status: 'approved',
+        approvedAt: new Date().toISOString(),
+        appliedExpiryDate: newExpiry
+      });
+
+      toast(`✅ የክፍያ ጥያቄ ተረጋግጧል${newExpiry ? ' (' + newExpiry + ')' : ''}`, 'success');
+      loadAllData();
+    } catch (e) {
+      toast('ስህተት: ' + e.message, 'error');
+    }
+  };
+
+  window.rejectBillingRequest = async function(reqId) {
+    const ok = await showModal('❌ ውድቅ ማድረግ', 'ይህን የክፍያ ጥያቄ ውድቅ ማድረግ እርግጠኛ ነህ?', [
+      { text: 'አዎ ውድቅ አድርግ', class: 'btn-danger', value: true },
+      { text: 'ተወው', class: 'btn-outline', value: false }
+    ]);
+    if (!ok) return;
+    try {
+      await updateDoc(doc(db, 'billingRequests', reqId), {
+        status: 'rejected',
+        rejectedAt: new Date().toISOString()
+      });
+      toast('ጥያቄው ውድቅ ተደርጓል', 'info');
+      loadAllData();
+    } catch (e) {
+      toast(e.message, 'error');
+    }
+  };
 
   // ===== PASSWORDS =====
   function renderPasswordRequests() {
@@ -1019,8 +1228,8 @@
     if (allPasswordRequests.length) { badge.style.display = 'inline-block'; badge.textContent = allPasswordRequests.length; }
     else badge.style.display = 'none';
     if (!allPasswordRequests.length) { el.innerHTML = '<div class="empty"><div class="emoji">✅</div><p>ምንም ጥያቄ የለም</p></div>'; return; }
-    el.innerHTML = allPasswordRequests.map(r => `<div style="padding:12px; border-bottom:1px solid #edf2f7; display:flex; justify-content:space-between; gap:8px;">
-      <div><div style="font-weight:700; font-size:13px;">${esc(r.email)}</div><div style="font-size:11px; color:#718096;">${esc(r.date || '—')}</div></div>
+    el.innerHTML = allPasswordRequests.map(r => `<div style="padding:12px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; gap:8px;">
+      <div><div style="font-weight:700; font-size:13px;">${esc(r.email)}</div><div style="font-size:11.5px; color:#64748b;">${esc(r.date || '—')}</div></div>
       <div style="display:flex; gap:6px;">
         <button class="btn btn-info btn-sm" onclick="sendResetLink('${esc(r.email)}')">📧</button>
         <button class="btn btn-success btn-sm" onclick="resolveReq('${esc(r.id)}')">✅</button>
@@ -1033,13 +1242,37 @@
     catch (e) { toast(e.message, 'error'); }
   };
 
-  // ===== SUPPORT =====
+  // ===== SUPPORT & PRICING =====
   window.saveSupportInfo = async function() {
     const phone = document.getElementById('supportPhone').value.trim();
     const email = document.getElementById('supportEmail').value.trim();
     const telegram = document.getElementById('supportTelegram').value.trim();
     try { await setDoc(doc(db, 'settings', 'support'), { phone, email, telegram }, { merge: true }); toast('✅ ተቀምጧል', 'success'); }
     catch (e) { toast(e.message, 'error'); }
+  };
+
+  window.savePricingConfig = async function() {
+    const pricingPayload = {
+      basic: {
+        monthly: parseFloat(document.getElementById('priceBasicMonthly').value) || 500,
+        quarterly: parseFloat(document.getElementById('priceBasicQuarterly').value) || 1400,
+        semiannual: parseFloat(document.getElementById('priceBasicSemiannual').value) || 2700,
+        annual: parseFloat(document.getElementById('priceBasicAnnual').value) || 5000
+      },
+      pro: {
+        monthly: parseFloat(document.getElementById('priceProMonthly').value) || 1000,
+        quarterly: parseFloat(document.getElementById('priceProQuarterly').value) || 2800,
+        semiannual: parseFloat(document.getElementById('priceProSemiannual').value) || 5400,
+        annual: parseFloat(document.getElementById('priceProAnnual').value) || 10000
+      }
+    };
+    try {
+      await setDoc(doc(db, 'appSettings', 'pricing'), pricingPayload, { merge: true });
+      allPricing = pricingPayload;
+      toast('✅ የፕላን ዋጋዎች ተቀምጠዋል', 'success');
+    } catch (e) {
+      toast(e.message, 'error');
+    }
   };
 
   // ===== DATA =====
@@ -1069,7 +1302,7 @@
   };
 
   window.exportBackup = function() {
-    const data = { tenants: allTenants, users: allUsers, passwordRequests: allPasswordRequests, support: allSupportInfo, exportedAt: new Date().toISOString() };
+    const data = { tenants: allTenants, users: allUsers, passwordRequests: allPasswordRequests, billingRequests: allBillingRequests, support: allSupportInfo, pricing: allPricing, exportedAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `backup-${new Date().toISOString().split('T')[0]}.json`;
@@ -1084,7 +1317,7 @@
     ]);
     if (!ok) { event.target.value = ''; return; }
     const status = document.getElementById('backupStatus');
-    status.textContent = '⏳ በመመለስ ላይ...'; status.style.color = '#dd6b20';
+    status.textContent = '⏳ በመመለስ ላይ...'; status.style.color = '#c2410c';
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
@@ -1100,10 +1333,13 @@
         if (data.support && typeof data.support === 'object') {
           await setDoc(doc(db, 'settings', 'support'), data.support, { merge: true });
         }
-        status.textContent = '✅ ተመልሷል'; status.style.color = '#276749';
+        if (data.pricing && typeof data.pricing === 'object') {
+          await setDoc(doc(db, 'appSettings', 'pricing'), data.pricing, { merge: true });
+        }
+        status.textContent = '✅ ተመልሷል'; status.style.color = '#15803d';
         toast('✅ ዳታ ተመልሷል', 'success');
         loadAllData();
-      } catch (err) { status.textContent = '❌ ' + err.message; status.style.color = '#c53030'; }
+      } catch (err) { status.textContent = '❌ ' + err.message; status.style.color = '#b91c1c'; }
     };
     reader.readAsText(file); event.target.value = '';
   };
